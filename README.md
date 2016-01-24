@@ -3,6 +3,8 @@
 - **Author**: [Ethan Turkeltaub](http://ethnt.me)
 - **License**: [MIT License](https://github.com/eturk/marvin/blob/master/LICENSE.md)
 
+[![Build Status](https://travis-ci.org/eturk/marvin.svg?branch=master)](https://travis-ci.org/eturk/marvin)
+
 ## What is Marvin?
 
 Marvin is an implementation of the Marist College CMPT 432 Compilers [language grammar](http://www.labouseur.com/courses/compilers/grammar.pdf). It targets the [6502a microprocessor](http://www.labouseur.com/commondocs/6502alan-instruction-set.pdf) and provides the front- and back-ends of a compiler.
