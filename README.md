@@ -1,6 +1,7 @@
 # Marvin
 
 **Author**: [Ethan Turkeltaub](http://ethnt.me)
+
 **License**: [MIT License](https://github.com/eturk/marvin/blob/master/LICENSE.md)
 
 ## What is Marvin?
