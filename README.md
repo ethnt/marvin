@@ -18,16 +18,16 @@ The only dependency that Marvin requires is Rubinius 3.5.0. All other RubyGems c
 
 ### Installing dependencies on OS X
 
-It's highly recommended that you install Homebrew, if you haven't already.
+It's highly recommended that you install Homebrew, if you haven't already:
 
 ```
 $ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 ```
 
-Next, install LLVM, rbenv, and ruby-build using Homebrew.
+Next, install rbenv and ruby-build using Homebrew:
 
 ```
-$ brew install homebrew/versions/llvm37 rbenv ruby-build
+$ brew install rbenv ruby-build
 ```
 
 You'll need to add to your `$PATH` to get rbenv to work globally. Head into your `~/.bash_profile` file using the text editor of your choice and add the following snippet:
@@ -52,10 +52,10 @@ $ rbenv install 2.3.0
 $ rbenv global 2.3.0
 ```
 
-Finally, you can go ahead and install Rubinius using Homebrew's version of LLVM;
+Finally, you can go ahead and install Rubinius:
 
 ```
-$ rbenv install rbx-3.5.0 -- --llvm-path="/usr/local/Cellar/llvm/3.7.1"
+$ rbenv install rbx-3.5.0"
 ```
 
 ### Setting up Marvin
