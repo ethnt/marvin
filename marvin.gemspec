@@ -11,12 +11,12 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Ethan Turkeltaub']
   spec.email         = ['ethan.turkeltaub@gmail.com']
 
-  spec.summary       = %q{Marvin is a compiler written in Ruby.}
-  spec.description   = %q{Marvin is a compiler written in Ruby.}
+  spec.summary       = 'Marvin is a compiler written in Ruby.'
+  spec.description   = 'Marvin is a compiler written in Ruby.'
   spec.homepage      = 'https://github.com/eturk/marvin'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec|features)/}) }
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']

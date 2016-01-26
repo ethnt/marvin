@@ -4,7 +4,6 @@ require 'cucumber/rake/task'
 require 'pry'
 require 'rubocop/rake_task'
 
-
 RSpec::Core::RakeTask.new(:spec)
 
 Cucumber::Rake::Task.new(:features) do |t|
