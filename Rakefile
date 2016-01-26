@@ -2,6 +2,8 @@ require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'cucumber/rake/task'
 require 'pry'
+require 'rubocop/rake_task'
+
 
 RSpec::Core::RakeTask.new(:spec)
 
@@ -19,3 +21,5 @@ desc 'Enter a console to interact directly with Marvin'
 task :console do
   Pry.start
 end
+
+RuboCop::RakeTask.new

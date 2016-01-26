@@ -99,3 +99,11 @@ You can use `pry` to enter a console to interact with Marvin directly:
 ```
 $ bundle exec rake console
 ```
+
+### Running the code analyzer
+
+Marvin uses the [Rubocop](https://github.com/bbatsov/rubocop) code analyzer to check the codebase against the Ruby best practices. You can call it with rake:
+
+```
+$ bundle exec rubocop
+```
