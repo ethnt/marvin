@@ -1,3 +1,11 @@
+# Compilers
+
+This is a repository for work in CMPT 432 Compilers. See below for instructions on how to use the compiler.
+
+All labs and assignments are in the [`doc/`](https://github.com/eturk/compilers/tree/master/doc) directory.
+
+***
+
 # Marvin
 
 - **Author**: [Ethan Turkeltaub](http://ethnt.me)
