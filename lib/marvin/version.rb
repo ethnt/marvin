@@ -1,3 +1,5 @@
 module Marvin
-  VERSION = '0.1.0'.freeze
+
+  # Set the version number and freeze the string.
+  VERSION = '0.0.1'.freeze
 end
