@@ -5,6 +5,10 @@
 
 [![Build Status](https://travis-ci.org/eturk/marvin.svg?branch=master)](https://travis-ci.org/eturk/marvin)
 
+> _Here I am, brain the size of a planet, and they ask me to compile code for a 6502a microprocessor. Call that job satisfaction? 'Cause I don't._
+>
+> &mdash;[Marvin](https://en.wikipedia.org/wiki/Marvin_(character))
+
 ## What is Marvin?
 
 Marvin is an implementation of the Marist College CMPT 432 Compilers [language grammar](http://www.labouseur.com/courses/compilers/grammar.pdf). It targets the [6502a microprocessor](http://www.labouseur.com/commondocs/6502alan-instruction-set.pdf) and provides the front- and back-ends of a compiler.
