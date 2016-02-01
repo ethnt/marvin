@@ -20,8 +20,8 @@ module Marvin
     #   # A class method that will take in a file, rather than a String.
     #   #
     #   # @param  [File]   A file to read from.
-    #   # @param  [Hash]   Any configuration given in. See the `Configuration` class
-    #   #                  for details.
+    #   # @param  [Hash]   Any configuration given in. See the `Configuration`
+    #   #                  class for details.
     #   # @param [String] 0632a target code.
     #   def from_file(file, configuration = {})
     #     # read file...
