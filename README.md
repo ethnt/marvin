@@ -1,11 +1,3 @@
-# Compilers
-
-This is a repository for work in CMPT 432 Compilers. See below for instructions on how to use the compiler.
-
-All labs and assignments are in the [`doc/`](https://github.com/eturk/compilers/tree/master/doc) directory.
-
-***
-
 # Marvin
 
 - **Author**: [Ethan Turkeltaub](http://ethnt.me)
@@ -22,7 +14,7 @@ Although Marvin uses [Rubinius](http://rubinius.com/) as a Ruby implementation, 
 
 ## Installation
 
-The only dependency that Marvin requires is Rubinius 3.5.0. All other RubyGems can be installed with Bundler.
+The only dependency that Marvin requires is Rubinius 3.14. All other RubyGems can be installed with Bundler.
 
 ### Installing dependencies on OS X
 
@@ -32,10 +24,10 @@ It's highly recommended that you install Homebrew, if you haven't already:
 $ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 ```
 
-Next, install rbenv and ruby-build using Homebrew:
+Next, install LLVM, rbenv and ruby-build using Homebrew:
 
 ```
-$ brew install rbenv ruby-build
+$ brew install homebrew/versions/llvm35 rbenv ruby-build
 ```
 
 You'll need to add to your `$PATH` to get rbenv to work globally. Head into your `~/.bash_profile` file using the text editor of your choice and add the following snippet:
@@ -63,7 +55,7 @@ $ rbenv global 2.3.0
 Finally, you can go ahead and install Rubinius:
 
 ```
-$ rbenv install rbx-3.5.0"
+$ RUBY_CONFIGURE_OPTS=--llvm-path="/usr/local/Cellar/llvm35/3.5.1" rbenv install rbx-3.14
 ```
 
 ### Setting up Marvin
