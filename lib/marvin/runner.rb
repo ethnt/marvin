@@ -1,8 +1,8 @@
 module Marvin
 
-  # The base class is the foundation for the actual compiler. It will take the
+  # The runner class is the foundation for the actual compiler. It will take the
   # file or input stream and run it through the paces.
-  class Base
+  class Runner
     attr_accessor :config
 
     # Initialize the actual compiler.
