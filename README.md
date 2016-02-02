@@ -96,6 +96,8 @@ $ bundle exec rake spec
 $ bundle exec rake features
 ```
 
+As a bonus, SimpleCov will generate a test coverage report when it finished. You can see it at `coverage/index.html`.
+
 ### Entering a console
 
 You can use `pry` to enter a console to interact with Marvin directly:
