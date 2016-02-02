@@ -1,7 +1,11 @@
 require 'spec_helper'
 
 describe Marvin::Runner do
-  let(:runner) { Marvin::Runner.new }
+  let(:runner) do
+    runner = Marvin::Runner.new
+    runner.code = 'foobar'
+    runner
+  end
 
   describe '.new' do
     it 'gives a valid instance' do

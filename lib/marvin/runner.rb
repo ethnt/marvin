@@ -19,6 +19,7 @@ module Marvin
     def run!
       if code.nil?
         config.logger.fatal('No source code given, exiting')
+        
         exit(-1)
       end
 
