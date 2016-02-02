@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Marvin::Configuration do
   describe '#logger' do
-    it 'defaults to STDOUT' do
-      expect(Marvin::Configuration.new.logger).to eql STDOUT
+    it 'defaults to Yell::Logger' do
+      expect(Marvin::Configuration.new.logger).to be_an_instance_of Yell::Logger
     end
   end
 

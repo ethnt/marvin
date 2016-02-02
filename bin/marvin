@@ -1,3 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'marvin'
+# Flush STDERR output immediately.
+$stderr.sync = true
+
+# Require the whole thing.
+require_relative '../lib/marvin'
+
+# Run it!
+Marvin::Command.parse!(ARGV)

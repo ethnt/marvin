@@ -3,6 +3,10 @@ module Marvin
   # An instance of this class will be attached to Marvin for easy access to
   # information like loggers.
   class Configuration
+
+    # Contains all of the different setting options. Each symbol in this array
+    # is accessible through getters and setters, but also a method to check if
+    # the value is set or not.
     SETTINGS = [:logger].freeze
 
     # For each setting in `SETTINGS`, we're going to set an attribute accessor
@@ -21,7 +25,7 @@ module Marvin
     #
     # @return [Marvin::Configuration] A default configuration instance.
     def initialize
-      @logger = STDOUT
+      @logger = Yell.new(STDOUT, format: "[%d, %5L in %M]: %m", trace: true)
     end
   end
 end

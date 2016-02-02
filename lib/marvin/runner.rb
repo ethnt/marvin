@@ -3,32 +3,27 @@ module Marvin
   # The runner class is the foundation for the actual compiler. It will take the
   # file or input stream and run it through the paces.
   class Runner
-    attr_accessor :config
+    attr_accessor :code, :config
 
     # Initialize the actual compiler.
     #
-    # @param  [String] code          The actual input code.
-    # @param  [Hash]   configuration Any configuration given in. See the
-    #                               `Configuration` class for details.
-    # @return [String] 0632a target code.
-    def initialize(code, configuration = {})
+    # @return [Marvin::Runner] A runner object.
+    def initialize
+      @code   ||= nil
       @config ||= Marvin::Configuration.new
     end
 
-    # class << self
+    # Run the compiler.
     #
-    #   # A class method that will take in a file, rather than a String.
-    #   #
-    #   # @param  [File]   A file to read from.
-    #   # @param  [Hash]   Any configuration given in. See the `Configuration`
-    #   #                  class for details.
-    #   # @param [String] 0632a target code.
-    #   def from_file(file, configuration = {})
-    #     # read file...
-    #     contents = ''
-    #
-    #     self.new(contents, configuration)
-    #   end
-    # end
+    # @return [Marvin::Runner] This Runner with output code.
+    def run!
+      if code.nil?
+        config.logger.fatal('No source code given, exiting')
+        exit(-1)
+      end
+
+      return self
+    end
+
   end
 end
