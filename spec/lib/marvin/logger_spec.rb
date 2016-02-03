@@ -9,6 +9,14 @@ describe Marvin::Logger do
     end
   end
 
+  describe '#info' do
+    let(:info) { logger.info('foo') }
+
+    it 'outputs to $stdout' do
+      expect { info }.to output("foo\n").to_stdout
+    end
+  end
+
   describe '#warning' do
     let(:warning) { logger.warning('foo') }
 
@@ -18,18 +26,6 @@ describe Marvin::Logger do
 
     it 'logs the warning' do
       expect(logger.warnings).to include warning
-    end
-  end
-
-  describe '#error' do
-    let(:error) { logger.error('foo') }
-
-    it 'outputs to $stdout' do
-      expect { error }.to output("error: foo\n").to_stdout
-    end
-
-    it 'logs the error' do
-      expect(logger.errors).to include error
     end
   end
 end
