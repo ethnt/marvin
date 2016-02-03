@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe Marvin::Runner do
-  before(:each) do
-    # allow(Kernel).to receive(:exit)
-  end
-
   let(:runner) do
     runner = Marvin::Runner.new
     runner.code = 'foobar'

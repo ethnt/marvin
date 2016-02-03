@@ -1,5 +1,3 @@
-require 'yell'
-
 require_relative 'marvin/version'
 require_relative 'marvin/configuration'
 require_relative 'marvin/runner'

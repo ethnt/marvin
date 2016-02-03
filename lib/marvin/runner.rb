@@ -19,8 +19,6 @@ module Marvin
     def run!
       if code.nil?
         raise ArgumentError, 'No source code given, exiting'
-
-        # exit(-1)
       end
 
       return self
