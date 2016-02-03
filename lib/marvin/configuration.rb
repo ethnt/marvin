@@ -25,7 +25,7 @@ module Marvin
     #
     # @return [Marvin::Configuration] A default configuration instance.
     def initialize
-      @logger = Yell.new(STDOUT, format: "[%d, %5L in %M]: %m", trace: true)
+      @logger = Marvin::Logger.new
     end
   end
 end
