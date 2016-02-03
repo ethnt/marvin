@@ -17,11 +17,9 @@ module Marvin
     #
     # @return [Marvin::Runner] This Runner with output code.
     def run!
-      if code.nil?
-        raise ArgumentError, 'No source code given, exiting'
-      end
+      fail(ArgumentError, 'No source code given, exiting') if code.nil?
 
-      return self
+      self
     end
 
   end

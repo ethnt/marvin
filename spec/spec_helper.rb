@@ -12,11 +12,11 @@ RSpec.configure do |config|
 
   # Swallow all logger outputs.
   config.before(:all) do
-    $stderr = File.open(File::NULL, "w")
-    $stdout = File.open(File::NULL, "w")
+    $stderr = File.open(File::NULL, 'w')
+    $stdout = File.open(File::NULL, 'w')
   end
 
-  # Restore STDERR and STDOUT after the tests
+  # Restore STDERR and STDOUT after the tests.
   config.after(:all) do
     $stderr = original_stderr
     $stdout = original_stdout

@@ -10,6 +10,8 @@ module Marvin
     #
     # @param [Array] argv Options that are from the command line.
     # @return [Marvin::Runner] The resulting `Runner`.
+    #
+    # rubocop:disable Metrics/MethodLength
     def self.parse!(argv)
 
       # A new, empty instance of a Runner.
