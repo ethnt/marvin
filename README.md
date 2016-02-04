@@ -49,13 +49,6 @@ Restart your current shell:
 $ exec $SHELL -l
 ```
 
-Rubinius doesn't work very well with the system Ruby, so we'll install the latest version of MRI with rbenv and make it your global Ruby version:
-
-```
-$ rbenv install 2.3.0
-$ rbenv global 2.3.0
-```
-
 Finally, you can go ahead and install Rubinius:
 
 ```
