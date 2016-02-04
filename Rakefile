@@ -12,10 +12,6 @@ Cucumber::Rake::Task.new(:features) do |t|
 end
 
 desc 'Run the Marvin test suite (RSpec and Cucumber)'
-# task :test do
-#   Rake::Task['spec'].invoke
-#   Rake::Task['features'].invoke
-# end
 task test: [:spec, :features, :rubocop]
 
 desc 'Enter a console to interact directly with Marvin'
