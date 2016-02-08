@@ -1,0 +1,6 @@
+{
+  int inti=0
+  if(inti==0){
+    print("foo")
+  }
+} $

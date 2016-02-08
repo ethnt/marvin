@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Marvin::Runner do
   let(:runner) do
     runner = Marvin::Runner.new
-    runner.code = 'foobar'
+    runner.source = '{ } $'
     runner
   end
 
@@ -18,12 +18,20 @@ describe Marvin::Runner do
   end
 
   describe '#run!' do
+    before do
+      runner.run!
+    end
+
     context 'without source code' do
       let(:no_code) { Marvin::Runner.new }
 
       it 'raises an exception' do
         expect { no_code.run! }.to raise_error(ArgumentError)
       end
+    end
+
+    it 'creates a new Lexer' do
+      expect(runner.lexer).to be_an_instance_of Marvin::Lexer
     end
   end
 end
