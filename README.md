@@ -81,6 +81,16 @@ Now you're ready to start using Marvin!
 
 ## Usage
 
+### Running the compiler
+
+There's an executable `marvin` in `bin/`. To pass in a file, use the `-f` flag:
+
+```
+$ ./bin/marvin -f spec/fixtures/test-declaration.txt
+```
+
+For full usage options, run `./bin/marvin --help`.
+
 ### Running the test suite
 
 You can run the test suite (RSpec and Cucumber) using the `test` Rake command:
