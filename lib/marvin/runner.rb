@@ -19,11 +19,10 @@ module Marvin
     def run!
       fail(ArgumentError, 'No source code given, exiting') if source.nil?
 
-      @lexer = Marvin::Lexer.new(@source)
+      @lexer = Marvin::Lexer.new(@source, @config)
       @lexer.lex!
 
       self
     end
-
   end
 end

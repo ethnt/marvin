@@ -1,48 +1,50 @@
 module Marvin
   class Grammar
-    Type = /^(int|string|boolean)$/
-    Digit = /(\d+)/
-    StringExpr = /("[^"]*")/
-    Equality = /(==)/
-    Inequality = /(!=)/
-    Char = /[a-z]/
-    Assignment = /(=)/
-    Boolop = /(==|!=)/
-    Boolval = /(true|false)/
-    Intop = /(\+)/
-    BlockBegin = /({)/
-    BlockEnd = /(})/
-    ProgramEnd = /(\$)/
-    IfStatement = /(if)/
-    Space = /\s/
-    CharList = /([a-z]+)/
-    AnyChar = /(\S)/
-    OpenParenthesis = /\(/
-    CloseParenthesis = /\)/
+    BLOCK_BEGIN = /({)/
+    BLOCK_END = /(})/
+    PROGRAM_END = /(\$)/
+    OPEN_PARENTHESIS = /\(/
+    CLOSE_PARENTHESIS = /\)/
 
-    Delimiters = Regexp.union([
-      Space,
-      CharList,
-      Digit,
-      StringExpr,
-      Equality,
-      Inequality,
-      AnyChar
-    ]).freeze
+    TYPE = /(int|string|boolean)/
 
-    Specifications = [
-      Type,
-      Digit,
-      CharList,
-      Char,
-      Assignment,
-      Boolop,
-      Boolval,
-      BlockBegin,
-      BlockEnd,
-      OpenParenthesis,
-      CloseParenthesis,
-      ProgramEnd
-    ].freeze
+    DIGIT = /(\d+)/
+    CHAR = /[a-z]/
+    BOOLVAL = /(true|false)/
+    STRING = /("[a-z]+")/
+
+    EQUALITY = /(==)/
+    INEQUALITY = /(!=)/
+    ASSIGNMENT = /(=)/
+    BOOLOP = /(==|!=)/
+    INTOP = /(\+)/
+
+    WHILE = /(while)/
+    PRINT = /(print)/
+    IF_STATEMENT = /(if)/
+    ELSE_STATEMENT = /(else)/
+
+    SPACE = /(\s)/
+    NEWLINE = /(\n)/
+
+    SPECIFICATIONS = {
+      block_begin: BLOCK_BEGIN,
+      block_end: BLOCK_END,
+      type: TYPE,
+      digit: DIGIT,
+      boolval: BOOLVAL,
+      boolop: BOOLOP,
+      string: STRING,
+      print: PRINT,
+      else_statement: ELSE_STATEMENT,
+      if_statement: IF_STATEMENT,
+      while: WHILE,
+      char: CHAR,
+      new_line: NEWLINE,
+      assignment: ASSIGNMENT,
+      open_parenthesis: OPEN_PARENTHESIS,
+      close_parenthesis: CLOSE_PARENTHESIS,
+      program_end: PROGRAM_END
+    }.freeze
   end
 end

@@ -3,10 +3,6 @@ require 'spec_helper'
 describe Marvin::Token do
   let(:token) { Marvin::Token.new('if', :reserved, { line: 3, character: 4 }) }
 
-  it 'creates a unique hex value' do
-    expect(token.hex).to_not be_nil
-  end
-
   describe '#==' do
     let(:same) { Marvin::Token.new('if', :reserved, { line: 3, character: 4 }) }
     let(:different) { Marvin::Token.new('f', :variable, { line: 3, character: 4 }) }

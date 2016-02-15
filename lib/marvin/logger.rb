@@ -2,7 +2,7 @@ module Marvin
 
   # Logger is responsible for outputting errors and warnings.
   class Logger
-    attr_accessor :destination, :warnings
+    attr_accessor :destination, :warnings, :errors
 
     # Creates a new Logger.
     #
@@ -11,6 +11,7 @@ module Marvin
     # @return [Marvin::Logger] A new logger.
     def initialize(destination = $stdout)
       @destination = destination
+      @errors = []
       @warnings = []
     end
 
@@ -34,6 +35,18 @@ module Marvin
       destination.puts "warning: #{text}"
 
       text
+    end
+
+    # Creates a new error and quits.
+    #
+    # @param [String] text The error text.
+    # @return [String] The error text back to you.
+    def error(text)
+      @errors.push(text)
+
+      destination.puts text
+
+      exit(-1)
     end
   end
 end
