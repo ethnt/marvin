@@ -131,3 +131,13 @@ Marvin uses the [Rubocop](https://github.com/bbatsov/rubocop) code analyzer to c
 ```
 $ bundle exec rubocop
 ```
+
+### Running benchmarks
+
+To run all of the benchmarks use Rake again:
+
+```
+$ bundle exec rake benchmarks
+```
+
+Note that the times given represent the time taken to run _after Rubinius has warmed up_. This can be a significant amount of time, so running them directly (`$ ruby benchmarks/*.rb`) will give a more accurate picture of benchmarks including the warm up.

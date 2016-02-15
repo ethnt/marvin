@@ -19,6 +19,11 @@ task :console do
   Pry.start
 end
 
+desc 'Run all benchmarks'
+task :benchmarks do
+  exec 'ruby benchmarks/*.rb'
+end
+
 YARD::Rake::YardocTask.new
 
 RuboCop::RakeTask.new
