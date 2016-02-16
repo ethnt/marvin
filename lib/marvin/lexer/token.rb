@@ -29,7 +29,7 @@ module Marvin
     #
     # @return [String] An output of a Token.
     def to_s
-      "<Token #{lexeme} #{kind}>"
+      "<Token #{kind} : \"#{lexeme}\">"
     end
   end
 end

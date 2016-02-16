@@ -21,7 +21,7 @@ module Marvin
 
     # Run the actual lexer.
     #
-    # @return [[Marvin::Token]] An Array of Tokens fromt he
+    # @return [[Marvin::Token]] An Array of Tokens from the source code.
     def lex!
       @configuration.logger.info 'Tokenizing...'
 
@@ -53,7 +53,7 @@ module Marvin
             # Grab the line from the overall character number.
             attrs  = {
               line: line_from_char(@scanner.pos),
-              char: char_on_line(@scanner.pos),
+              char: char_on_line(@scanner.pos)
             }
 
             # Make the new token.
@@ -69,6 +69,7 @@ module Marvin
         if token
           @scanner.pos = @scanner.pos + token.lexeme.length
           @tokens << token
+          @configuration.logger.info("  #{token}")
 
         # Otherwise, just advance by one.
         else
@@ -78,7 +79,7 @@ module Marvin
         next
       end
 
-      @configuration.logger.info "Found #{@tokens.count} tokens."
+      @configuration.logger.info "Found #{@tokens.count} tokens.\n\n"
 
       # Check, please!
       @tokens

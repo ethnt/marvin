@@ -1,4 +1,6 @@
 module Marvin
+
+  # Describes the grammar of our programming language.
   class Grammar
     BLOCK_BEGIN = /({)/
     BLOCK_END = /(})/
