@@ -23,6 +23,7 @@ module Marvin
     #
     # @return [[Marvin::Token]] An Array of Tokens fromt he
     def lex!
+      @configuration.logger.info 'Tokenizing...'
 
       # Continue until we reach the end of the string.
       until @scanner.eos?
@@ -51,8 +52,8 @@ module Marvin
 
             # Grab the line from the overall character number.
             attrs  = {
-              line: line_from_char(@scanner.string, @scanner.pos),
-              overall_char: @scanner.pos
+              line: line_from_char(@scanner.pos),
+              char: char_on_line(@scanner.pos),
             }
 
             # Make the new token.
@@ -77,18 +78,33 @@ module Marvin
         next
       end
 
+      @configuration.logger.info "Found #{@tokens.count} tokens."
+
       # Check, please!
       @tokens
     end
 
     # Get the line from the overall character number.
     #
-    # @param [String] str The string to check.
     # @param [Integer] char The overall character number in the document.
     # @return [Integer] The line number.
-    def line_from_char(str, char)
-      str = str[0..char]
+    def line_from_char(char)
+      str = @scanner.string[0..char]
       str.lines.count
+    end
+
+    # Get the character number on its line.
+    #
+    # @param [Integer] char The overall character number in the document.
+    # @return [Integer] The character number on its given line.
+    def char_on_line(char)
+      str = @scanner.string[0..char]
+
+      if newline_char = str.rindex("\n")
+        char - newline_char
+      else
+        char
+      end
     end
   end
 end

@@ -11,7 +11,7 @@ module Marvin
     DIGIT = /(\d+)/
     CHAR = /[a-z]/
     BOOLVAL = /(true|false)/
-    STRING = /("[a-z]+")/
+    STRING = /"([^"]*)"/
 
     EQUALITY = /(==)/
     INEQUALITY = /(!=)/
