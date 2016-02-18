@@ -21,6 +21,8 @@ describe Marvin::Lexer do
         :char,
         :assignment,
         :digit,
+        :intop,
+        :digit,
         :type,
         :char,
         :char,
