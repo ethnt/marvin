@@ -2,51 +2,27 @@ module Marvin
 
   # Describes the grammar of our programming language.
   class Grammar
-    BLOCK_BEGIN = /({)/
-    BLOCK_END = /(})/
-    PROGRAM_END = /(\$)/
-    OPEN_PARENTHESIS = /\(/
-    CLOSE_PARENTHESIS = /\)/
 
-    TYPE = /(int|string|boolean)/
-
-    DIGIT = /(\d+)/
-    CHAR = /[a-z]/
-    BOOLVAL = /(true|false)/
-    STRING = /"([^"]*)"/
-
-    EQUALITY = /(==)/
-    INEQUALITY = /(!=)/
-    ASSIGNMENT = /(=)/
-    BOOLOP = /(==|!=)/
-    INTOP = /(\+)/
-
-    WHILE = /(while)/
-    PRINT = /(print)/
-    IF_STATEMENT = /(if)/
-    ELSE_STATEMENT = /(else)/
-
-    SPACE = /(\s)/
-    NEWLINE = /(\n)/
-
-    SPECIFICATIONS = {
-      block_begin: BLOCK_BEGIN,
-      block_end: BLOCK_END,
-      type: TYPE,
-      digit: DIGIT,
-      boolval: BOOLVAL,
-      boolop: BOOLOP,
-      string: STRING,
-      print: PRINT,
-      else_statement: ELSE_STATEMENT,
-      if_statement: IF_STATEMENT,
-      while: WHILE,
-      char: CHAR,
-      new_line: NEWLINE,
-      assignment: ASSIGNMENT,
-      open_parenthesis: OPEN_PARENTHESIS,
-      close_parenthesis: CLOSE_PARENTHESIS,
-      program_end: PROGRAM_END
+    # The different types of lexemes in the language.
+    Lexemes = {
+      block_begin: /({)/,
+      block_end: /(})/,
+      type: /(int|string|boolean)/,
+      digit: /(\d+)/,
+      boolval: /(true|false)/,
+      boolop: /(==|!=)/,
+      intop: /\+/,
+      string: /"([^"]*)"/,
+      print: /(print)/,
+      else_statement: /(else)/,
+      if_statement: /(if)/,
+      while: /(while)/,
+      char: /[a-z]/,
+      new_line: /(\n)/,
+      assignment: /(=)/,
+      open_parenthesis: /\(/,
+      close_parenthesis: /\)/,
+      program_end: /(\$)/
     }.freeze
   end
 end

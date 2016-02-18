@@ -35,7 +35,7 @@ module Marvin
         token = nil
 
         # Run through every regex at this pointer.
-        Marvin::Grammar::SPECIFICATIONS.values.each do |expr|
+        Marvin::Grammar::Lexemes.values.each do |expr|
 
           # If we get a match from StringScanner#match?, it will return the
           # length of the match and nil otherwise.
@@ -48,7 +48,7 @@ module Marvin
             lexeme = @scanner.peek(len)
 
             # The kind matches up in the spec hash.
-            kind   = Marvin::Grammar::SPECIFICATIONS.key(expr)
+            kind   = Marvin::Grammar::Lexemes.key(expr)
 
             # Grab the line from the overall character number.
             attrs  = {

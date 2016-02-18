@@ -25,7 +25,7 @@ module Marvin
       (self.lexeme == t.lexeme) && (self.kind == t.kind)
     end
 
-    # Prints out the token in the standard way (`<Token kind : lexeme>`).
+    # Prints out the token in the standard way (`<Token kind : "lexeme">`).
     #
     # @return [String] An output of a Token.
     def to_s
