@@ -23,9 +23,5 @@ module Marvin
       close_parenthesis: /\)/,
       program_end: /(\$)/
     }.freeze
-
-    BNF = [
-
-    ]
   end
 end

@@ -30,13 +30,15 @@ module Marvin
 
     # Creates a new Lexer error.
     #
-    # @param [Object] object The object we're having issues with.
+    # @param [Marvin::Token] token The token we're having issues with.
+    # @param [Symbol] kind The kind expected.
     # @return [Marvin::Error] The error.
     def initialize(token, kind)
       @token = token
       @kind = kind
     end
 
+    # The message for the error.
     def message
       "Expected #{@kind.to_s.upcase}, found #{@token.kind.to_s.upcase} on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}"
     end
