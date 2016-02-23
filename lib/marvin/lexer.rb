@@ -23,7 +23,7 @@ module Marvin
     #
     # @return [[Marvin::Token]] An Array of Tokens from the source code.
     def lex!
-      @configuration.logger.info 'Tokenizing...'
+      # @configuration.logger.info 'Tokenizing...'
 
       # Continue until we reach the end of the string.
       until @scanner.eos?
@@ -69,7 +69,7 @@ module Marvin
         if token
           @scanner.pos = @scanner.pos + token.lexeme.length
           @tokens << token
-          @configuration.logger.info("  #{token}")
+          # @configuration.logger.info("  #{token}")
 
         # Otherwise, just advance by one.
         else
@@ -79,7 +79,7 @@ module Marvin
         next
       end
 
-      @configuration.logger.info "Found #{@tokens.count} tokens.\n\n"
+      # @configuration.logger.info "Found #{@tokens.count} tokens.\n\n"
 
       # Check, please!
       @tokens

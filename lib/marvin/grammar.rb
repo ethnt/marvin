@@ -14,7 +14,6 @@ module Marvin
       intop: /\+/,
       string: /"([^"]*)"/,
       print: /(print)/,
-      else_statement: /(else)/,
       if_statement: /(if)/,
       while: /(while)/,
       char: /[a-z]/,
@@ -24,5 +23,9 @@ module Marvin
       close_parenthesis: /\)/,
       program_end: /(\$)/
     }.freeze
+
+    BNF = [
+
+    ]
   end
 end

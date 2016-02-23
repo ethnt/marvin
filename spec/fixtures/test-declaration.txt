@@ -4,7 +4,6 @@
   while (f == true) {
     if (f == false) {
       print("true")
-    } else {
       print("false")
     }
   }
