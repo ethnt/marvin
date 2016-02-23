@@ -22,3 +22,7 @@ RSpec.configure do |config|
     $stdout = original_stdout
   end
 end
+
+def test_source
+  File.read('./spec/fixtures/test-declaration.txt')
+end

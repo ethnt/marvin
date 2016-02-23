@@ -22,15 +22,13 @@ module Marvin
 
         # For a file, read out the contents and then attach the source code to
         # the runner.
-        opts.on '-f', '--file', 'The source file to compile' do |f|
-          # read file contents
-
-          # runner.source_code = contents
+        opts.on '-f', '--file file', String, 'The source file to compile' do |f|
+          runner.source = File.read(f)
         end
 
         # Just straight string input of the source code.
-        opts.on '-I', '--input', 'Source code passed straight in' do |i|
-          runner.code = i
+        opts.on '-I', '--input input', String, 'Source code passed straight in' do |i|
+          runner.source = i
         end
 
         # Prints the version number and exits.

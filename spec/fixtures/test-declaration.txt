@@ -1,0 +1,10 @@
+{
+  int i = 0 + 1
+  boolean foo = true
+  while (f == true) {
+    if (f == false) {
+      print("true")
+      print("false")
+    }
+  }
+} $

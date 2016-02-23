@@ -7,5 +7,10 @@ describe Marvin::Command do
 
       expect(command).to be_an_instance_of Marvin::Runner
     end
+
+    it 'takes in a file'
+    it 'takes in direct input'
+    it 'displays the version number'
+    it 'displays the help dialog'
   end
 end

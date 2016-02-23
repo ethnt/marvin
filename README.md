@@ -74,6 +74,16 @@ Now you're ready to start using Marvin!
 
 ## Usage
 
+### Running the compiler
+
+There's an executable `marvin` in `bin/`. To pass in a file, use the `-f` flag:
+
+```
+$ ./bin/marvin -f spec/fixtures/test-declaration.txt
+```
+
+For full usage options, run `./bin/marvin --help`.
+
 ### Running the test suite
 
 You can run the test suite (RSpec and Cucumber) using the `test` Rake command:
@@ -114,3 +124,13 @@ Marvin uses the [Rubocop](https://github.com/bbatsov/rubocop) code analyzer to c
 ```
 $ bundle exec rubocop
 ```
+
+### Running benchmarks
+
+To run all of the benchmarks use Rake again:
+
+```
+$ bundle exec rake benchmarks
+```
+
+Note that the times given represent the time taken to run _after Rubinius has warmed up_. This can be a significant amount of time, so running them directly (`$ ruby benchmarks/*.rb`) will give a more accurate picture of benchmarks including the warm up.
