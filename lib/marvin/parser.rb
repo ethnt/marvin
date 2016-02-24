@@ -28,19 +28,48 @@ module Marvin
     protected
 
     # Checks whether or not the current token matches the expected kind.
+    # TODO: Argument on whether or not to fail out
     #
-    # @param [Marvin::Token] token The current token to check against.
     # @param [Symbol] kind The expected kind.
+    # @param [Boolean] fail_out Whether or not to fail out if we don't find a
+    #                           match.
     # @return [Boolean] Whether or not the kind matches.
-    def match?(token, kind)
+    def match?(kind, fail_out = true)
       # We have a match.
-      if token.kind == kind
+      if current_token.kind == kind
         @counter = @counter + 1
 
         true
       else
-        fail Marvin::ParserError.new(current_token, kind)
+        if fail_out
+          fail Marvin::ParserError.new(current_token, kind)
+        else
+          false
+        end
       end
+    end
+
+    # Match against one of the given kinds.
+    #
+    # @param [[Symbol]] kinds The expected kinds to match against.
+    #
+    # @return [Boolean] Whether one of the kinds match.
+    def match_one?(kinds)
+      kinds.each do |kind|
+        if match?(kind, false)
+          return true
+        end
+      end
+
+      false
+    end
+
+    # Checks if all the given arguments are true.
+    #
+    # @param [[Boolean]] args The operations to check.
+    # @return [Boolean] If they're all true or not.
+    def all_true?(args)
+      (args.uniq.length == 1) && (args.uniq.first == true)
     end
 
     # Returns the token at the counter.
@@ -50,14 +79,61 @@ module Marvin
       @tokens[@counter]
     end
 
+    # Parses a program.
+    #
+    #   Program ::= Block $
     def parse_program!
       parse_block!
-      match?(current_token, :program_end)
+      match?(:program_end)
     end
 
+    # Parses a block.
+    #
+    #  Block ::= { StatementList }
     def parse_block!
-      match?(current_token, :block_begin)
-      match?(current_token, :block_end)
+      match?(:block_begin)
+      parse_statement_list!
+      match?(:block_end)
+    end
+
+    # Parses a statement list.
+    #
+    #   StatementList ::= Statement StatementList
+    #                 ::= ε
+    def parse_statement_list!
+      parse_print_statement!
+    end
+
+    # Parses a print statement.
+    #
+    #   PrintStatement ::== print ( Expr )
+    def parse_print_statement!
+      match?(:print, false)
+      match?(:open_parenthesis, false)
+      parse_expr!
+      match?(:close_parenthesis, false)
+    end
+
+    # Parses an expression.
+    #
+    #   Expr ::== IntExpr
+    #        ::== StringExpr
+    #        ::== BooleanExpr
+    #        ::== Id
+    def parse_expr!
+      parse_int_expr!
+    end
+
+    # Parses an integer expression.
+    #
+    #   IntExpr ::== digit intop Expr
+    #           ::== digit
+    def parse_int_expr!
+      match?(:digit)
+      
+      if match?(:intop, false)
+        return parse_expr!
+      end
     end
   end
 end
