@@ -20,6 +20,8 @@ module Marvin
     def parse!
       @counter = 0
 
+      @config.logger.info('Parsing...')
+
       parse_program!
 
       @config.logger.info("Parse completed successfully.\n\n")
@@ -76,10 +78,14 @@ module Marvin
     #
     #   Program ::= Block $
     def parse_program!
-      @config.logger.info('Parsing...')
+      @config.logger.info('  Parsing program...')
 
       parse_block!
       match?(:program_end)
+
+      if current_token
+        parse_program!
+      end
     end
 
     # Parses a block.
