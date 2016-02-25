@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Marvin::Logger do
-  let(:logger) { Marvin::Logger.new }
+  let(:logger) { Marvin::Logger.new($stdout, true) }
 
   describe '.initialize' do
     it 'defaults to using $stdout' do
