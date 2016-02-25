@@ -20,13 +20,10 @@ module Marvin
       #
       # @return [String] Says what was expected and what was given where.
       def message
-        if @kind.is_a?(Array)
-          @kind_str = @kind.map(&:to_s).map(&:upcase).join(' or ')
-        else
-          kind_str = @kind.to_s.upcase
-        end
+        @kind = @kind.map(&:to_s).join(' or ') if @kind.is_a?(Array)
 
-        "Expected #{@kind.to_s.upcase}, found #{@token.kind.to_s.upcase} \"#{@token.lexeme}\" on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}"
+        # rubocop:disable Metrics/LineLength
+        "Expected #{kind_str}, found #{@token.kind} \"#{@token.lexeme}\" on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}"
       end
     end
   end

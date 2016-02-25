@@ -21,9 +21,7 @@ module Marvin
     # @param [String] text The informational text.
     # @return [String] The informational text back to you.
     def info(text)
-      if @verbose
-        destination.puts text
-      end
+      destination.puts(text) if @verbose
 
       text
     end

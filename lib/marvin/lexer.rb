@@ -31,49 +31,19 @@ module Marvin
         # If we match a space at the pointer, go to the next iteration.
         next unless @scanner.scan(/\s/).nil?
 
-        # Set the token to nil initially.
-        token = nil
-
-        # Run through every regex at this pointer.
-        Marvin::Grammar::Lexemes.values.each do |expr|
-
-          # If we get a match from StringScanner#match?, it will return the
-          # length of the match and nil otherwise.
-          len = @scanner.match?(expr)
-
-          # We've got a match!
-          if len && len > 0
-
-            # Peek the length of the match ahead to get the lexeme.
-            lexeme = @scanner.peek(len)
-
-            # The kind matches up in the spec hash.
-            kind   = Marvin::Grammar::Lexemes.key(expr)
-
-            # Grab the line from the overall character number.
-            attrs  = {
-              line: line_from_char(@scanner.pos),
-              char: char_on_line(@scanner.pos)
-            }
-
-            # Make the new token.
-            token = Marvin::Token.new(lexeme, kind, attrs)
-
-            # Break out of the loop, since we've found a match.
-            break
-          end
-        end
+        # Look for any tokens at the current pointer.
+        token = find_token!
 
         # If we have a token, advance by the length of the lexeme and add the
         # token to our token array.
         if token
-          @scanner.pos = @scanner.pos + token.lexeme.length
+          @scanner.pos += token.lexeme.length
           @tokens << token
           @config.logger.info("  #{token}")
 
         # Otherwise, just advance by one.
         else
-          @scanner.pos = @scanner.pos + 1
+          @scanner.pos += 1
         end
 
         next
@@ -86,6 +56,45 @@ module Marvin
     end
 
     private
+
+    # Finds any tokens at the current scanner pointer.
+    #
+    # @return [Marvin::Token, nil] A token if it finds one or nil.
+    def find_token!
+      token = nil
+
+      # Run through every regex.
+      Marvin::Grammar::Lexemes.values.each do |expr|
+
+        # If we get a match from StringScanner#match?, it will return the
+        # length of the match and nil otherwise.
+        len = @scanner.match?(expr)
+
+        # We've got a match!
+        if len && len > 0
+
+          # Peek the length of the match ahead to get the lexeme.
+          lexeme = @scanner.peek(len)
+
+          # The kind matches up in the spec hash.
+          kind = Marvin::Grammar::Lexemes.key(expr)
+
+          # Grab the line from the overall character number.
+          attributes = {
+            line: line_from_char(@scanner.pos),
+            char: char_on_line(@scanner.pos)
+          }
+
+          # Make the new token.
+          token = Marvin::Token.new(lexeme, kind, attributes)
+
+          # Break out of the loop, since we've found a match.
+          break
+        end
+      end
+
+      token
+    end
 
     # Get the line from the overall character number.
     #

@@ -88,6 +88,8 @@ module Marvin
       parse_block!
       match?(:program_end)
 
+      # If there are more tokens, that means there is more than one program in
+      # this file.
       if current_token
         parse_program!
       end

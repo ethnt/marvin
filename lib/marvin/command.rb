@@ -12,6 +12,7 @@ module Marvin
     # @return [Marvin::Runner] The resulting `Runner`.
     #
     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def self.parse!(argv)
 
       # A new, empty instance of a Runner.
@@ -27,7 +28,7 @@ module Marvin
         end
 
         # Just straight string input of the source code.
-        opts.on '-I', '--input input', String, 'Source code passed straight in' do |i|
+        opts.on '-I', '--input input', String, 'Source code passed in' do |i|
           runner.source = i
         end
 
