@@ -24,5 +24,5 @@ RSpec.configure do |config|
 end
 
 def test_source
-  File.read('./spec/fixtures/test-declaration.txt')
+  File.read('./spec/fixtures/test.txt')
 end

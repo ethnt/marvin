@@ -6,8 +6,8 @@ module Marvin
 
     # Creates a new Parser with a given Lexer and configuration.
     #
-    # @param [[Marvin::Token]] tokens A bunch of tokens.
-    # @param [Marvin::Configuration] configuration Configuration instance.
+    # @param [Array<Marvin::Token>] tokens A bunch of tokens.
+    # @param [Marvin::Configuration] config Configuration instance.
     # @return [Marvin::Parser] An un-run parser.
     def initialize(tokens, config = Marvin::Configuration.new)
       @tokens = tokens
@@ -29,14 +29,15 @@ module Marvin
       true
     end
 
-    protected
+    private
 
     # Checks whether or not the current token matches the expected kind.
-    # TODO: Argument on whether or not to fail out
     #
     # @param [Symbol] kind The expected kind.
     # @param [Boolean] fail_out Whether or not to fail out if we don't find a
     #                           match.
+    # @param [Boolean] advance Whether or not to advance the pointer if a match
+    #                          is found.
     # @return [Boolean] Whether or not the kind matches.
     def match?(kind, fail_out: true, advance: true)
 
@@ -46,7 +47,7 @@ module Marvin
 
         true
       else
-        fail Marvin::ParserError.new(current_token, kind) if fail_out
+        fail Marvin::Error::ParserError.new(current_token, kind) if fail_out
 
         false
       end
@@ -106,15 +107,15 @@ module Marvin
     def parse_statement_list!
       @config.logger.info('  Parsing statement list...')
 
-      if match_any?([:print, :char, :type, :while, :if_statement, :block_start], fail_out: false, advance: false)
+      kinds = [:print, :char, :type, :while, :if_statement, :block_start]
+
+      if match_any?(kinds, fail_out: false, advance: false)
         parse_statement!
         parse_statement_list!
       elsif match?(:block_end, fail_out: false, advance: false)
         true
       else
-        false
-
-        fail Marvin::ParserError.new(current_token.kind, :statement)
+        fail Marvin::Error::ParserError.new(current_token.kind, kinds)
       end
     end
 
@@ -130,28 +131,30 @@ module Marvin
       @config.logger.info('  Parsing statement...')
 
       if match?(:print, fail_out: false, advance: false)
-        parse_print_statement!
+        return parse_print_statement!
       end
 
       if match?(:char, fail_out: false, advance: false)
-        parse_assignment_statement!
+        return parse_assignment_statement!
       end
 
       if match?(:type, fail_out: false, advance: false)
-        parse_var_decl!
+        return parse_var_decl!
       end
 
       if match?(:while, fail_out: false, advance: false)
-        parse_while_statement!
+        return parse_while_statement!
       end
 
       if match?(:if_statement, fail_out: false, advance: false)
-        parse_if_statement!
+        return parse_if_statement!
       end
 
       if match?(:block_begin, fail_out: false, advance: false)
-        parse_block!
+        return parse_block!
       end
+
+      fail Marvin::Error::ParserError.new(token, [:print, :char, :type, :while, :if_statement, :block_begin])
     end
 
     # Parses a print statement.
@@ -240,9 +243,7 @@ module Marvin
 
       match?(:digit)
 
-      if match?(:intop, fail_out: false)
-        return parse_expr!
-      end
+      return parse_expr! if match?(:intop, fail_out: false)
     end
 
     # Parses a string expression.
@@ -272,11 +273,11 @@ module Marvin
       end
     end
 
-    # Parses an ID.
+    # Parses an identifier.
     #
     #   Id ::== char
     def parse_id!
-      @config.logger.info('  Parsing ID...')
+      @config.logger.info('  Parsing identifier...')
 
       match?(:char)
     end

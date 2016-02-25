@@ -11,7 +11,7 @@ module Marvin
     # Creates a new Lexer with a given source code and config.
     #
     # @param [String] source Source code.
-    # @param [Marvin::config] config config instance.
+    # @param [Marvin::Configuration] config config instance.
     # @return [Marvin::Lexer] An un-run lexer.
     def initialize(source, config = Marvin::Configuration.new)
       @scanner = StringScanner.new(source)
@@ -84,6 +84,8 @@ module Marvin
       # Check, please!
       @tokens
     end
+
+    private
 
     # Get the line from the overall character number.
     #
