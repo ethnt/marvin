@@ -12,7 +12,7 @@ module Marvin
       boolval: /(true|false)/,
       boolop: /(==|!=)/,
       intop: /\+/,
-      string: /"([^"]*)"/,
+      string: /"([a-z\S'^"]*)"/,
       print: /(print)/,
       if_statement: /(if)/,
       while: /(while)/,
