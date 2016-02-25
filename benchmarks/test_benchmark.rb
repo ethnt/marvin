@@ -4,13 +4,20 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'marvin'
 
-iterations = 100
+iterations = 1_000
 
 Benchmark.bm(27) do |bm|
   bm.report('lexer') do
     iterations.times do
-      runner = Marvin::Lexer.new(File.read('spec/fixtures/test-declaration.txt'))
+      runner = Marvin::Lexer.new(File.read('spec/fixtures/test.txt'))
       runner.lex!
+    end
+  end
+
+  tokens = Marvin::Lexer.new(File.read('spec/fixtures/test.txt')).lex!
+  bm.report('parser') do
+    iterations.times do
+      runner = Marvin::Parser.new(tokens).parse!
     end
   end
 end
