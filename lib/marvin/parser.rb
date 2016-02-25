@@ -22,6 +22,10 @@ module Marvin
 
       @config.logger.info('Parsing...')
 
+      if @tokens.empty?
+        fail Marvin::Error::ParseError.new(Marvin::Token.new('', :empty), :block_start)
+      end
+
       parse_program!
 
       @config.logger.info("Parse completed successfully.\n\n")
