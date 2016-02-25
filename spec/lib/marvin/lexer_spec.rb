@@ -16,7 +16,6 @@ describe Marvin::Lexer do
 
     it 'creates some tokens' do
       result = [
-
         :block_begin,
         :type,
         :char,

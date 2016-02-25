@@ -117,6 +117,12 @@ Marvin uses [YARD](https://github.com/lsegal/yard) for documentation:
 $ bundle exec rake yard
 ```
 
+By default, it will output the documentation to `../marvin-docs`. To change this, pass `--output-dir`:
+
+```
+$ bundle exec rake yard --output-dir doc/
+```
+
 ### Running the code analyzer
 
 Marvin uses the [Rubocop](https://github.com/bbatsov/rubocop) code analyzer to check the codebase against the Ruby best practices. You can call it with rake:

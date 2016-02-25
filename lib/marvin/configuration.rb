@@ -7,7 +7,7 @@ module Marvin
     # Contains all of the different setting options. Each symbol in this array
     # is accessible through getters and setters, but also a method to check if
     # the value is set or not.
-    SETTINGS = [:logger].freeze
+    SETTINGS = [:logger, :verbose].freeze
 
     # For each setting in `SETTINGS`, we're going to set an attribute accessor
     # and define a method to check and see if that setting has a value.
@@ -26,6 +26,14 @@ module Marvin
     # @return [Marvin::Configuration] A default configuration instance.
     def initialize
       @logger = Marvin::Logger.new
+    end
+
+    # Sets the verbosity level.
+    #
+    # @param [Boolean] val Whether verbosity should be turned on or not.
+    # @return [Boolean] The value back to you.
+    def verbose=(val)
+      @logger.verbose = val
     end
   end
 end

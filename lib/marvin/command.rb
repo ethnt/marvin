@@ -31,8 +31,12 @@ module Marvin
           runner.source = i
         end
 
+        opts.on '-v', '--verbose', 'Turns on verbose logging' do |v|
+          runner.config.verbose = v if v
+        end
+
         # Prints the version number and exits.
-        opts.on '-v', '--version', 'Prints the version number' do
+        opts.on '', '--version', 'Prints the version number' do
           puts "marvin #{Marvin::VERSION}"
 
           exit
