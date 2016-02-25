@@ -6,24 +6,24 @@ module Marvin
 
   # The Lexer will search through the source code for Tokens.
   class Lexer
-    attr_accessor :tokens, :configuration
+    attr_accessor :tokens, :config
 
-    # Creates a new Lexer with a given source code and configuration.
+    # Creates a new Lexer with a given source code and config.
     #
     # @param [String] source Source code.
-    # @param [Marvin::Configuration] configuration Configuration instance.
+    # @param [Marvin::config] config config instance.
     # @return [Marvin::Lexer] An un-run lexer.
-    def initialize(source, configuration = Marvin::Configuration.new)
+    def initialize(source, config = Marvin::Configuration.new)
       @scanner = StringScanner.new(source)
       @tokens = []
-      @configuration = configuration
+      @config = config
     end
 
     # Run the actual lexer.
     #
     # @return [[Marvin::Token]] An Array of Tokens from the source code.
     def lex!
-      # @configuration.logger.info 'Tokenizing...'
+      @config.logger.info 'Lexing...'
 
       # Continue until we reach the end of the string.
       until @scanner.eos?
@@ -69,7 +69,7 @@ module Marvin
         if token
           @scanner.pos = @scanner.pos + token.lexeme.length
           @tokens << token
-          # @configuration.logger.info("  #{token}")
+          @config.logger.info("  #{token}")
 
         # Otherwise, just advance by one.
         else
@@ -79,7 +79,7 @@ module Marvin
         next
       end
 
-      # @configuration.logger.info "Found #{@tokens.count} tokens.\n\n"
+      @config.logger.info "Found #{@tokens.count} tokens.\n\n"
 
       # Check, please!
       @tokens

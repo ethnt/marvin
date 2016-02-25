@@ -40,7 +40,7 @@ module Marvin
 
     # The message for the error.
     def message
-      "Expected #{@kind.to_s.upcase}, found #{@token.kind.to_s.upcase} on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}"
+      "Expected #{@kind.to_s.upcase}, found #{@token.kind.to_s.upcase} \"#{@token.lexeme}\" on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}"
     end
   end
 end

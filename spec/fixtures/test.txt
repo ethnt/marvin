@@ -1,1 +1,9 @@
-{ print(1) } $
+{
+print("dans compiler is awesome")
+}$
+{
+print("compilers is so much fun")
+}$
+{
+print("compilers is so much fun")
+}$
