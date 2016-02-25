@@ -47,7 +47,7 @@ module Marvin
 
         true
       else
-        fail Marvin::Error::ParserError.new(current_token, kind) if fail_out
+        fail Marvin::Error::ParseError.new(current_token, kind) if fail_out
 
         false
       end
@@ -115,7 +115,7 @@ module Marvin
       elsif match?(:block_end, fail_out: false, advance: false)
         true
       else
-        fail Marvin::Error::ParserError.new(current_token.kind, kinds)
+        fail Marvin::Error::ParseError.new(current_token, kinds)
       end
     end
 
@@ -154,7 +154,7 @@ module Marvin
         return parse_block!
       end
 
-      fail Marvin::Error::ParserError.new(token, [:print, :char, :type, :while, :if_statement, :block_begin])
+      fail Marvin::Error::ParseError.new(token, [:print, :char, :type, :while, :if_statement, :block_begin])
     end
 
     # Parses a print statement.

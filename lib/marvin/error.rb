@@ -4,7 +4,7 @@ module Marvin
   module Error
 
     # A Parser error.
-    class ParserError < StandardError
+    class ParseError < StandardError
 
       # Creates a new Lexer error.
       #
