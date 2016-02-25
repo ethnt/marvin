@@ -3,7 +3,7 @@
   x = 1
 
   if true {
-    print("print '' string")
+    print("string")
   }
 
   while (x!=5) {
