@@ -26,7 +26,11 @@ module Marvin
         fail Marvin::Error::ParseError.new(Marvin::Token.new('', :empty), :block_start)
       end
 
-      parse_program!
+      # Get on your flip-flops! Going to parse until we're at the end of the
+      # tokens (flip-flops are used in 1 out of every 10m lines of Ruby).
+      if @counter == 0 .. @tokens.length
+        parse_program!
+      end
 
       @config.logger.info("Parse completed successfully.\n\n")
 
@@ -90,9 +94,9 @@ module Marvin
 
       # If there are more tokens, that means there is more than one program in
       # this file.
-      if current_token
-        parse_program!
-      end
+      # if current_token
+      #   parse_program!
+      # end
     end
 
     # Parses a block.
