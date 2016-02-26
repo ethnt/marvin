@@ -49,6 +49,9 @@ module Marvin
         next
       end
 
+      # Fix some small stuff.
+      fix_small_errors!
+
       @config.logger.info "Found #{@tokens.count} tokens.\n\n"
 
       # Check, please!
@@ -94,6 +97,20 @@ module Marvin
       end
 
       token
+    end
+
+    # Fixes some small errors.
+    #
+    # @return [nil]
+    def fix_small_errors!
+      if @tokens.last.kind != :program_end
+        line = @tokens.last.attributes[:line]
+        char = @tokens.last.attributes[:char] + 1
+
+        @tokens << Marvin::Token.new('$', :program_end, { line: line, char: char })
+
+        @config.logger.warning('Missing ending $, adding.')
+      end
     end
 
     # Get the line from the overall character number.
