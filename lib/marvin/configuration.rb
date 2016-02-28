@@ -9,7 +9,7 @@ module Marvin
     # the value is set or not.
     SETTINGS = [:logger, :verbose].freeze
 
-    # For each setting in `SETTINGS`, we're going to set an attribute accessor
+    # For each setting in +SETTINGS+, we're going to set an attribute accessor
     # and define a method to check and see if that setting has a value.
     SETTINGS.each do |setting|
       attr_accessor setting

@@ -21,7 +21,7 @@ module Marvin
 
     # Run the actual lexer.
     #
-    # @return [[Marvin::Token]] An Array of Tokens from the source code.
+    # @return [Array<Marvin::Token>] An Array of Tokens from the source code.
     def lex!
       @config.logger.info 'Lexing...'
 

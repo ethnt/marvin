@@ -9,7 +9,7 @@ module Marvin
     # allows for access to the Runner (the main event) from the command line.
     #
     # @param [Array] argv Options that are from the command line.
-    # @return [Marvin::Runner] The resulting `Runner`.
+    # @return [Marvin::Runner] The resulting +Runner+.
     #
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize

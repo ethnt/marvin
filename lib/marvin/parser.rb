@@ -63,7 +63,7 @@ module Marvin
 
     # Match against one of the given kinds.
     #
-    # @param [[Symbol]] kinds The expected kinds to match against.
+    # @param [Array<Symbol>] kinds The expected kinds to match against.
     #
     # @return [Boolean] Whether one of the kinds match.
     def match_any?(kinds, fail_out: false, advance: false)
