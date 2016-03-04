@@ -1,7 +1,5 @@
 require 'strscan'
 
-require_relative 'lexer/token'
-
 module Marvin
 
   # The Lexer will search through the source code for Tokens.

@@ -5,10 +5,8 @@ require_relative 'marvin/command'
 require_relative 'marvin/logger'
 require_relative 'marvin/error'
 
-require_relative 'marvin/tree'
-require_relative 'marvin/node'
-
 require_relative 'marvin/grammar'
+require_relative 'marvin/token'
 require_relative 'marvin/lexer'
 require_relative 'marvin/parser'
 
