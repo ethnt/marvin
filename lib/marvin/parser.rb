@@ -58,7 +58,7 @@ module Marvin
       if current_token.kind == kind
         if advance
           if parent_node
-            parent_node << Marvin::Node.new(current_token.key, current_token)
+            parent_node << Marvin::Node.new(current_token)
           end
 
           @counter += 1
@@ -100,7 +100,7 @@ module Marvin
     def parse_program!
       @config.logger.info('  Parsing program...')
 
-      program_node = Marvin::Node.new(self.hash.to_s, 'program')
+      program_node = Marvin::Node.new('<Program>')
 
       @cst.root = program_node
 
@@ -122,7 +122,7 @@ module Marvin
     def parse_block!(parent_node)
       @config.logger.info('  Parsing block...')
 
-      block_node = Marvin::Node.new(parent_node.hash.to_s, 'block')
+      block_node = Marvin::Node.new('<Block>')
 
       parent_node << block_node
 
@@ -200,7 +200,7 @@ module Marvin
     def parse_print_statement!(parent_node)
       @config.logger.info('  Parsing print statement...')
 
-      print_node = Marvin::Node.new("#{parent_node}:print".hash.to_s, 'print')
+      print_node = Marvin::Node.new('<Print>')
 
       parent_node << print_node
 
@@ -216,7 +216,7 @@ module Marvin
     def parse_assignment_statement!(parent_node)
       @config.logger.info('  Parsing assignment statement...')
 
-      assignment_node = Marvin::Node.new("#{parent_node}:assignment".hash.to_s, 'assignment')
+      assignment_node = Marvin::Node.new('<Assignment>')
       parent_node << assignment_node
 
       parse_id!(assignment_node)
@@ -230,7 +230,7 @@ module Marvin
     def parse_var_decl!(parent_node)
       @config.logger.info('  Parsing variable declaration...')
 
-      var_decl_node = Marvin::Node.new("#{parent_node}:vrbl".hash.to_s, 'variable declaration')
+      var_decl_node = Marvin::Node.new('<VariableDeclaration>')
       parent_node << var_decl_node
 
       match?(:type, var_decl_node)
@@ -243,7 +243,7 @@ module Marvin
     def parse_while_statement!(parent_node)
       @config.logger.info('  Parsing while statement...')
 
-      while_node = Marvin::Node.new("#{parent_node}:while".hash.to_s, 'while')
+      while_node = Marvin::Node.new('<WhileStatement>')
       parent_node << while_node
 
       match?(:while, while_node)
@@ -255,9 +255,9 @@ module Marvin
     #
     #   IfStatement ::== if BooleanExpr Block
     def parse_if_statement!(parent_node)
-      @config.logger.info('  Parsing while statement...')
+      @config.logger.info('  Parsing if statement...')
 
-      if_node = Marvin::Node.new("#{parent_node}:if".hash.to_s, 'if')
+      if_node = Marvin::Node.new('<IfStatement>')
       parent_node << if_node
 
       match?(:if_statement, if_node)

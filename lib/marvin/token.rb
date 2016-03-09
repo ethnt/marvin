@@ -5,7 +5,7 @@ module Marvin
   # A Token is a lexeme in the source code, with attached type and other
   # information.
   class Token
-    attr_accessor :lexeme, :kind, :attributes, :key
+    attr_accessor :lexeme, :kind, :attributes
 
     # Creates a new Token.
     #
@@ -17,7 +17,6 @@ module Marvin
       @lexeme = lexeme
       @kind = kind
       @attributes = attributes
-      @key = hash.to_s
     end
 
     # Checks the equality of two Tokens.
