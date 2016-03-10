@@ -36,6 +36,8 @@ module Marvin
         parse_program!
       end
 
+      @config.logger.info(@cst.print_tree)
+
       @config.logger.info("Parse completed successfully.\n\n")
 
       true
