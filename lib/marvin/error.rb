@@ -23,7 +23,7 @@ module Marvin
         @kind = @kind.map(&:to_s).join(' or ') if @kind.is_a?(Array)
 
         # rubocop:disable Metrics/LineLength
-        "Expected #{kind_str}, found #{@token.kind} \"#{@token.lexeme}\" on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}"
+        "Expected #{@kind}, found #{@token.kind} \"#{@token.lexeme}\" on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}"
       end
     end
   end
