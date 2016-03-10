@@ -117,9 +117,9 @@ module Marvin
     def parse_statement_list!
       @config.logger.info('  Parsing statement list...')
 
-      kinds = [:print, :char, :type, :while, :if_statement, :block_start]
+      kinds = [:print, :char, :type, :while, :if_statement, :block_begin]
 
-      if match_any?(kinds, fail_out: false, advance: false)
+      if match_any?(kinds)
         parse_statement!
         parse_statement_list!
       elsif match?(:block_end, fail_out: false, advance: false)
