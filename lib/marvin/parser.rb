@@ -143,8 +143,12 @@ module Marvin
       kinds = [:print, :char, :type, :while, :if_statement, :block_begin]
 
       if match_any?(kinds)
-        parse_statement!
-        parse_statement_list!
+        statement_list_node = Marvin::Node.new('<StatementList>')
+
+        parent_node << statement_list_node
+
+        parse_statement!(statement_list_node)
+        parse_statement_list!(statement_list_node)
       elsif match?(:block_end, fail_out: false, advance: false)
         true
       else
