@@ -64,7 +64,14 @@ $ git clone https://github.com/eturk/marvin.git
 $ cd marvin/
 ```
 
-Next, use Bundler to install all of the RubyGem dependencies:
+Now, install Bundler:
+
+```
+$ gem install bundler
+$ rbenv rehash
+```
+
+Finally, use Bundler to install all of the RubyGem dependencies:
 
 ```
 $ bundle install
