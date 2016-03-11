@@ -8,7 +8,7 @@ module Marvin
       block_begin: /({)/,
       block_end: /(})/,
       type: /(int|string|boolean)/,
-      digit: /(\d+)/,
+      digit: /(\d)/,
       boolval: /(true|false)/,
       boolop: /(==|!=)/,
       intop: /\+/,
