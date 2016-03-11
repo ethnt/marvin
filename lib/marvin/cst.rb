@@ -6,7 +6,7 @@ module Marvin
 
     # Create a new CST with a root.
     #
-    # @param [Marvin::Node, nil] A root node, usually a program.
+    # @param [Marvin::Node, nil] root A root node, usually a program.
     # @return [Marvin::CST] This CST.
     def initialize(root = nil)
       @root = root

@@ -55,7 +55,6 @@ module Marvin
     #                          is found.
     # @return [Boolean] Whether or not the kind matches.
     def match?(kind, parent_node = nil, fail_out: true, advance: true)
-
       # We have a match.
       if current_token.kind == kind
         if advance
@@ -99,6 +98,8 @@ module Marvin
     # Parses a program.
     #
     #   Program ::= Block $
+    #
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_program!
       @config.logger.info('  Parsing program...')
 
@@ -121,6 +122,7 @@ module Marvin
     #   Block ::= { StatementList }
     #
     # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_block!(parent_node)
       @config.logger.info('  Parsing block...')
 
@@ -139,6 +141,7 @@ module Marvin
     #                 ::= ε
     #
     # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_statement_list!(parent_node)
       @config.logger.info('  Parsing statement list...')
 
@@ -168,6 +171,7 @@ module Marvin
     #             ::== Block
     #
     # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_statement!(parent_node)
       @config.logger.info('  Parsing statement...')
 
@@ -203,6 +207,7 @@ module Marvin
     #   PrintStatement ::== print ( Expr )
     #
     # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_print_statement!(parent_node)
       @config.logger.info('  Parsing print statement...')
 
@@ -219,6 +224,9 @@ module Marvin
     # Parses an assignment statement.
     #
     #   AssignmentStatement ::== Id = Expr
+    #
+    # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_assignment_statement!(parent_node)
       @config.logger.info('  Parsing assignment statement...')
 
@@ -233,6 +241,9 @@ module Marvin
     # Parses a variable declaration.
     #
     #   VarDecl ::== type Id
+    #
+    # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_var_decl!(parent_node)
       @config.logger.info('  Parsing variable declaration...')
 
@@ -246,6 +257,9 @@ module Marvin
     # Parses a while statement.
     #
     #   WhileStatement ::== while BooleanExpr Block
+    #
+    # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_while_statement!(parent_node)
       @config.logger.info('  Parsing while statement...')
 
@@ -260,6 +274,9 @@ module Marvin
     # Parses an if statement.
     #
     #   IfStatement ::== if BooleanExpr Block
+    #
+    # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_if_statement!(parent_node)
       @config.logger.info('  Parsing if statement...')
 
@@ -277,6 +294,9 @@ module Marvin
     #        ::== StringExpr
     #        ::== BooleanExpr
     #        ::== Id
+    #
+    # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_expr!(parent_node)
       @config.logger.info('  Parsing expression...')
 
@@ -297,6 +317,9 @@ module Marvin
     #
     #   IntExpr ::== digit intop Expr
     #           ::== digit
+    #
+    # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_int_expr!(parent_node)
       @config.logger.info('  Parsing integer expression...')
 
@@ -308,6 +331,9 @@ module Marvin
     # Parses a string expression.
     #
     #   StringExpr ::= " CharList "
+    #
+    # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_string_expr!(parent_node)
       @config.logger.info('  Parsing string expression...')
 
@@ -318,6 +344,9 @@ module Marvin
     #
     #   BooleanExpr ::= ( Expr boolop Expr )
     #               ::= boolval
+    #
+    # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_boolean_expr!(parent_node)
       @config.logger.info('  Parsing boolean expression...')
 
@@ -335,6 +364,9 @@ module Marvin
     # Parses an identifier.
     #
     #   Id ::== char
+    #
+    # @param [Marvin::Node] parent_node The parent node.
+    # @return [Boolean] Whether this parsing succeeds.
     def parse_id!(parent_node)
       @config.logger.info('  Parsing identifier...')
 
