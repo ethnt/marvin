@@ -48,6 +48,14 @@ describe Marvin::Lexer do
         :char,
         :block_end,
         :block_end,
+        :program_end,
+        :block_begin,
+        :type,
+        :char,
+        :char,
+        :assignment,
+        :digit,
+        :block_end,
         :program_end
       ]
 
