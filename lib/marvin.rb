@@ -9,6 +9,7 @@ require_relative 'marvin/grammar'
 require_relative 'marvin/token'
 require_relative 'marvin/lexer'
 require_relative 'marvin/node'
+require_relative 'marvin/cst'
 require_relative 'marvin/parser'
 
 # This module contains all of the classes belonging to Marvin.

@@ -9,6 +9,10 @@ describe Marvin::Parser do
       it 'parses the input successfully' do
         expect(parser.parse!).to be_truthy
       end
+
+      it 'creates a CST' do
+        expect(parser.cst).to_not be_nil
+      end
     end
 
     context 'with invalid input' do
