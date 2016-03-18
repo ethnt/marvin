@@ -39,9 +39,9 @@ module Marvin
           @tokens << token
           @config.logger.info("  #{token}")
 
-        # Otherwise, just advance by one.
+        # Otherwise, we error out!
         else
-          @scanner.pos += 1
+          fail Marvin::Error::LexerError.new(@scanner.getch)
         end
 
         next

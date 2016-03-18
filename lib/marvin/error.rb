@@ -3,14 +3,33 @@ module Marvin
   # Namespacing all of the error types together.
   module Error
 
-    # A Parser error.
-    class ParseError < StandardError
+    # A Lexer error.
+    class LexerError < StandardError
 
       # Creates a new Lexer error.
       #
+      # @param [String] str The string where we're having issues.
+      # @return [Marvin::LexerError] The error.
+      def initialize(str)
+        @str = str
+      end
+
+      # The message for the error.
+      #
+      # @return [String] Says where the issue was.
+      def message
+        "Unexpected non-token character \"#{@str}\"."
+      end
+    end
+
+    # A Parser error.
+    class ParseError < StandardError
+
+      # Creates a new Parser error.
+      #
       # @param [Marvin::Token] token The token we're having issues with.
       # @param [Symbol, Array<Symbol>] kind The kind (or kinds) expected.
-      # @return [Marvin::Error] The error.
+      # @return [Marvin::ParserError] The error.
       def initialize(token, kind)
         @token = token
         @kind = kind

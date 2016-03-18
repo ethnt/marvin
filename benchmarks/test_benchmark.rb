@@ -17,7 +17,8 @@ Benchmark.bm(27) do |bm|
   tokens = Marvin::Lexer.new(File.read('spec/fixtures/test.txt')).lex!
   bm.report('parser') do
     iterations.times do
-      runner = Marvin::Parser.new(tokens).parse!
+      runner = Marvin::Parser.new(tokens)
+      runner.parse!
     end
   end
 end
