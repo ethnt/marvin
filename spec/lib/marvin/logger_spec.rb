@@ -21,7 +21,7 @@ describe Marvin::Logger do
     let(:warning) { logger.warning('foo') }
 
     it 'outputs to $stdout' do
-      expect { warning }.to output("warning: foo\n").to_stdout
+      expect { warning }.to output("\e[33m  warning: foo\e[0m\n").to_stdout
     end
 
     it 'logs the warning' do

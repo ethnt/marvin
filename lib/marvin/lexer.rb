@@ -41,7 +41,7 @@ module Marvin
 
         # Otherwise, we error out!
         else
-          fail Marvin::Error::LexerError.new(@scanner.getch)
+          return Marvin::Error::LexerError.new(@scanner.getch)
         end
 
         next

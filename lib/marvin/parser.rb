@@ -27,7 +27,7 @@ module Marvin
       @config.logger.info('Parsing...')
 
       if @tokens.empty?
-        fail Marvin::Error::ParseError.new(Marvin::Token.new('', :empty), :block_start)
+        return Marvin::Error::ParseError.new(Marvin::Token.new('', :empty), :block_start)
       end
 
       # Get on your flip-flops! Going to parse until we're at the end of the
@@ -52,7 +52,7 @@ module Marvin
     #
     # @param [Symbol] kind The expected kind.
     # @param [Marvin::Node] parent_node The current parent node.
-    # @param [Boolean] fail_out Whether or not to fail out if we don't find a
+    # @param [Boolean] fail_out Whether or not to return out if we don't find a
     #                           match.
     # @param [Boolean] advance Whether or not to advance the pointer if a match
     #                          is found.
@@ -70,7 +70,7 @@ module Marvin
 
         true
       else
-        fail Marvin::Error::ParseError.new(current_token, kind) if fail_out
+        return Marvin::Error::ParseError.new(current_token, kind) if fail_out
 
         false
       end
@@ -160,7 +160,7 @@ module Marvin
       elsif match?(:block_end, fail_out: false, advance: false)
         true
       else
-        fail Marvin::Error::ParseError.new(current_token, kinds)
+        return Marvin::Error::ParseError.new(current_token, kinds)
       end
     end
 
@@ -202,7 +202,7 @@ module Marvin
         return parse_block!(parent_node)
       end
 
-      fail Marvin::Error::ParseError.new(token, [:print, :char, :type, :while, :if_statement, :block_begin])
+      return Marvin::Error::ParseError.new(token, [:print, :char, :type, :while, :if_statement, :block_begin])
     end
 
     # Parses a print statement.
@@ -312,7 +312,7 @@ module Marvin
       elsif match?(:char, fail_out: false, advance: false)
         parse_id!(parent_node)
       else
-        fail
+
       end
     end
 

@@ -1,10 +1,12 @@
+require 'pastel'
+
 module Marvin
 
   # Namespacing all of the error types together.
   module Error
 
     # A Lexer error.
-    class LexerError < StandardError
+    class LexerError
 
       # Creates a new Lexer error.
       #
@@ -12,18 +14,15 @@ module Marvin
       # @return [Marvin::LexerError] The error.
       def initialize(str)
         @str = str
-      end
 
-      # The message for the error.
-      #
-      # @return [String] Says where the issue was.
-      def message
-        "Unexpected non-token character \"#{@str}\"."
+        $stderr.puts Pastel.new.white.on_red("Unexpected non-token character \"#{@str}\".")
+
+        exit
       end
     end
 
     # A Parser error.
-    class ParseError < StandardError
+    class ParseError
 
       # Creates a new Parser error.
       #
@@ -33,16 +32,13 @@ module Marvin
       def initialize(token, kind)
         @token = token
         @kind = kind
-      end
 
-      # The message for the error.
-      #
-      # @return [String] Says what was expected and what was given where.
-      def message
         @kind = @kind.map(&:to_s).join(' or ') if @kind.is_a?(Array)
 
         # rubocop:disable Metrics/LineLength
-        "Expected #{@kind}, found #{@token.kind} \"#{@token.lexeme}\" on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}"
+        $stderr.puts Pastel.new.white.on_red("Fatal error: expected #{@kind}, found #{@token.kind} \"#{@token.lexeme}\" on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}")
+
+        exit
       end
     end
   end

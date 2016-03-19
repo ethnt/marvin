@@ -20,7 +20,7 @@ describe Marvin::Parser do
       let(:bad_parser) { Marvin::Parser.new(bad_tokens) }
 
       it 'fail with a parse error' do
-        expect { bad_parser.parse! }.to raise_error Marvin::Error::ParseError
+        expect { bad_parser.parse! }.to raise_error(SystemExit)
       end
     end
   end

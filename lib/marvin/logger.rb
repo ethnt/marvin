@@ -1,3 +1,5 @@
+require 'pastel'
+
 module Marvin
 
   # Logger is responsible for outputting errors and warnings.
@@ -33,21 +35,9 @@ module Marvin
     def warning(text)
       @warnings.push(text)
 
-      destination.puts "warning: #{text}"
+      destination.puts Pastel.new.yellow("  warning: #{text}")
 
       text
-    end
-
-    # Creates a new error and quits.
-    #
-    # @param [String] text The error text.
-    # @return [String] The error text back to you.
-    def error(text)
-      @errors.push(text)
-
-      destination.puts text
-
-      exit(-1)
     end
   end
 end
