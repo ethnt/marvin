@@ -4,17 +4,19 @@ module Marvin
 
   # The Parser will verify the syntax of the found Tokens.
   class Parser
-    attr_accessor :tokens, :cst, :config
+    attr_accessor :tokens, :cst, :ast, :config
 
     # Creates a new Parser with a given Lexer and configuration.
     #
     # @param [Array<Marvin::Token>] tokens A bunch of tokens.
     # @param [Marvin::CST] cst A CST.
+    # @param [Marvin::AST] ast An AST.
     # @param [Marvin::Configuration] config Configuration instance.
     # @return [Marvin::Parser] An un-run parser.
-    def initialize(tokens, cst = Marvin::CST.new, config = Marvin::Configuration.new)
+    def initialize(tokens, cst = Marvin::CST.new, ast = Marvin::AST.new, config = Marvin::Configuration.new)
       @tokens = tokens
       @cst    = cst
+      @ast    = ast
       @config = config
     end
 
@@ -39,6 +41,9 @@ module Marvin
       if @config.logger.verbose
         @config.logger.info("\n")
         @config.logger.info(@cst.print_tree)
+
+        @config.logger.info("\n")
+        @config.logger.info(@ast.print_tree)
       end
 
       @config.logger.info("Parse completed successfully.\n\n")
@@ -57,13 +62,12 @@ module Marvin
     # @param [Boolean] advance Whether or not to advance the pointer if a match
     #                          is found.
     # @return [Boolean] Whether or not the kind matches.
-    def match?(kind, parent_node = nil, fail_out: true, advance: true)
+    def match?(kind, cst_node: nil, ast_node: nil, fail_out: true, advance: true)
       # We have a match.
       if current_token.kind == kind
         if advance
-          if parent_node
-            parent_node << Marvin::Node.new(current_token)
-          end
+          cst_node << Marvin::Node.new(current_token) if cst_node
+          ast_node << Marvin::Node.new(current_token) if ast_node
 
           @counter += 1
         end
@@ -106,12 +110,14 @@ module Marvin
     def parse_program!
       @config.logger.info('  Parsing program...')
 
-      program_node = Marvin::Node.new('<Program>')
+      cst_program_node = Marvin::Node.new('<Program>')
+      ast_program_node = Marvin::Node.new('<Program>')
 
-      @cst.root = program_node
+      @cst.root = cst_program_node
+      @ast.root = ast_program_node
 
-      parse_block!(program_node)
-      match?(:program_end, program_node)
+      parse_block!(cst_program_node, ast_program_node)
+      match?(:program_end, cst_node: cst_program_node, ast_node: ast_program_node)
 
       # If there are more tokens, that means there is more than one program in
       # this file.
@@ -126,16 +132,18 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_block!(parent_node)
+    def parse_block!(cst_node, ast_node)
       @config.logger.info('  Parsing block...')
 
-      block_node = Marvin::Node.new('<Block>')
+      cst_block_node = Marvin::Node.new('<Block>')
+      ast_block_node = Marvin::Node.new('<Block>')
 
-      parent_node << block_node
+      cst_node << cst_block_node
+      ast_node << ast_block_node
 
-      match?(:block_begin, block_node)
-      parse_statement_list!(block_node)
-      match?(:block_end, block_node)
+      match?(:block_begin, cst_node: cst_block_node)
+      parse_statement_list!(cst_block_node, ast_block_node)
+      match?(:block_end, cst_node: cst_block_node)
     end
 
     # Parses a statement list.
@@ -145,18 +153,18 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_statement_list!(parent_node)
+    def parse_statement_list!(cst_node, ast_node)
       @config.logger.info('  Parsing statement list...')
 
       kinds = [:print, :char, :type, :while, :if_statement, :block_begin]
 
       if match_any?(kinds)
-        statement_list_node = Marvin::Node.new('<StatementList>')
+        cst_statement_list_node = Marvin::Node.new('<StatementList>')
 
-        parent_node << statement_list_node
+        cst_node << cst_statement_list_node
 
-        parse_statement!(statement_list_node)
-        parse_statement_list!(statement_list_node)
+        parse_statement!(cst_statement_list_node, ast_node)
+        parse_statement_list!(cst_statement_list_node, ast_node)
       elsif match?(:block_end, fail_out: false, advance: false)
         true
       else
@@ -175,31 +183,31 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_statement!(parent_node)
+    def parse_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing statement...')
 
       if match?(:print, fail_out: false, advance: false)
-        return parse_print_statement!(parent_node)
+        return parse_print_statement!(cst_node, ast_node)
       end
 
       if match?(:char, fail_out: false, advance: false)
-        return parse_assignment_statement!(parent_node)
+        return parse_assignment_statement!(cst_node, ast_node)
       end
 
       if match?(:type, fail_out: false, advance: false)
-        return parse_var_decl!(parent_node)
+        return parse_var_decl!(cst_node, ast_node)
       end
 
       if match?(:while, fail_out: false, advance: false)
-        return parse_while_statement!(parent_node)
+        return parse_while_statement!(cst_node, ast_node)
       end
 
       if match?(:if_statement, fail_out: false, advance: false)
-        return parse_if_statement!(parent_node)
+        return parse_if_statement!(cst_node, ast_node)
       end
 
       if match?(:block_begin, fail_out: false, advance: false)
-        return parse_block!(parent_node)
+        return parse_block!(cst_node, ast_node)
       end
 
       return Marvin::Error::ParseError.new(token, [:print, :char, :type, :while, :if_statement, :block_begin])
@@ -211,17 +219,19 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_print_statement!(parent_node)
+    def parse_print_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing print statement...')
 
-      print_node = Marvin::Node.new('<Print>')
+      cst_print_node = Marvin::Node.new('<Print>')
+      ast_print_node = Marvin::Node.new('<Print>')
 
-      parent_node << print_node
+      cst_node << cst_print_node
+      ast_node << ast_print_node
 
-      match?(:print, print_node, fail_out: false)
-      match?(:open_parenthesis, print_node, fail_out: false)
-      parse_expr!(print_node)
-      match?(:close_parenthesis, print_node, fail_out: false)
+      match?(:print, cst_node: cst_print_node, fail_out: false)
+      match?(:open_parenthesis, cst_node: cst_print_node, fail_out: false)
+      parse_expr!(cst_print_node, ast_print_node)
+      match?(:close_parenthesis, cst_node: cst_print_node, fail_out: false)
     end
 
     # Parses an assignment statement.
@@ -230,15 +240,18 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_assignment_statement!(parent_node)
+    def parse_assignment_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing assignment statement...')
 
-      assignment_node = Marvin::Node.new('<Assignment>')
-      parent_node << assignment_node
+      cst_assignment_node = Marvin::Node.new('<Assignment>')
+      ast_assignment_node = Marvin::Node.new('<Assignment>')
 
-      parse_id!(assignment_node)
-      match?(:assignment, assignment_node)
-      parse_expr!(assignment_node)
+      cst_node << cst_assignment_node
+      ast_node << ast_assignment_node
+
+      parse_id!(cst_assignment_node, ast_assignment_node)
+      match?(:assignment, cst_node: cst_assignment_node)
+      parse_expr!(cst_assignment_node, ast_assignment_node)
     end
 
     # Parses a variable declaration.
@@ -247,14 +260,17 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_var_decl!(parent_node)
+    def parse_var_decl!(cst_node, ast_node)
       @config.logger.info('  Parsing variable declaration...')
 
-      var_decl_node = Marvin::Node.new('<VariableDeclaration>')
-      parent_node << var_decl_node
+      cst_var_decl_node = Marvin::Node.new('<VariableDeclaration>')
+      ast_var_decl_node = Marvin::Node.new('<VariableDeclaration>')
 
-      match?(:type, var_decl_node)
-      parse_id!(var_decl_node)
+      cst_node << cst_var_decl_node
+      ast_node << ast_var_decl_node
+
+      match?(:type, cst_node: cst_var_decl_node, ast_node: ast_var_decl_node)
+      parse_id!(cst_var_decl_node, ast_var_decl_node)
     end
 
     # Parses a while statement.
@@ -263,15 +279,18 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_while_statement!(parent_node)
+    def parse_while_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing while statement...')
 
-      while_node = Marvin::Node.new('<WhileStatement>')
-      parent_node << while_node
+      cst_while_node = Marvin::Node.new('<WhileStatement>')
+      ast_while_node = Marvin::Node.new('<WhileStatement>')
 
-      match?(:while, while_node)
-      parse_boolean_expr!(while_node)
-      parse_block!(while_node)
+      cst_node << cst_while_node
+      ast_node << ast_while_node
+
+      match?(:while, cst_node: cst_while_node)
+      parse_boolean_expr!(cst_while_node, ast_while_node)
+      parse_block!(cst_while_node, ast_while_node)
     end
 
     # Parses an if statement.
@@ -280,15 +299,18 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_if_statement!(parent_node)
+    def parse_if_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing if statement...')
 
-      if_node = Marvin::Node.new('<IfStatement>')
-      parent_node << if_node
+      cst_if_node = Marvin::Node.new('<IfStatement>')
+      ast_if_node = Marvin::Node.new('<IfStatement>')
 
-      match?(:if_statement, if_node)
-      parse_boolean_expr!(if_node)
-      parse_block!(if_node)
+      cst_node << cst_if_node
+      ast_node << ast_if_node
+
+      match?(:if_statement, cst_node: cst_if_node)
+      parse_boolean_expr!(cst_if_node, ast_if_node)
+      parse_block!(cst_if_node, ast_if_node)
     end
 
     # Parses an expression.
@@ -300,17 +322,17 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_expr!(parent_node)
+    def parse_expr!(cst_node, ast_node)
       @config.logger.info('  Parsing expression...')
 
       if match?(:digit, fail_out: false, advance: false)
-        parse_int_expr!(parent_node)
+        parse_int_expr!(cst_node, ast_node)
       elsif match?(:string, fail_out: false, advance: false)
-        parse_string_expr!(parent_node)
+        parse_string_expr!(cst_node, ast_node)
       elsif match?(:boolval, fail_out: false, advance: false) || match?(:open_parenthesis, fail_out: false, advance: false)
-        parse_boolean_expr!(parent_node)
+        parse_boolean_expr!(cst_node, ast_node)
       elsif match?(:char, fail_out: false, advance: false)
-        parse_id!(parent_node)
+        parse_id!(cst_node, ast_node)
       else
 
       end
@@ -323,12 +345,12 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_int_expr!(parent_node)
+    def parse_int_expr!(cst_node, ast_node)
       @config.logger.info('  Parsing integer expression...')
 
-      match?(:digit, parent_node)
+      match?(:digit, cst_node: cst_node, ast_node: ast_node)
 
-      return parse_expr!(parent_node) if match?(:intop, fail_out: false)
+      return parse_expr!(cst_node, ast_node) if match?(:intop, fail_out: false)
     end
 
     # Parses a string expression.
@@ -337,10 +359,10 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_string_expr!(parent_node)
+    def parse_string_expr!(cst_node, ast_node)
       @config.logger.info('  Parsing string expression...')
 
-      match?(:string, parent_node)
+      match?(:string, cst_node: cst_node, ast_node: ast_node)
     end
 
     # Parses a boolean expression.
@@ -350,17 +372,17 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_boolean_expr!(parent_node)
+    def parse_boolean_expr!(cst_node, ast_node)
       @config.logger.info('  Parsing boolean expression...')
 
       if match?(:open_parenthesis, fail_out: false, advance: false)
-        match?(:open_parenthesis, parent_node)
-        parse_expr!(parent_node)
-        match?(:boolop, parent_node)
-        parse_expr!(parent_node)
-        match?(:close_parenthesis, parent_node)
+        match?(:open_parenthesis, cst_node: cst_node)
+        parse_expr!(cst_node, ast_node)
+        match?(:boolop, cst_node: cst_node, ast_node: ast_node)
+        parse_expr!(cst_node, ast_node)
+        match?(:close_parenthesis, cst_node: cst_node)
       else
-        match?(:boolval, parent_node)
+        match?(:boolval, cst_node: cst_node, ast_node: ast_node)
       end
     end
 
@@ -370,10 +392,10 @@ module Marvin
     #
     # @param [Marvin::Node] parent_node The parent node.
     # @return [Boolean] Whether this parsing succeeds.
-    def parse_id!(parent_node)
+    def parse_id!(cst_node, ast_node)
       @config.logger.info('  Parsing identifier...')
 
-      match?(:char, parent_node)
+      match?(:char, cst_node: cst_node, ast_node: ast_node)
     end
   end
 end
