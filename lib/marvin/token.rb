@@ -1,5 +1,3 @@
-require 'digest/md5'
-
 module Marvin
 
   # A Token is a lexeme in the source code, with attached type and other
