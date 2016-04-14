@@ -2,13 +2,21 @@
   int x
   x = 1
 
-  if true {
+  int z
+  z = 1
+
+  if (x == 0) {
     print("string")
+
+    boolean y
+    y = true
   }
 
   while (x!=5) {
     print(x)
     x = 1+x
+
+    z = 1
   }
 } $
 
