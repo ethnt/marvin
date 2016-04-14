@@ -281,7 +281,7 @@ module Marvin
       variable = find_variable!(current_token.lexeme, table_node)
 
       if variable == nil
-        @config.logger.warning("Uninitialized variable #{current_token.lexeme} on line #{current_token.attributes[:line]}, character #{current_token.attributes[:char]}.")
+        @config.logger.warning("Uninitialized identifier #{current_token.lexeme} on line #{current_token.attributes[:line]}, character #{current_token.attributes[:char]}.")
       end
 
       parse_id!(cst_assignment_node, ast_assignment_node, table_node)
