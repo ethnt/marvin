@@ -2,7 +2,7 @@
   int x
   x = 1
 
-  if true {
+  if (x == 0) {
     print("string")
   }
 

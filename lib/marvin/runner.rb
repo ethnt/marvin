@@ -22,7 +22,7 @@ module Marvin
       @lexer = Marvin::Lexer.new(@source, @config)
       @lexer.lex!
 
-      @parser = Marvin::Parser.new(@lexer.tokens, Marvin::CST.new, Marvin::AST.new, @config)
+      @parser = Marvin::Parser.new(@lexer.tokens, @config)
       @parser.parse!
 
       self
