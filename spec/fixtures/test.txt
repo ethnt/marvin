@@ -5,6 +5,8 @@
   int z
   z = 1
 
+  boolean f
+
   if (x == 0) {
     print("string")
 

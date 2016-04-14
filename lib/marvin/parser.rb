@@ -51,6 +51,14 @@ module Marvin
         @config.logger.info(@symbol_table.print_tree)
       end
 
+      @symbol_table.root.each do |node|
+        if node.is_a?(Marvin::Variable)
+          if node.content[:value].nil?
+            @config.logger.warning("Declared but unused identifier #{node.name} on line #{node.content[:tokens].first.attributes[:line]}, character #{node.content[:tokens].first.attributes[:char]}.")
+          end
+        end
+      end
+
       @config.logger.info("Parse completed successfully.\n\n")
 
       true
@@ -79,6 +87,9 @@ module Marvin
           if variable
             variable.rename(current_token.lexeme) if [:char].include?(current_token.kind)
             variable.content[:type] = current_token.lexeme if current_token.kind == :type
+
+            variable.content[:tokens] = [] unless variable.content[:tokens]
+            variable.content[:tokens] << current_token
 
             if [:digit, :string, :boolval].include?(current_token.kind)
               variable.content[:value] = current_token.lexeme
