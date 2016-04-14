@@ -1,26 +1,24 @@
 module Marvin
 
-  # A Scope is a part of the grammar that encapsulates various tokens. For
-  # example, `Block` would be a scope.
-  class Variable
-    attr_accessor :key, :type, :attributes
+  # A Variable is a part of the grammar that encapsulates various tokens. For
+  # example, `Block` would be a Variable.
+  class Variable < ::Tree::TreeNode
+    # attr_accessor :key, :type, :attributes
 
-    # Creates a new Scope.
+    # Creates a new Variable.
     #
-    # @param [String] name The name of the scope (e.g., `StatementList`).
+    # @param [String] name The name of the Variable (e.g., `StatementList`).
     # @param [Hash, nil] attributes Whatever extra attributes to include.
-    # @return [Marvin::Scope] Your shiny new scope!
-    def initialize(name, type, attributes = {})
-      @name = name
-      @type = type
-      @attributes = attributes
+    # @return [Marvin::Variable] Your shiny new Variable!
+    def initialize(name = nil, type = nil, attributes = {})
+      super(name, attributes.merge(type: type))
     end
 
-    # Prints out the token in the standard way (`<ScopeName>`).
+    # Prints out the token in the standard way (`<VariableName>`).
     #
-    # @return [String] An output of a Scope.
+    # @return [String] An output of a Variable.
     def to_s
-      "<#{@name}>"
+      "<Variable #{@content[:type]} : #{@name} (#{@content[:value]})>"
     end
   end
 

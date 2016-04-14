@@ -1,3 +1,5 @@
+require 'pastel'
+
 module Marvin
 
   # The runner class is the foundation for the actual compiler. It will take the
@@ -24,6 +26,11 @@ module Marvin
 
       @parser = Marvin::Parser.new(@lexer.tokens, @config)
       @parser.parse!
+
+      @config.logger.warnings.each do |warning|
+        Pastel.new.yellow("  warning: #{warning}")
+        puts warning
+      end
 
       self
     end

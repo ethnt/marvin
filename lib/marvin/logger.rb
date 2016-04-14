@@ -33,9 +33,7 @@ module Marvin
     # @param [String] text The warning text.
     # @return [String] The warning text back to you.
     def warning(text)
-      @warnings.push(text)
-
-      destination.puts Pastel.new.yellow("  warning: #{text}")
+      @warnings << text
 
       text
     end
