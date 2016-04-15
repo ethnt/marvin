@@ -2,7 +2,7 @@ module Marvin
 
   # A Variable is a part of the grammar that encapsulates various tokens. For
   # example, `Block` would be a Variable.
-  class Variable < ::Tree::TreeNode
+  class Identifier < ::Tree::TreeNode
     # attr_accessor :key, :type, :attributes
 
     # Creates a new Variable.
@@ -10,7 +10,7 @@ module Marvin
     # @param [String] name The name of the Variable (e.g., `StatementList`).
     # @param [Hash, nil] attributes Whatever extra attributes to include.
     # @return [Marvin::Variable] Your shiny new Variable!
-    def initialize(name = nil, type = nil, attributes = {})
+    def initialize(name = '', type = '', attributes = {})
       super(name, attributes.merge(type: type))
     end
 
@@ -18,7 +18,7 @@ module Marvin
     #
     # @return [String] An output of a Variable.
     def to_s
-      "<Variable #{@content[:type]} : #{@name} (#{@content[:value]})>"
+      "<Identifier #{@content[:type]} : #{@name} (#{@content[:value]})>"
     end
   end
 

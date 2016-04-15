@@ -5,6 +5,8 @@
   int z
   z = 1
 
+  int x
+
   boolean f
 
   if (x == 0) {

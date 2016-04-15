@@ -15,6 +15,10 @@ module Marvin
       @attributes = attributes
     end
 
+    def self.from_production(production)
+      new(production.name, production.attributes)
+    end
+
     # Prints out the token in the standard way (`<ScopeName>`).
     #
     # @return [String] An output of a Scope.

@@ -24,7 +24,7 @@ module Marvin
       @lexer = Marvin::Lexer.new(@source, @config)
       @lexer.lex!
 
-      @parser = Marvin::Parser.new(@lexer.tokens, @config)
+      @parser = Marvin::Parser.new(@lexer.tokens, config: @config)
       @parser.parse!
 
       @config.logger.warnings.each do |warning|
