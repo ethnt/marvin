@@ -38,8 +38,8 @@ module Marvin
         parse_program!
       end
 
-      @symbol_table = Marvin::SymbolTable.new
-      @symbol_table.from_ast(@ast)
+      # @symbol_table = Marvin::SymbolTable.new
+      # @symbol_table.from_ast(@ast)
 
       if @config.logger.verbose
         @config.logger.info("\n")
@@ -48,8 +48,8 @@ module Marvin
         @config.logger.info("\n")
         @config.logger.info(@ast.print_tree)
 
-        @config.logger.info("\n")
-        @config.logger.info(@symbol_table.print_tree)
+        # @config.logger.info("\n")
+        # @config.logger.info(@symbol_table.print_tree)
       end
 
       @config.logger.info("Parse completed successfully.\n\n")
@@ -394,14 +394,20 @@ module Marvin
     def parse_boolean_expr!(cst_node, ast_node)
       @config.logger.info('  Parsing boolean expression...')
 
+      cst_boolean_expr_node = Marvin::Node.new(Marvin::Production.new('BooleanExpr'))
+      ast_boolean_expr_node = Marvin::Node.new(Marvin::Production.new('BooleanExpr'))
+
+      cst_node << cst_boolean_expr_node
+      ast_node << ast_boolean_expr_node
+
       if match?(:open_parenthesis, fail_out: false, advance: false)
-        match?(:open_parenthesis, cst_node: cst_node)
-        parse_expr!(cst_node, ast_node)
-        match?(:boolop, cst_node: cst_node, ast_node: ast_node)
-        parse_expr!(cst_node, ast_node)
-        match?(:close_parenthesis, cst_node: cst_node)
+        match?(:open_parenthesis, cst_node: cst_boolean_expr_node)
+        parse_expr!(cst_boolean_expr_node, ast_boolean_expr_node)
+        match?(:boolop, cst_node: cst_boolean_expr_node, ast_node: ast_boolean_expr_node)
+        parse_expr!(cst_boolean_expr_node, ast_boolean_expr_node)
+        match?(:close_parenthesis, cst_node: cst_boolean_expr_node)
       else
-        match?(:boolval, cst_node: cst_node, ast_node: ast_node)
+        match?(:boolval, cst_node: cst_boolean_expr_node, ast_node: ast_boolean_expr_node)
       end
     end
 
