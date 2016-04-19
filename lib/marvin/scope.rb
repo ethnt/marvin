@@ -2,21 +2,22 @@ module Marvin
 
   # A Scope is a part of the grammar that encapsulates various tokens. For
   # example, `Block` would be a scope.
-  class Scope
-    attr_accessor :name, :attributes
+  class Scope < Node
 
-    # Creates a new Scope.
+    # Finds any identifiers in this scope and its parent scopes.
     #
-    # @param [String] name The name of the scope (e.g., `StatementList`).
-    # @param [Hash, nil] attributes Whatever extra attributes to include.
-    # @return [Marvin::Scope] Your shiny new scope!
-    def initialize(name, attributes = {})
-      @name = 'Scope'
-      @attributes = attributes
-    end
+    # @param [String] name The name of the identifier.
+    # @return [Marvin::Identifier,nil]
+    def find_identifier(name)
+      own_ids = children.select do |n|
+        n.content.is_a?(Identifier) && n.content.name == name
+      end
 
-    def self.from_production(production)
-      new(production.name, production.attributes)
+      return own_ids unless own_ids.empty?
+
+      return parent.find_identifier(name) if parent
+
+      nil
     end
 
     # Prints out the token in the standard way (`<ScopeName>`).

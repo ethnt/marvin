@@ -1,24 +1,31 @@
 module Marvin
 
-  # A Variable is a part of the grammar that encapsulates various tokens. For
-  # example, `Block` would be a Variable.
-  class Identifier < ::Tree::TreeNode
-    # attr_accessor :key, :type, :attributes
+  # A Production is a part of the grammar that encapsulates various tokens. For
+  # example, `StatementList` would be a production.
+  class Identifier
+    attr_accessor :name, :type, :value, :attributes
 
-    # Creates a new Variable.
+    # Creates a new Production.
     #
-    # @param [String] name The name of the Variable (e.g., `StatementList`).
+    # @param [String] name The name of the production (e.g., `StatementList`).
     # @param [Hash, nil] attributes Whatever extra attributes to include.
-    # @return [Marvin::Variable] Your shiny new Variable!
-    def initialize(name = '', type = '', attributes = {})
-      super(name, attributes.merge(type: type))
+    # @return [Marvin::Production] Your shiny new production!
+    def initialize(name, type, value = nil, attributes = {})
+      @name = name
+      @type = type
+      @value = value
+      @attributes = attributes
     end
 
-    # Prints out the token in the standard way (`<VariableName>`).
+    def of_type?(kind)
+      @type.to_s == kind.to_s
+    end
+
+    # Prints out the token in the standard way (`<ProductionName>`).
     #
-    # @return [String] An output of a Variable.
+    # @return [String] An output of a Production.
     def to_s
-      "<Identifier #{@content[:type]} : #{@name} (#{@content[:value]})>"
+      "<#{@name} : #{@type}>"
     end
   end
 

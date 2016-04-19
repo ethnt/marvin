@@ -6,90 +6,62 @@ module Marvin
   class SymbolTable < Tree
 
     def from_ast(ast)
-      @ast = ast
+      @ast = ast.root
 
-      @root = Marvin::Node.new(@ast.root.content.clone)
+      @root = Marvin::Scope.new('<Scope>')
 
-      prune_children(@ast.root, @root)
-
-      self
+      traverse_ast(@ast, @root)
     end
 
-    def prune_children(ast_node, table_node)
-      ast_node.children.each_with_index do |ast_child, i|
-        next unless ast_child.is_production? || ast_child.is_token?
+    def traverse_ast(node, scope)
+      node.children.each do |child|
+        next unless child.is_production?
 
-        if ast_child.is_production?
-          production = ast_child.content
+        production = child.content
 
-          whitelist = %w( Block )
+        case production.name
 
-          next_node = table_node
+        # If we reach a new block, let's create a new scope.
+        # if production.name == 'Block'
+        when 'Block'
+          nested_scope = Marvin::Scope.new('<Scope>')
 
-          if whitelist.include?(production.name)
-            scope = Marvin::Scope.from_production(production)
-            scope_node = Marvin::Node.new(scope)
-            table_node.add(scope_node)
-            next_node = scope_node
-          end
+          # Add the nested scope to the current scope and set the current scope
+          # to the nested scope.
+          scope << nested_scope
+          scope = nested_scope
+
+        # If we reach a variable declaration, we're adding a new identifier to
+        # the current scope.
+        when 'VariableDeclaration'
+          type = child.children.first.content.lexeme
+          name = child.children.last.content.lexeme
+
+          identifier = Marvin::Node.new(Marvin::Identifier.new(name, type))
+
+          scope.add(identifier)
+
+        # If we reach an assignment statement, we're going to check the type
+        when 'Assignment'
+          name = child.children.first.content.lexeme
+
+          # Find the previous variable declaration.
+          identifier = scope.find_identifier(name)
+
+          # If we can't find an identifier, throw an error!
+          return Marvin::Error::ScopeError.new(child.children.first.content) unless identifier
+
+          # Typecheck
+          type = child.children.last.resolve_type
+
+          return Marvin::Error::TypeError.new(child.children.last.content) if identifier.first.content.of_type?(type)
+
+          identifier = Marvin::Node.new(Marvin::Identifier.new(name, type))
+
+          scope.add(identifier)
         end
 
-        if ast_child.is_token?
-          token = ast_child.content
-
-          whitelist = %i( type digit boolean string char )
-
-          if whitelist.include?(token.kind)
-            case token.kind
-
-            # This means we have a type declaration
-            when :type
-              # The name should be in the next token.
-              name = ast_node.children[i + 1].content.lexeme
-              type = token.lexeme
-
-              # Set the new identifier with the name and type
-              identifier = Marvin::Identifier.new(name, type)
-
-              # If there's an identifier, let's add it!
-              if identifier
-                node = Marvin::Node.new(identifier)
-
-                table_node.add(node)
-              end
-
-            # This means we have an identifier
-            when :char
-              name = token.lexeme
-              value = ast_node.children[i + 1].content.lexeme if ast_node.children[i + 1]
-
-              # Look for a identifier in this node's children (it's children and
-              # parentage)
-              if identifier = table_node.children_hash.keys.include?(name)
-                identifier.content.attributes[:value] = value
-
-              # Otherwise look in parentage
-              elsif identifier = table_node.find_in_parentage(name)
-                binding.pry
-                identifier = identifier.dup
-                identifier.content.attributes[:value] = value
-
-                table_node.add(identifier)
-              else
-                # ERROR!
-              end
-
-            # This means we have a value
-            else
-
-            end
-          end
-
-
-          next_node = table_node
-        end
-
-        prune_children(ast_child, next_node) if ast_child.has_children?
+        traverse_ast(child, scope)
       end
     end
 

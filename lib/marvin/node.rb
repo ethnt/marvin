@@ -23,6 +23,19 @@ module Marvin
       @children_hash[name]
     end
 
+    def resolve_type
+      # Resolve the type of any children if it's a production
+      return @children.last.resolve_type if is_production?
+
+      k = @content.kind
+
+      if k == 'boolval'
+        k = 'boolean'
+      end
+
+      return k
+    end
+
     # Finds in the current nodes children and any of the ancestors.
     def find_in_parentage(_name)
       result = nil

@@ -38,21 +38,25 @@ module Marvin
         parse_program!
       end
 
-      # @symbol_table = Marvin::SymbolTable.new
-      # @symbol_table.from_ast(@ast)
-
       if @config.logger.verbose
         @config.logger.info("\n")
         @config.logger.info(@cst.print_tree)
 
         @config.logger.info("\n")
         @config.logger.info(@ast.print_tree)
-
-        # @config.logger.info("\n")
-        # @config.logger.info(@symbol_table.print_tree)
       end
 
-      @config.logger.info("Parse completed successfully.\n\n")
+      @symbol_table = Marvin::SymbolTable.new
+      @symbol_table.from_ast(@ast)
+
+      if @config.logger.verbose
+        @config.logger.info("\n")
+        @config.logger.info(@symbol_table.print_tree)
+      end
+
+      @config.logger.info("Parse completed successfully.\n")
+      @config.logger.info("Scope checking completed successfully.\n")
+      @config.logger.info("Type checking completed successfully.\n")
 
       true
     end

@@ -30,13 +30,38 @@ module Marvin
       # @param [Symbol, Array<Symbol>] kind The kind (or kinds) expected.
       # @return [Marvin::ParserError] The error.
       def initialize(token, kind)
-        @token = token
-        @kind = kind
-
-        @kind = @kind.map(&:to_s).join(' or ') if @kind.is_a?(Array)
+        kind = kind.map(&:to_s).join(' or ') if kind.is_a?(Array)
 
         # rubocop:disable Metrics/LineLength
-        $stderr.puts Pastel.new.white.on_red("Fatal error: expected #{@kind}, found #{@token.kind} \"#{@token.lexeme}\" on line #{@token.attributes[:line]} at character #{@token.attributes[:char]}")
+        $stderr.puts Pastel.new.white.on_red("Fatal error: expected #{kind}, found #{token.kind} \"#{token.lexeme}\" on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+
+        exit
+      end
+    end
+
+    # An out-of-scope error.
+    class ScopeError
+
+      # Creates a new out-of-scope error.
+      #
+      # @param [String] token The char token in question.
+      # @return [Marvin::ScopeError] The error.
+      def initialize(token)
+        $stderr.puts Pastel.new.white.on_red("Fatal error: out-of-scope identifier #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+
+        exit
+      end
+    end
+
+    # A type error.
+    class TypeError
+
+      # Creates a new out-of-scope error.
+      #
+      # @param [String] token The token in question.
+      # @return [Marvin::ScopeError] The error.
+      def initialize(token)
+        $stderr.puts Pastel.new.white.on_red("Fatal error: type mismatch at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
 
         exit
       end
