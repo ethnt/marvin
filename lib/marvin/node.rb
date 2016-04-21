@@ -23,17 +23,24 @@ module Marvin
       @children_hash[name]
     end
 
-    def resolve_type
+    def resolve_type(scope)
       # Resolve the type of any children if it's a production
-      return @children.last.resolve_type if is_production?
+      return @children.last.resolve_type(scope) if is_production?
 
-      k = @content.kind
+      _kind = @content.kind
 
-      if k == 'boolval'
-        k = 'boolean'
+      # look up variable references
+      if _kind == :char
+        _kind = scope.find_identifier(content.lexeme).type
       end
 
-      return k
+      types = {
+        digit: 'int',
+        boolval: 'boolean',
+        string: 'string'
+      }
+
+      return types[_kind]
     end
 
     # Finds in the current nodes children and any of the ancestors.

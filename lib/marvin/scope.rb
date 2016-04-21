@@ -1,3 +1,5 @@
+require 'pry'
+
 module Marvin
 
   # A Scope is a part of the grammar that encapsulates various tokens. For
@@ -9,11 +11,11 @@ module Marvin
     # @param [String] name The name of the identifier.
     # @return [Marvin::Identifier,nil]
     def find_identifier(name)
-      own_ids = children.select do |n|
-        n.content.is_a?(Identifier) && n.content.name == name
-      end
+      identifiers = children.select { |n| n.content.is_a?(Identifier) && n.content.name == name }.map { |n| n.content }.reject { |n| n.type.nil? }
 
-      return own_ids unless own_ids.empty?
+      # binding.pry
+
+      return identifiers.last unless identifiers.empty?
 
       return parent.find_identifier(name) if parent
 

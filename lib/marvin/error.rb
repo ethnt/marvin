@@ -60,8 +60,14 @@ module Marvin
       #
       # @param [String] token The token in question.
       # @return [Marvin::ScopeError] The error.
-      def initialize(token)
-        $stderr.puts Pastel.new.white.on_red("Fatal error: type mismatch at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+      def initialize(node, declared_type, given_type)
+        token = if node.is_token?
+                  node.content
+                else
+                  node.children.select { |n| n.is_token? }.last.content
+                end
+
+        $stderr.puts Pastel.new.white.on_red("Fatal error: type mismatch at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]} (expected #{declared_type}, received #{given_type})")
 
         exit
       end

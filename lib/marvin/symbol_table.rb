@@ -1,4 +1,5 @@
 require 'pry'
+require 'log_buddy'
 
 module Marvin
 
@@ -51,10 +52,10 @@ module Marvin
           # If we can't find an identifier, throw an error!
           return Marvin::Error::ScopeError.new(child.children.first.content) unless identifier
 
-          # Typecheck
-          type = child.children.last.resolve_type
+          declared_type = identifier.type
+          given_type = child.children.last.resolve_type(scope)
 
-          return Marvin::Error::TypeError.new(child.children.last.content) if identifier.first.content.of_type?(type)
+          return Marvin::Error::TypeError.new(child.children.last, declared_type, given_type) if declared_type != given_type
 
           identifier = Marvin::Node.new(Marvin::Identifier.new(name, type))
 
