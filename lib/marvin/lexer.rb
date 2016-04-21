@@ -32,23 +32,17 @@ module Marvin
         # Look for any tokens at the current pointer.
         token = find_token!
 
+        # Lexer error if there isn't anythign there.
+        return Marvin::Error::LexerError.new(@scanner.getch) unless token
+
         # If we have a token, advance by the length of the lexeme and add the
         # token to our token array.
-        if token
-          @scanner.pos += token.lexeme.length
-          @tokens << token
-          @config.logger.info("  #{token}")
-
-        # Otherwise, we error out!
-        else
-          return Marvin::Error::LexerError.new(@scanner.getch)
-        end
+        @scanner.pos += token.lexeme.length
+        @tokens << token
+        @config.logger.info("  #{token}")
 
         next
       end
-
-      # Fix some small stuff.
-      fix_small_errors!
 
       @config.logger.info "Found #{@tokens.count} tokens.\n\n"
 
@@ -71,67 +65,41 @@ module Marvin
         # length of the match and nil otherwise.
         len = @scanner.match?(expr)
 
-        # We've got a match!
-        if len && len > 0
+        # If there's no match, just go to the next one.
+        next unless len && len > 0
 
-          # Peek the length of the match ahead to get the lexeme.
-          lexeme = @scanner.peek(len)
+        # Peek the length of the match ahead to get the lexeme.
+        lexeme = @scanner.peek(len)
 
-          # The kind matches up in the spec hash.
-          kind = Marvin::Grammar::Lexemes.key(expr)
+        # The kind matches up in the spec hash.
+        kind = Marvin::Grammar::Lexemes.key(expr)
 
-          # Grab the line from the overall character number.
-          attributes = {
-            line: line_from_char(@scanner.pos),
-            char: char_on_line(@scanner.pos)
-          }
+        attributes = location_info(@scanner.pos)
 
-          # Make the new token.
-          token = Marvin::Token.new(lexeme, kind, attributes)
+        # Make the new token.
+        token = Marvin::Token.new(lexeme, kind, attributes)
 
-          # Break out of the loop, since we've found a match.
-          break
-        end
+        # Break out of the loop, since we've found a match.
+        break
       end
 
       token
     end
 
-    # Fixes some small errors.
+    # Get the line number and character on line of a given character.
     #
-    # @return [nil]
-    def fix_small_errors!
-      if @tokens.last.kind != :program_end
-        line = @tokens.last.attributes[:line]
-        char = @tokens.last.attributes[:char] + 1
-
-        @tokens << Marvin::Token.new('$', :program_end, { line: line, char: char })
-
-        @config.logger.warning('Missing ending $, adding.')
-      end
-    end
-
-    # Get the line from the overall character number.
-    #
-    # @param [Integer] char The overall character number in the document.
-    # @return [Integer] The line number.
-    def line_from_char(char)
-      str = @scanner.string[0..char]
-      str.lines.count
-    end
-
-    # Get the character number on its line.
-    #
-    # @param [Integer] char The overall character number in the document.
-    # @return [Integer] The character number on its given line.
-    def char_on_line(char)
+    # @param [Integer] char THe overall character number.
+    # @return [Hash] Hash consisting of +:line+ (the line number) and +:char+
+    #                (the character number).
+    def location_info(char)
       str = @scanner.string[0..char]
 
-      if newline_char = str.rindex("\n")
-        char - newline_char
-      else
-        char
-      end
+      info = {
+        line: str.lines.count,
+        char: str.rindex("\n") ? char - str.rindex("\n") : char
+      }
+
+      info
     end
   end
 end
