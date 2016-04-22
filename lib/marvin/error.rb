@@ -72,5 +72,17 @@ module Marvin
         exit
       end
     end
+
+    class RedeclaredIdentifierError
+
+      # @param The variable declaration node
+      def initialize(node)
+        token = node.children.last.content
+        
+        $stderr.puts Pastel.new.white.on_red("Fatal error: redeclared identifier at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+
+        exit
+      end
+    end
   end
 end

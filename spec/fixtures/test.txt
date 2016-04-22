@@ -10,6 +10,7 @@
   boolean f
 
   if (x == 0) {
+
     print("string")
 
     boolean y
@@ -20,7 +21,6 @@
     print(x)
 
     z = 1
-    z = true
   }
 } $
 

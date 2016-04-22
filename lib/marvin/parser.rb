@@ -46,7 +46,7 @@ module Marvin
         @config.logger.info(@ast.print_tree)
       end
 
-      @symbol_table = Marvin::SymbolTable.new
+      @symbol_table = Marvin::SymbolTable.new(@config)
       @symbol_table.from_ast(@ast)
 
       if @config.logger.verbose

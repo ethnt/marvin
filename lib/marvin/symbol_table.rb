@@ -6,6 +6,12 @@ module Marvin
   # Contains scopes and their child variable types, keys, and values.
   class SymbolTable < Tree
 
+    def initialize(config = nil)
+      @config = config
+
+      super(nil)
+    end
+
     def from_ast(ast)
       @ast = ast.root
 
@@ -37,6 +43,12 @@ module Marvin
         when 'VariableDeclaration'
           type = child.children.first.content.lexeme
           name = child.children.last.content.lexeme
+
+          if scope.find_identifier(name, current_only: true)
+            token = child.children.last.content
+
+            @config.logger.warning("Redeclared identifier at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+          end
 
           identifier = Marvin::Node.new(Marvin::Identifier.new(name, type))
 

@@ -27,9 +27,10 @@ module Marvin
       @parser = Marvin::Parser.new(@lexer.tokens, config: @config)
       @parser.parse!
 
+      $stdout.puts "\n"
+
       @config.logger.warnings.each do |warning|
-        Pastel.new.yellow("  warning: #{warning}")
-        puts warning
+        $stdout.puts Pastel.new.yellow("warning: #{warning}")
       end
 
       self
