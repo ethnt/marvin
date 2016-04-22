@@ -21,6 +21,7 @@ module Marvin
     def run!
       fail(ArgumentError, 'No source code given, exiting') if source.nil?
 
+      # Split the input with `$` so we can run multiple programs.
       @source.split(/(?<=[$])/).reject { |p| p == "\n" }.each do |program|
         @lexer = Marvin::Lexer.new(program, @config)
         @lexer.lex!

@@ -1,4 +1,5 @@
 require 'optparse'
+require 'pastel'
 
 module Marvin
 
@@ -24,7 +25,13 @@ module Marvin
         # For a file, read out the contents and then attach the source code to
         # the runner.
         opts.on '-f', '--file file', String, 'The source file to compile' do |f|
-          runner.source = File.read(f)
+          begin
+            runner.source = File.read(f)
+          rescue Errno::ENOENT => e
+            $stderr.puts Pastel.new.white.on_red("Fatal error: could not load input file.")
+
+            exit
+          end
         end
 
         # Just straight string input of the source code.

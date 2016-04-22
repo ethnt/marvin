@@ -1,6 +1,3 @@
-require 'pry'
-require 'log_buddy'
-
 module Marvin
 
   # Contains scopes and their child variable types, keys, and values.

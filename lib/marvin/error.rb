@@ -58,7 +58,9 @@ module Marvin
 
       # Creates a new out-of-scope error.
       #
-      # @param [String] token The token in question.
+      # @param [String] node The node containing the type error.
+      # @param [String] declared_type The type that was expected.
+      # @param [String] given_type The actual type.
       # @return [Marvin::ScopeError] The error.
       def initialize(node, declared_type, given_type)
         token = if node.is_token?
@@ -68,18 +70,6 @@ module Marvin
                 end
 
         $stderr.puts Pastel.new.white.on_red("Fatal error: type mismatch at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]} (expected #{declared_type}, received #{given_type})")
-
-        exit
-      end
-    end
-
-    class RedeclaredIdentifierError
-
-      # @param The variable declaration node
-      def initialize(node)
-        token = node.children.last.content
-        
-        $stderr.puts Pastel.new.white.on_red("Fatal error: redeclared identifier at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
 
         exit
       end

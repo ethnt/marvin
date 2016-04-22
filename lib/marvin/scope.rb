@@ -1,5 +1,3 @@
-require 'pry'
-
 module Marvin
 
   # A Scope is a part of the grammar that encapsulates various tokens. For

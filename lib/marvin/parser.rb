@@ -129,12 +129,6 @@ module Marvin
 
       parse_block!(cst_program_node, ast_program_node)
       match?(:program_end, cst_node: cst_program_node, ast_node: ast_program_node)
-
-      # If there are more tokens, that means there is more than one program in
-      # this file.
-      # if current_token
-      #   parse_program!
-      # end
     end
 
     # Parses a block.
