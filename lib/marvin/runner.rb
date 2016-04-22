@@ -21,16 +21,20 @@ module Marvin
     def run!
       fail(ArgumentError, 'No source code given, exiting') if source.nil?
 
-      @lexer = Marvin::Lexer.new(@source, @config)
-      @lexer.lex!
+      @source.split(/(?<=[$])/).reject { |p| p == "\n" }.each do |program|
+        @lexer = Marvin::Lexer.new(program, @config)
+        @lexer.lex!
 
-      @parser = Marvin::Parser.new(@lexer.tokens, config: @config)
-      @parser.parse!
+        @parser = Marvin::Parser.new(@lexer.tokens, config: @config)
+        @parser.parse!
 
-      $stdout.puts "\n"
+        $stdout.puts "\n"
 
-      @config.logger.warnings.each do |warning|
-        $stdout.puts Pastel.new.yellow("warning: #{warning}")
+        @config.logger.warnings.each do |warning|
+          $stdout.puts Pastel.new.yellow("warning: #{warning}")
+        end
+
+        $stdout.puts "\n"
       end
 
       self
