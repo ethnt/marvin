@@ -11,9 +11,6 @@ module Marvin
     #
     # @param [Array] argv Options that are from the command line.
     # @return [Marvin::Runner] The resulting +Runner+.
-    #
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def self.parse!(argv)
 
       # A new, empty instance of a Runner.
@@ -36,6 +33,8 @@ module Marvin
 
         # Just straight string input of the source code.
         opts.on '-I', '--input input', String, 'Source code passed in' do |i|
+          $stderr.puts Pastel.new.white.on_red('Fatal error: could not load input.') unless i
+
           runner.source = i
         end
 

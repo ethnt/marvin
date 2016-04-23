@@ -19,23 +19,26 @@ module Marvin
     #
     # @return [Marvin::Runner] This Runner with output code.
     def run!
-      fail(ArgumentError, 'No source code given, exiting') if source.nil?
 
       # Split the input with `$` so we can run multiple programs.
-      @source.split(/(?<=[$])/).reject { |p| p == "\n" }.each do |program|
-        @lexer = Marvin::Lexer.new(program, @config)
+      programs = @source.split(/(?<=[$])/).reject { |p| p == "\n" }
+
+      programs.each_with_index do |program, i|
+        @config.logger.info("\n-----------------------------------\n") if i > 0
+
+        @config.logger.info(Pastel.new.bold("Compiling program ##{i}...\n"))
+
+        @lexer = Marvin::Lexer.new(program, config: @config)
         @lexer.lex!
 
         @parser = Marvin::Parser.new(@lexer.tokens, config: @config)
         @parser.parse!
 
-        $stdout.puts "\n"
+        @config.logger.info("\n") unless @config.logger.warnings.empty?
 
         @config.logger.warnings.each do |warning|
-          $stdout.puts Pastel.new.yellow("warning: #{warning}")
+          @config.logger.info(Pastel.new.yellow("warning: #{warning}"))
         end
-
-        $stdout.puts "\n"
       end
 
       self

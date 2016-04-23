@@ -6,12 +6,34 @@ module Marvin
   class Lexer
     attr_accessor :tokens, :config
 
+    # Define all of the lexemes in the language. We'll look through these every
+    # time we advance the pointer on the source.
+    LEXEMES = {
+      block_begin: /({)/,
+      block_end: /(})/,
+      type: /(int|string|boolean)/,
+      digit: /(\d)/,
+      boolval: /(true|false)/,
+      boolop: /(==|!=)/,
+      intop: /\+/,
+      string: /"[a-z\s]*?"/,
+      print: /(print)/,
+      if_statement: /(if)/,
+      while: /(while)/,
+      char: /[a-z]/,
+      new_line: /(\n)/,
+      assignment: /(=)/,
+      open_parenthesis: /\(/,
+      close_parenthesis: /\)/,
+      program_end: /(\$)/
+    }.freeze
+
     # Creates a new Lexer with a given source code and config.
     #
     # @param [String] source Source code.
-    # @param [Marvin::Configuration] config config instance.
+    # @param [Marvin::Configuration] config A configuration instance.
     # @return [Marvin::Lexer] An un-run lexer.
-    def initialize(source, config = Marvin::Configuration.new)
+    def initialize(source, config: Marvin::Configuration.new)
       @scanner = StringScanner.new(source)
       @tokens = []
       @config = config
@@ -59,7 +81,7 @@ module Marvin
       token = nil
 
       # Run through every regex.
-      Marvin::Grammar::Lexemes.values.each do |expr|
+      LEXEMES.values.each do |expr|
 
         # If we get a match from StringScanner#match?, it will return the
         # length of the match and nil otherwise.
@@ -72,7 +94,7 @@ module Marvin
         lexeme = @scanner.peek(len)
 
         # The kind matches up in the spec hash.
-        kind = Marvin::Grammar::Lexemes.key(expr)
+        kind = LEXEMES.key(expr)
 
         attributes = location_info(@scanner.pos)
 
