@@ -1,0 +1,181 @@
+{
+  print("")
+  {}
+  int a
+  a = 0
+  a = 3 + a
+  int b
+  b = 8
+  {
+    {
+      print ("inta is not int a")
+      print (1+2+3+4+5+4+3+2+1)
+      print (a)
+    }
+    int a
+    a = 7
+    string b
+    b = "one string"
+    print(b)
+  }
+}$
+
+{
+  int a
+  a = 6
+  {
+    string a
+    a = "a string"
+    string b
+    b = a
+    print(b)
+  }
+  print(a)
+}$
+
+{
+  int a
+  boolean b
+  string c
+  a = 5
+  b = true
+  c = "inta"
+  print(c)
+  print(b)
+  print(a)
+  print(5+a)
+}$
+
+{
+{{{{}}}} {}
+}$
+
+{
+  int a
+  {
+    boolean b
+    {
+      string c
+      {
+        a = 5
+        b = false
+        c = "inta"
+      }
+      print(c)
+    }
+    print(b)
+  }
+  print(a)
+}$
+
+{
+    int a
+    a = 1
+    print(a)
+
+    {
+        int a
+        a = 2
+        print(a)
+    }
+
+    {
+        int a
+        a = 3
+        print(a)
+    }
+
+    string s
+    s = "stra"
+    print(s)
+
+    s = "strb"
+    print(s)
+
+    if (a != 5) {
+        print("true")
+    }
+
+    if (a == 5) {
+        print("false")
+    }
+} $
+
+{
+    int a
+    a = 3
+    while (a == 3) {
+        print(1 + 2 + 3 + 4 + 5)
+        a = 1 + a
+    }
+    print((true == true))
+    print((false == false))
+} $
+
+{
+    print((false == true))
+    print((true != true))
+    print((false != false))
+    print((false != true))
+} $
+
+{
+    int a
+    a = 0
+    while (a != 5) {
+        print(a)
+        a = 1 + a
+    }
+
+    if ("str" == "str") {
+        print("they are equal")
+    }
+
+    if ("stra" == "strb") {
+        print("no dice")
+    }
+
+    print(("a" != "b"))
+    print(("a" != "a"))
+} $
+
+{
+    int a
+    int b
+
+    a = 0
+    b = 0
+
+    while (a != 3) {
+        print(a)
+        while (b != 3) {
+            print(b)
+            b = 1 + b
+            if (b == 2) {
+                print("meow")
+            }
+        }
+        b = 0
+        a = 1 + a
+    }
+} $
+
+{
+    string s
+    int a
+    a = 1
+    {
+        s = "meow"
+        int a
+        a = 2
+        print(a)
+    }
+    {
+        while (a != 5) {
+            a = 1 + a
+            print(a)
+        }
+        print(3 + a)
+        print(s)
+    }
+} $

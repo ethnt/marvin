@@ -9,7 +9,7 @@ module Marvin
     # @param [String] name The name of the identifier.
     # @return [Marvin::Identifier,nil]
     def find_identifier(name, current_only: false)
-      identifiers = children.select { |n| n.content.is_a?(Identifier) && n.content.name == name }.map { |n| n.content }.reject { |n| n.type.nil? }
+      identifiers = children.select { |n| n.content.is_a?(Identifier) && n.content.name == name }.map(&:content).reject { |n| n.type.nil? }
 
       return identifiers.last unless identifiers.empty?
 

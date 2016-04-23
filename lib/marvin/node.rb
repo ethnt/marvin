@@ -34,13 +34,17 @@ module Marvin
         _kind = scope.find_identifier(content.lexeme).type
       end
 
-      types = {
-        digit: 'int',
-        boolval: 'boolean',
-        string: 'string'
-      }
+      if %i(digit boolval string).include?(_kind)
+        types = {
+          digit: 'int',
+          boolval: 'boolean',
+          string: 'string'
+        }
 
-      return types[_kind]
+        return types[_kind]
+      else
+        return _kind
+      end
     end
 
     # Finds in the current nodes children and any of the ancestors.

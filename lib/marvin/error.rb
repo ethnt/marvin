@@ -66,7 +66,7 @@ module Marvin
         token = if node.is_token?
                   node.content
                 else
-                  node.children.select { |n| n.is_token? }.last.content
+                  node.children.select(&:is_token?).last.content
                 end
 
         $stderr.puts Pastel.new.white.on_red("Fatal error: type mismatch at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]} (expected #{declared_type}, received #{given_type})")

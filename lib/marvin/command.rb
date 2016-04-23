@@ -27,8 +27,8 @@ module Marvin
         opts.on '-f', '--file file', String, 'The source file to compile' do |f|
           begin
             runner.source = File.read(f)
-          rescue Errno::ENOENT => e
-            $stderr.puts Pastel.new.white.on_red("Fatal error: could not load input file.")
+          rescue Errno::ENOENT
+            $stderr.puts Pastel.new.white.on_red('Fatal error: could not load input file.')
 
             exit
           end
