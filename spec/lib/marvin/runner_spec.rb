@@ -1,3 +1,4 @@
+
 require 'spec_helper'
 
 describe Marvin::Runner do
@@ -20,14 +21,6 @@ describe Marvin::Runner do
   describe '#run!' do
     before do
       runner.run!
-    end
-
-    context 'without source code' do
-      let(:no_code) { Marvin::Runner.new }
-
-      it 'raises an exception' do
-        expect { no_code.run! }.to raise_error(ArgumentError)
-      end
     end
 
     it 'creates a new Lexer' do

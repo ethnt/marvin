@@ -121,8 +121,8 @@ module Marvin
     def parse_program!
       @config.logger.info('  Parsing program...')
 
-      cst_program_node = Marvin::Node.new(Marvin::Production.new('Program'))
-      ast_program_node = Marvin::Node.new(Marvin::Production.new('Program'))
+      cst_program_node = Marvin::Node.new(Marvin::Production.new(name: 'Program'))
+      ast_program_node = Marvin::Node.new(Marvin::Production.new(name: 'Program'))
 
       @cst.root = cst_program_node
       @ast.root = ast_program_node
@@ -141,8 +141,8 @@ module Marvin
     def parse_block!(cst_node, ast_node)
       @config.logger.info('  Parsing block...')
 
-      cst_block_node = Marvin::Node.new(Marvin::Production.new('Block'))
-      ast_block_node = Marvin::Node.new(Marvin::Production.new('Block'))
+      cst_block_node = Marvin::Node.new(Marvin::Production.new(name: 'Block'))
+      ast_block_node = Marvin::Node.new(Marvin::Production.new(name: 'Block'))
 
       cst_node << cst_block_node
       ast_node << ast_block_node
@@ -166,7 +166,7 @@ module Marvin
       kinds = [:print, :char, :type, :while, :if_statement, :block_begin]
 
       if match_any?(kinds)
-        cst_statement_list_node = Marvin::Node.new(Marvin::Production.new('StatementList'))
+        cst_statement_list_node = Marvin::Node.new(Marvin::Production.new(name: 'StatementList'))
 
         cst_node << cst_statement_list_node
 
@@ -231,8 +231,8 @@ module Marvin
     def parse_print_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing print statement...')
 
-      cst_print_node = Marvin::Node.new(Marvin::Production.new('Print'))
-      ast_print_node = Marvin::Node.new(Marvin::Production.new('Print'))
+      cst_print_node = Marvin::Node.new(Marvin::Production.new(name: 'Print'))
+      ast_print_node = Marvin::Node.new(Marvin::Production.new(name: 'Print'))
 
       cst_node << cst_print_node
       ast_node << ast_print_node
@@ -253,8 +253,8 @@ module Marvin
     def parse_assignment_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing assignment statement...')
 
-      cst_assignment_node = Marvin::Node.new(Marvin::Production.new('Assignment'))
-      ast_assignment_node = Marvin::Node.new(Marvin::Production.new('Assignment'))
+      cst_assignment_node = Marvin::Node.new(Marvin::Production.new(name: 'Assignment'))
+      ast_assignment_node = Marvin::Node.new(Marvin::Production.new(name: 'Assignment'))
 
       cst_node << cst_assignment_node
       ast_node << ast_assignment_node
@@ -274,8 +274,8 @@ module Marvin
     def parse_var_decl!(cst_node, ast_node)
       @config.logger.info('  Parsing variable declaration...')
 
-      cst_var_decl_node = Marvin::Node.new(Marvin::Production.new('VariableDeclaration'))
-      ast_var_decl_node = Marvin::Node.new(Marvin::Production.new('VariableDeclaration'))
+      cst_var_decl_node = Marvin::Node.new(Marvin::Production.new(name: 'VariableDeclaration'))
+      ast_var_decl_node = Marvin::Node.new(Marvin::Production.new(name: 'VariableDeclaration'))
 
       cst_node << cst_var_decl_node
       ast_node << ast_var_decl_node
@@ -294,8 +294,8 @@ module Marvin
     def parse_while_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing while statement...')
 
-      cst_while_node = Marvin::Node.new(Marvin::Production.new('WhileStatement'))
-      ast_while_node = Marvin::Node.new(Marvin::Production.new('WhileStatement'))
+      cst_while_node = Marvin::Node.new(Marvin::Production.new(name: 'WhileStatement'))
+      ast_while_node = Marvin::Node.new(Marvin::Production.new(name: 'WhileStatement'))
 
       cst_node << cst_while_node
       ast_node << ast_while_node
@@ -315,8 +315,8 @@ module Marvin
     def parse_if_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing if statement...')
 
-      cst_if_node = Marvin::Node.new(Marvin::Production.new('IfStatement'))
-      ast_if_node = Marvin::Node.new(Marvin::Production.new('IfStatement'))
+      cst_if_node = Marvin::Node.new(Marvin::Production.new(name: 'IfStatement'))
+      ast_if_node = Marvin::Node.new(Marvin::Production.new(name: 'IfStatement'))
 
       cst_node << cst_if_node
       ast_node << ast_if_node
@@ -392,8 +392,8 @@ module Marvin
     def parse_boolean_expr!(cst_node, ast_node)
       @config.logger.info('  Parsing boolean expression...')
 
-      cst_boolean_expr_node = Marvin::Node.new(Marvin::Production.new('BooleanExpr'))
-      ast_boolean_expr_node = Marvin::Node.new(Marvin::Production.new('BooleanExpr'))
+      cst_boolean_expr_node = Marvin::Node.new(Marvin::Production.new(name: 'BooleanExpr'))
+      ast_boolean_expr_node = Marvin::Node.new(Marvin::Production.new(name: 'BooleanExpr'))
 
       cst_node << cst_boolean_expr_node
       ast_node << ast_boolean_expr_node

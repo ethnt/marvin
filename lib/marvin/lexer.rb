@@ -99,7 +99,11 @@ module Marvin
         attributes = location_info(@scanner.pos)
 
         # Make the new token.
-        token = Marvin::Token.new(lexeme, kind, attributes)
+        token = Marvin::Token.new(
+          lexeme: lexeme,
+          kind: kind,
+          attributes: attributes
+        )
 
         # Break out of the loop, since we've found a match.
         break

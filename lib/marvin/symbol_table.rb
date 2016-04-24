@@ -19,7 +19,7 @@ module Marvin
 
     def traverse_ast(node, scope)
       node.children.each do |child|
-        next unless child.is_production?
+        next unless child.production?
 
         production = child.content
 
@@ -47,7 +47,7 @@ module Marvin
             @config.logger.warning("Redeclared identifier at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
           end
 
-          identifier = Marvin::Node.new(Marvin::Identifier.new(name, type))
+          identifier = Marvin::Node.new(Marvin::Identifier.new(name: name, type: type))
 
           scope.add(identifier)
 
@@ -66,7 +66,7 @@ module Marvin
 
           return Marvin::Error::TypeError.new(child.children.last, declared_type, given_type) if declared_type != given_type
 
-          identifier = Marvin::Node.new(Marvin::Identifier.new(name, type))
+          identifier = Marvin::Node.new(Marvin::Identifier.new(name: name, type: type))
 
           scope.add(identifier)
         end

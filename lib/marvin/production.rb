@@ -2,24 +2,19 @@ module Marvin
 
   # A Production is a part of the grammar that encapsulates various tokens. For
   # example, `StatementList` would be a production.
-  class Production
-    attr_accessor :name, :attributes
+  class Production < Hashie::Dash
+    
+    # The name of the production.
+    property :name
 
-    # Creates a new Production.
-    #
-    # @param [String] name The name of the production (e.g., `StatementList`).
-    # @param [Hash, nil] attributes Whatever extra attributes to include.
-    # @return [Marvin::Production] Your shiny new production!
-    def initialize(name, attributes = {})
-      @name = name
-      @attributes = attributes
-    end
+    # Any additional attributes to be passed along.
+    property :attributes
 
     # Prints out the token in the standard way (`<ProductionName>`).
     #
     # @return [String] An output of a Production.
     def to_s
-      "<#{@name}>"
+      "<#{name}>"
     end
   end
 

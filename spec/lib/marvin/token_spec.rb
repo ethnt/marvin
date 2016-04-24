@@ -1,14 +1,25 @@
 require 'spec_helper'
 
 describe Marvin::Token do
-  let(:token) { Marvin::Token.new('if', :if_statement, { line: 3, character: 4 }) }
+  let(:token) do
+    Marvin::Token.new(
+      lexeme: 'if',
+      kind: :if_statement,
+      attributes: { line: 3, character: 4 }
+    )
+  end
 
   describe '#==' do
-    let(:same) { Marvin::Token.new('if', :if_statement, { line: 3, character: 4 }) }
-    let(:different) { Marvin::Token.new('f', :char, { line: 3, character: 4 }) }
+    let(:different) do
+      Marvin::Token.new(
+        lexeme: 'f',
+        kind: :char,
+        attributes: { line: 3, character: 4 }
+      )
+    end
 
     it 'will show the same Token as being the same' do
-      expect(token == same).to be_truthy
+      expect(token == token).to be_truthy
     end
 
     it 'will show a different Token as being different' do

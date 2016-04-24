@@ -1,22 +1,25 @@
 module Marvin
 
   # A Production is a part of the grammar that encapsulates various tokens. For
-  # example, `StatementList` would be a production.
-  class Identifier
-    attr_accessor :name, :type, :value, :attributes
+  # example, +StatementList+ would be a production.
+  class Identifier < Hashie::Dash
 
-    # Creates a new Production.
+    # The name of the identifier (i.e., the name of the variable).
+    property :name
+
+    # The type of the identifier (either +int+, +boolean+, or +string+).
+    property :type
+
+    # The value of the identifier.
+    property :value
+
+    # Any other attributes, like line or character number.
+    property :attributes
+
+    # Checks to see if this variable is of the type given.
     #
-    # @param [String] name The name of the production (e.g., `StatementList`).
-    # @param [Hash, nil] attributes Whatever extra attributes to include.
-    # @return [Marvin::Production] Your shiny new production!
-    def initialize(name, type, value = nil, attributes = {})
-      @name = name
-      @type = type
-      @value = value
-      @attributes = attributes
-    end
-
+    # @param [Symbol,String] kind The kind expected.
+    # @return [Boolean] Whether the types match or not.
     def of_type?(kind)
       @type.to_s == kind.to_s
     end
@@ -25,7 +28,7 @@ module Marvin
     #
     # @return [String] An output of a Production.
     def to_s
-      "<#{@name} : #{@type}>"
+      "<#{name} : #{type}>"
     end
   end
 

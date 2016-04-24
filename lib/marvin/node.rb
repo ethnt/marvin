@@ -11,11 +11,11 @@ module Marvin
       super(SecureRandom.hex, content)
     end
 
-    def is_production?
+    def production?
       @content.is_a?(Production)
     end
 
-    def is_token?
+    def token?
       @content.is_a?(Token)
     end
 
@@ -25,7 +25,7 @@ module Marvin
 
     def resolve_type(scope)
       # Resolve the type of any children if it's a production
-      return @children.last.resolve_type(scope) if is_production?
+      return @children.last.resolve_type(scope) if production?
 
       _kind = @content.kind
 

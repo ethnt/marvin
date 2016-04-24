@@ -70,10 +70,10 @@ module Marvin
       # @param [Marvin::Configuration] config A configuration instance
       # @return [Marvin::ScopeError] The error.
       def initialize(node, declared_type, given_type, config: Marvin::Configuration.new)
-        token = if node.is_token?
+        token = if node.token?
                   node.content
                 else
-                  node.children.select(&:is_token?).last.content
+                  node.children.select(&:token?).last.content
                 end
 
         config.logger.error("Fatal error: type mismatch at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]} (expected #{declared_type}, received #{given_type})")
