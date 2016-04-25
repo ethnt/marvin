@@ -9,14 +9,12 @@ module Marvin
     # Creates a new Parser with a given Lexer and configuration.
     #
     # @param [Array<Marvin::Token>] tokens A bunch of tokens.
-    # @param [Marvin::CST] cst A CST.
-    # @param [Marvin::AST] ast An AST.
     # @param [Marvin::Configuration] config Configuration instance.
     # @return [Marvin::Parser] An un-run parser.
-    def initialize(tokens, cst: Marvin::CST.new, ast: Marvin::AST.new, config: Marvin::Configuration.new)
+    def initialize(tokens, config: Marvin::Configuration.new)
       @tokens = tokens
-      @cst    = cst
-      @ast    = ast
+      @cst    = Marvin::CST.new
+      @ast    = Marvin::AST.new
       @config = config
     end
 
@@ -29,7 +27,12 @@ module Marvin
       @config.logger.info('Parsing...')
 
       if @tokens.empty?
-        return Marvin::Error::ParseError.new(Marvin::Token.new('', :empty), :block_start)
+        empty = Marvin::Token.new(
+          lexeme: '',
+          kind: :empty
+        )
+
+        return Marvin::Error::ParseError.new(empty, :block_start)
       end
 
       # Get on your flip-flops! Going to parse until we're at the end of the
@@ -66,29 +69,9 @@ module Marvin
     # Checks whether or not the current token matches the expected kind.
     #
     # @param [Symbol] kind The expected kind.
-    # @param [Marvin::Node] cst_node The current parent node for the CST.
-    # @param [Marvin::Node] ast_node The current parent node for the AST.
-    # @param [Boolean] fail_out Whether or not to return out if we don't find a
-    #                           match.
-    # @param [Boolean] advance Whether or not to advance the pointer if a match
-    #                          is found.
     # @return [Boolean] Whether or not the kind matches.
-    def match?(kind, cst_node: nil, ast_node: nil, fail_out: true, advance: true)
-      # We have a match.
-      if current_token.kind == kind
-        if advance
-          cst_node << Marvin::Node.new(current_token) if cst_node
-          ast_node << Marvin::Node.new(current_token) if ast_node
-
-          @counter += 1
-        end
-
-        true
-      else
-        return Marvin::Error::ParseError.new(current_token, kind) if fail_out
-
-        false
-      end
+    def match?(kind)
+      current_token.kind == kind
     end
 
     # Match against one of the given kinds.
@@ -96,14 +79,25 @@ module Marvin
     # @param [Array<Symbol>] kinds The expected kinds to match against.
     #
     # @return [Boolean] Whether one of the kinds match.
-    def match_any?(kinds, fail_out: false, advance: false)
-      kinds.each do |kind|
-        if match?(kind, fail_out: fail_out, advance: advance)
-          return true
-        end
-      end
+    def match_any?(kinds)
+      kinds.map { |kind| match?(kind) }.any?
+    end
 
-      false
+    # Advance the current token if the kinds match, and fails out if they don't.
+    #
+    # @param [Symbol] kind The expected kind.
+    # @param [Marvin::Node] cst_node The current parent node for the CST.
+    # @param [Marvin::Node] ast_node The current parent node for the AST.
+    # @return [Boolean] Whether or not the kind matches.
+    def advance!(kind, cst_node: nil, ast_node: nil)
+      return Marvin::Error::ParseError.new(current_token, kind) unless match?(kind)
+
+      cst_node << Marvin::Node.new(current_token) if cst_node
+      ast_node << Marvin::Node.new(current_token) if ast_node
+
+      @counter += 1
+
+      true
     end
 
     # Returns the token at the counter.
@@ -128,7 +122,7 @@ module Marvin
       @ast.root = ast_program_node
 
       parse_block!(cst_program_node, ast_program_node)
-      match?(:program_end, cst_node: cst_program_node, ast_node: ast_program_node)
+      advance!(:program_end, cst_node: cst_program_node, ast_node: ast_program_node)
     end
 
     # Parses a block.
@@ -147,9 +141,9 @@ module Marvin
       cst_node << cst_block_node
       ast_node << ast_block_node
 
-      match?(:block_begin, cst_node: cst_block_node)
+      advance!(:block_begin, cst_node: cst_block_node)
       parse_statement_list!(cst_block_node, ast_block_node)
-      match?(:block_end, cst_node: cst_block_node)
+      advance!(:block_end, cst_node: cst_block_node)
     end
 
     # Parses a statement list.
@@ -172,7 +166,7 @@ module Marvin
 
         parse_statement!(cst_statement_list_node, ast_node)
         parse_statement_list!(cst_statement_list_node, ast_node)
-      elsif match?(:block_end, fail_out: false, advance: false)
+      elsif match?(:block_end)
         true
       else
         return Marvin::Error::ParseError.new(current_token, kinds)
@@ -194,27 +188,27 @@ module Marvin
     def parse_statement!(cst_node, ast_node)
       @config.logger.info('  Parsing statement...')
 
-      if match?(:print, fail_out: false, advance: false)
+      if match?(:print)
         return parse_print_statement!(cst_node, ast_node)
       end
 
-      if match?(:char, fail_out: false, advance: false)
+      if match?(:char)
         return parse_assignment_statement!(cst_node, ast_node)
       end
 
-      if match?(:type, fail_out: false, advance: false)
+      if match?(:type)
         return parse_var_decl!(cst_node, ast_node)
       end
 
-      if match?(:while, fail_out: false, advance: false)
+      if match?(:while)
         return parse_while_statement!(cst_node, ast_node)
       end
 
-      if match?(:if_statement, fail_out: false, advance: false)
+      if match?(:if_statement)
         return parse_if_statement!(cst_node, ast_node)
       end
 
-      if match?(:block_begin, fail_out: false, advance: false)
+      if match?(:block_begin)
         return parse_block!(cst_node, ast_node)
       end
 
@@ -237,10 +231,10 @@ module Marvin
       cst_node << cst_print_node
       ast_node << ast_print_node
 
-      match?(:print, cst_node: cst_print_node, fail_out: false)
-      match?(:open_parenthesis, cst_node: cst_print_node, fail_out: false)
+      advance!(:print, cst_node: cst_print_node)
+      advance!(:open_parenthesis, cst_node: cst_print_node)
       parse_expr!(cst_print_node, ast_print_node)
-      match?(:close_parenthesis, cst_node: cst_print_node, fail_out: false)
+      advance!(:close_parenthesis, cst_node: cst_print_node)
     end
 
     # Parses an assignment statement.
@@ -260,7 +254,7 @@ module Marvin
       ast_node << ast_assignment_node
 
       parse_id!(cst_assignment_node, ast_assignment_node)
-      match?(:assignment, cst_node: cst_assignment_node)
+      advance!(:assignment, cst_node: cst_assignment_node)
       parse_expr!(cst_assignment_node, ast_assignment_node)
     end
 
@@ -280,7 +274,7 @@ module Marvin
       cst_node << cst_var_decl_node
       ast_node << ast_var_decl_node
 
-      match?(:type, cst_node: cst_var_decl_node, ast_node: ast_var_decl_node)
+      advance!(:type, cst_node: cst_var_decl_node, ast_node: ast_var_decl_node)
       parse_id!(cst_var_decl_node, ast_var_decl_node)
     end
 
@@ -300,7 +294,7 @@ module Marvin
       cst_node << cst_while_node
       ast_node << ast_while_node
 
-      match?(:while, cst_node: cst_while_node)
+      advance!(:while, cst_node: cst_while_node)
       parse_boolean_expr!(cst_while_node, ast_while_node)
       parse_block!(cst_while_node, ast_while_node)
     end
@@ -321,7 +315,7 @@ module Marvin
       cst_node << cst_if_node
       ast_node << ast_if_node
 
-      match?(:if_statement, cst_node: cst_if_node)
+      advance!(:if_statement, cst_node: cst_if_node)
       parse_boolean_expr!(cst_if_node, ast_if_node)
       parse_block!(cst_if_node, ast_if_node)
     end
@@ -339,13 +333,13 @@ module Marvin
     def parse_expr!(cst_node, ast_node)
       @config.logger.info('  Parsing expression...')
 
-      if match?(:digit, fail_out: false, advance: false)
+      if match?(:digit)
         parse_int_expr!(cst_node, ast_node)
-      elsif match?(:string, fail_out: false, advance: false)
+      elsif match?(:string)
         parse_string_expr!(cst_node, ast_node)
-      elsif match?(:boolval, fail_out: false, advance: false) || match?(:open_parenthesis, fail_out: false, advance: false)
+      elsif match?(:boolval) || match?(:open_parenthesis)
         parse_boolean_expr!(cst_node, ast_node)
-      elsif match?(:char, fail_out: false, advance: false)
+      elsif match?(:char)
         parse_id!(cst_node, ast_node)
       else
 
@@ -363,9 +357,9 @@ module Marvin
     def parse_int_expr!(cst_node, ast_node)
       @config.logger.info('  Parsing integer expression...')
 
-      match?(:digit, cst_node: cst_node, ast_node: ast_node)
+      advance!(:digit, cst_node: cst_node, ast_node: ast_node)
 
-      return parse_expr!(cst_node, ast_node) if match?(:intop, fail_out: false)
+      return parse_expr!(cst_node, ast_node) if match?(:intop)
     end
 
     # Parses a string expression.
@@ -378,7 +372,7 @@ module Marvin
     def parse_string_expr!(cst_node, ast_node)
       @config.logger.info('  Parsing string expression...')
 
-      match?(:string, cst_node: cst_node, ast_node: ast_node)
+      advance!(:string, cst_node: cst_node, ast_node: ast_node)
     end
 
     # Parses a boolean expression.
@@ -398,14 +392,14 @@ module Marvin
       cst_node << cst_boolean_expr_node
       ast_node << ast_boolean_expr_node
 
-      if match?(:open_parenthesis, fail_out: false, advance: false)
-        match?(:open_parenthesis, cst_node: cst_boolean_expr_node)
+      if match?(:open_parenthesis)
+        advance!(:open_parenthesis, cst_node: cst_boolean_expr_node)
         parse_expr!(cst_boolean_expr_node, ast_boolean_expr_node)
-        match?(:boolop, cst_node: cst_boolean_expr_node, ast_node: ast_boolean_expr_node)
+        advance!(:boolop, cst_node: cst_boolean_expr_node, ast_node: ast_boolean_expr_node)
         parse_expr!(cst_boolean_expr_node, ast_boolean_expr_node)
-        match?(:close_parenthesis, cst_node: cst_boolean_expr_node)
+        advance!(:close_parenthesis, cst_node: cst_boolean_expr_node)
       else
-        match?(:boolval, cst_node: cst_boolean_expr_node, ast_node: ast_boolean_expr_node)
+        advance!(:boolval, cst_node: cst_boolean_expr_node, ast_node: ast_boolean_expr_node)
       end
     end
 
@@ -419,7 +413,7 @@ module Marvin
     def parse_id!(cst_node, ast_node)
       @config.logger.info('  Parsing identifier...')
 
-      match?(:char, cst_node: cst_node, ast_node: ast_node)
+      advance!(:char, cst_node: cst_node, ast_node: ast_node)
     end
   end
 end

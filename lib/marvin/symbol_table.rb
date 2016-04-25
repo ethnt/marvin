@@ -35,8 +35,6 @@ module Marvin
                         scope
                       end
 
-        binding.pry if scope.nil?
-
         traverse_ast(child, next_scope)
       end
     end
@@ -46,7 +44,7 @@ module Marvin
     #
     # @param [Marvin::Node] node The node to search through.
     # @param [Marvin::Scope] scope The current scope.
-    def handle_block!(node, scope)
+    def handle_block!(_, scope)
       nested_scope = Marvin::Scope.new('<Scope>')
 
       # Add the nested scope to the current scope and set the current scope
@@ -113,17 +111,6 @@ module Marvin
       scope.add(identifier)
 
       scope
-    end
-
-    # Print out the tree.
-    #
-    # @return [nil]
-    def print!
-      puts "foo"
-
-      @root.print_tree(@root.node_depth, nil, lambda { |node, prefix| puts "#{prefix} #{node.to_s}" })
-
-      nil
     end
   end
 end
