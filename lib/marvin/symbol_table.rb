@@ -62,15 +62,22 @@ module Marvin
     # @param [Marvin::Node] node The node to search through.
     # @param [Marvin::Scope] scope The current scope.
     def handle_variable_declaration!(node, scope)
+
+      # The type is the first part of the variable declaration.
       type = node.children.first.content.lexeme
+
+      # The name is the last part of the variable declaration.
       name = node.children.last.content.lexeme
 
+      # Check and make sure that the we're not redeclaring the identifier in the
+      # same scope.
       if scope.find_identifier(name, current_only: true)
         token = node.children.last.content
 
         @config.logger.warning("Redeclared identifier at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
       end
 
+      # We'll create a new identifier in the current scope.
       identifier = Marvin::Node.new(Marvin::Identifier.new(name: name, type: type))
 
       scope.add(identifier)
@@ -91,11 +98,16 @@ module Marvin
       # If we can't find an identifier, throw an error!
       return Marvin::Error::ScopeError.new(node.children.first.content) unless identifier
 
+      # The declared type is what the type is supposed to be.
       declared_type = identifier.type
+
+      # The given type is the type of the actual value.
       given_type = node.children.last.resolve_type(scope)
 
+      # If they don't agree, that's a type error!
       return Marvin::Error::TypeError.new(node.children.last, declared_type, given_type) if declared_type != given_type
 
+      # Otherwise, we'll create a new identifier in the current scope.
       identifier = Marvin::Node.new(Marvin::Identifier.new(name: name, type: given_type))
 
       scope.add(identifier)

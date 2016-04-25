@@ -41,7 +41,7 @@ module Marvin
       return @children.last.resolve_type(scope) if production?
 
       # Convert the kind to a token.
-      type = case @content.kind
+      type =  case @content.kind
               when :char
                 scope.find_identifier(content.lexeme).type
               when :digit
