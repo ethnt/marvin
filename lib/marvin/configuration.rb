@@ -14,7 +14,7 @@ module Marvin
     SETTINGS.each do |setting|
       attr_accessor setting
 
-      # Sets a method `setting?` for each setting and will check and see if
+      # Sets a method +setting?+ for each setting and will check and see if
       # the setting is set.
       define_method "#{setting}?" do
         !(send(setting).nil? || send(setting) == [])

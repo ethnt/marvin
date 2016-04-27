@@ -20,7 +20,7 @@ module Marvin
     # @return [Marvin::Runner] This Runner with output code.
     def run!
 
-      # Split the input with `$` so we can run multiple programs.
+      # Split the input with +$+ so we can run multiple programs.
       programs = @source.split(/(?<=[$])/).reject { |p| p == "\n" }
 
       programs.each_with_index do |program, i|

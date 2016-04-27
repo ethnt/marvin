@@ -15,7 +15,7 @@ module Marvin
 
     # Checks the equality of two Tokens.
     #
-    # @param [Marvin::Token] t Another token to check against.
+    # @param [Marvin::Token] other Another token to check against.
     # @return [Boolean] Whether or not the two tokens are equal.
     def ==(other)
       (lexeme == other.lexeme) && (kind == other.kind)

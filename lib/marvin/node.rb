@@ -29,6 +29,13 @@ module Marvin
       @content.is_a?(Token)
     end
 
+    # Checks to see if the content is an Identifier.
+    #
+    # @return [Boolean] Whether or not this contains an Identifier.
+    def identifier?
+      @content.is_a?(Identifier)
+    end
+
     # Resolves the type of the content of this node. If it contains a
     # Production, it will continue to search the right-most child until it
     # reaches an actual value.

@@ -24,7 +24,7 @@ module Marvin
       @type.to_s == kind.to_s
     end
 
-    # Prints out the token in the standard way (`<ProductionName>`).
+    # Prints out the token in the standard way (+<ProductionName>+).
     #
     # @return [String] An output of a Production.
     def to_s

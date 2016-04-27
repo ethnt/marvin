@@ -8,8 +8,9 @@ module Marvin
 
     # Creates a new Logger.
     #
-    # @param [File] destination A destination file to log to. Defaults to
-    #                           STDOUT.
+    # @param [File] stdout Where the STDOUT will go.
+    # @param [File] stderr Where the STDERR will go.
+    # @param [Boolean] verbose Whether or not to spew vitrol.
     # @return [Marvin::Logger] A new logger.
     def initialize(stdout = $stdout, stderr = $stderr, verbose = false)
       @stdout = stdout

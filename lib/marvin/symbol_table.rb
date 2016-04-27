@@ -42,7 +42,7 @@ module Marvin
     # If we reach a new block, let's create a new scope.
     # if production.name == 'Block'
     #
-    # @param [Marvin::Node] node The node to search through.
+    # @param [Marvin::Node] _ Ignore me.
     # @param [Marvin::Scope] scope The current scope.
     def handle_block!(_, scope)
       nested_scope = Marvin::Scope.new('<Scope>')
