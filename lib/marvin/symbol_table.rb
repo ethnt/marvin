@@ -5,12 +5,20 @@ module Marvin
   # Contains scopes and their child variable types, keys, and values.
   class SymbolTable < Tree
 
+    # Create a new symbol table.
+    #
+    # @param [Marvin::Configuration] config A configuration instance.
+    # @return [Marvin::SymbolTable] A new symbol table.
     def initialize(config = nil)
       @config = config
 
       super(nil)
     end
 
+    # Generate a symbol table from an AST.
+    #
+    # @param [Marvin::AST] ast An AST.
+    # @return [Marvin::SymbolTable] Your brand new symbol table!
     def from_ast(ast)
       @ast = ast.root
 
@@ -19,6 +27,11 @@ module Marvin
       traverse_ast(@ast, @root)
     end
 
+    # Traverse the children of an AST node to get symbol table information.
+    #
+    # @param [Marvin::Node] node The current node of the AST.
+    # @param [Marvin::Scope] scope The current node of the symbol table.
+    # @return [Marvin::SymbolTable] The current symbol table.
     def traverse_ast(node, scope)
       node.children.each do |child|
         next unless child.production?
