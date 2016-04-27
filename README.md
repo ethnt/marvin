@@ -13,12 +13,10 @@
 
 Marvin is an implementation of the Marist College CMPT 432 Compilers [language grammar](http://www.labouseur.com/courses/compilers/grammar.pdf). It targets the [6502a microprocessor](http://www.labouseur.com/commondocs/6502alan-instruction-set.pdf) and provides the front- and back-ends of a compiler.
 
-Although Marvin uses [Rubinius](http://rubinius.com/) as a Ruby implementation, it does _not_ use it as an intermediate representation. In the future, it's possible that it will target Rubinius and [LLVM](http://llvm.org/) as well as provide its own for the 6502a microprocessor, but the initial goal is to provide all the functions of a compiler from source code to machine code.
-
 
 ## Installation
 
-The only dependency that Marvin requires is Rubinius 3.14. All other RubyGems can be installed with Bundler.
+The only dependency that Marvin requires is Ruby 2.3.1. All other RubyGems can be installed with Bundler.
 
 ### Installing dependencies on OS X
 
@@ -31,7 +29,7 @@ $ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 Next, install LLVM, rbenv and ruby-build using Homebrew:
 
 ```
-$ brew install homebrew/versions/llvm35 rbenv ruby-build
+$ brew install rbenv ruby-build
 ```
 
 You'll need to add to your `$PATH` to get rbenv to work globally. Head into your `~/.bash_profile` file using the text editor of your choice and add the following snippet:
@@ -52,7 +50,7 @@ $ exec $SHELL -l
 Finally, you can go ahead and install Rubinius:
 
 ```
-$ RUBY_CONFIGURE_OPTS=--llvm-path="/usr/local/Cellar/llvm35/3.5.1" rbenv install rbx-3.14
+$ rbenv install 2.3.1
 ```
 
 ### Setting up Marvin
