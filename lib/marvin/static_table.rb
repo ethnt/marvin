@@ -13,7 +13,21 @@ module Marvin
     # @param [Marvin::Identifier] identifier The identifier to add.
     # @return [Hash] The entry in the static table.
     def add_entry(identifier)
-      entries[next_temporary_value] = { variable: identifier.name, address: next_address }
+      entry = get_entry(name)
+
+      if entry
+        key = next_temporary_value
+
+        @entries[key] = { variable: identifier.name, address: 'XX' }
+
+        [key, 'XX']
+      else
+        @entries[entry.keys.first].merge(value: identifier.encoded_value)
+      end
+    end
+
+    def get_entry(name)
+      @entries.select { |k| @entries[k][:identifier] == name }
     end
 
     private
