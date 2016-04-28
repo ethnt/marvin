@@ -16,6 +16,12 @@ module Marvin
       # A new, empty instance of a Runner.
       runner = Marvin::Runner.new
 
+      # Get the configuration from the Runner.
+      config = runner.config
+
+      # Get the logger from the configuration.
+      logger = config.logger
+
       # For each option, get a possible value.
       argv.options do |opts|
 
@@ -25,7 +31,7 @@ module Marvin
           begin
             runner.source = File.read(f)
           rescue Errno::ENOENT
-            $stderr.puts Pastel.new.white.on_red('Fatal error: could not load input file.')
+            logger.error('Fatal error: could not load input file.')
 
             exit
           end
@@ -33,7 +39,7 @@ module Marvin
 
         # Just straight string input of the source code.
         opts.on '-I', '--input input', String, 'Source code passed in' do |i|
-          $stderr.puts Pastel.new.white.on_red('Fatal error: could not load input.') unless i
+          logger.error('Fatal error: could not load input.') unless i
 
           runner.source = i
         end

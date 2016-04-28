@@ -73,7 +73,7 @@ module Marvin
         token = if node.token?
                   node.content
                 else
-                  node.children.select(&:token?).last.content
+                  node.children.reverse.find(&:token?).content
                 end
 
         config.logger.error("Fatal error: type mismatch at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]} (expected #{declared_type}, received #{given_type})")
