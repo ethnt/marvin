@@ -16,7 +16,7 @@ task test: [:spec, :features, :rubocop]
 
 desc 'Enter a console to interact directly with Marvin'
 task :console do
-  Pry.start
+  exec 'bundle exec pry -r ./lib/marvin'
 end
 
 desc 'Run all benchmarks'
