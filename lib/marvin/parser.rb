@@ -359,7 +359,10 @@ module Marvin
 
       advance!(:digit, cst_node: cst_node, ast_node: ast_node)
 
-      return parse_expr!(cst_node, ast_node) if match?(:intop)
+      if match?(:intop)
+        advance!(:intop)
+        parse_expr!(cst_node, ast_node)
+      end
     end
 
     # Parses a string expression.
