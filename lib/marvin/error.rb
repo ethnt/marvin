@@ -81,5 +81,37 @@ module Marvin
         exit
       end
     end
+
+    # An undeclared identifier error, where we try to assign a variable without
+    # declaring it.
+    class UndeclaredIdentifierError
+
+      # Creates a new undeclared identifier error.
+      #
+      # @param [String] token The char token in question.
+      # @param [Marvin::Configuration] config A configuration instance
+      # @return [Marvin::UndeclaredIdentifierError] The error.
+      def initialize(token, config: Marvin::Configuration.new)
+        config.logger.error("Fatal error: undeclared identifier #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+
+        exit
+      end
+    end
+
+    # An undeclared identifier error, where we try to assign a variable without
+    # declaring it.
+    class RedeclaredIdentifierError
+
+      # Creates a new undeclared identifier error.
+      #
+      # @param [String] token The char token in question.
+      # @param [Marvin::Configuration] config A configuration instance
+      # @return [Marvin::RedeclaredIdentifierError] The error.
+      def initialize(token, config: Marvin::Configuration.new)
+        config.logger.error("Fatal error: redeclared identifier at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+
+        exit
+      end
+    end
   end
 end

@@ -85,7 +85,7 @@ module Marvin
       if scope.find_identifier(name, current_only: true)
         token = node.children.last.content
 
-        @config.logger.warning("Redeclared identifier at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+        return Marvin::Error::RedeclaredIdentifierError.new(token)
       end
 
       # We'll create a new identifier in the current scope.
@@ -107,7 +107,7 @@ module Marvin
       identifier = scope.find_identifier(name)
 
       # If we can't find an identifier, throw an error!
-      return Marvin::Error::ScopeError.new(node.children.first.content) unless identifier
+      return Marvin::Error::UndeclaredIdentifierError.new(node.children.first.content) unless identifier
 
       # The declared type is what the type is supposed to be.
       declared_type = identifier.type
