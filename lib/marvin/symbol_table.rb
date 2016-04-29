@@ -118,11 +118,6 @@ module Marvin
       # If they don't agree, that's a type error!
       return Marvin::Error::TypeError.new(node.children.last, declared_type, given_type) if declared_type != given_type
 
-      # Otherwise, we'll create a new identifier in the current scope.
-      identifier = Marvin::Node.new(Marvin::Identifier.new(name: name, type: given_type))
-
-      scope.add(identifier)
-
       scope
     end
   end
