@@ -10,8 +10,8 @@ module Marvin
     # The type of the identifier (either +int+, +boolean+, or +string+).
     property :type
 
-    # The value of the identifier.
-    property :value
+    # Whether or not the variable has been assigned.
+    property :assigned, default: false
 
     # Any other attributes, like line or character number.
     property :attributes
@@ -24,7 +24,7 @@ module Marvin
       @type.to_s == kind.to_s
     end
 
-    # Prints out the token in the standard way (+<ProductionName>+).
+    # Prints out the token in the standard way (+<name : type>+).
     #
     # @return [String] An output of a Production.
     def to_s

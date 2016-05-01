@@ -115,8 +115,18 @@ module Marvin
       # The given type is the type of the actual value.
       given_type = node.children.last.resolve_type(scope)
 
+      # If the given type returns nil, that means it's an un-assigned identifier.
+      if given_type.is_a?(Marvin::Identifier)
+        @config.logger.warning("Assigning identifier #{identifier.name} to another unassigned identifier #{given_type.name} on line #{node.children.last.content.attributes[:line]} at character #{node.children.last.content.attributes[:char]}")
+
+        given_type = given_type.type
+      end
+
       # If they don't agree, that's a type error!
       return Marvin::Error::TypeError.new(node.children.last, declared_type, given_type) if declared_type != given_type
+
+      # Set the identifier to be declared.
+      identifier.assigned = true
 
       scope
     end

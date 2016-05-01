@@ -50,7 +50,8 @@ module Marvin
       # Convert the kind to a token.
       type =  case @content.kind
               when :char
-                scope.find_identifier(content.lexeme).type
+                # Just return the identifier if we get a char.
+                scope.find_identifier(content.lexeme)
               when :digit
                 'int'
               when :boolval
