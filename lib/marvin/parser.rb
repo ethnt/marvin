@@ -343,19 +343,20 @@ module Marvin
         parse_id!(cst_node, ast_node)
       end
 
-      # HACK: The following two conditionals shouldn't be here. We should be
-      # just calling #parse_int_expr! or #parse_boolean_expr! instead. But, this
-      # may make it LL(2) (vs. LL(1)), so ¯\_(ツ)_/¯.
-
-      if match?(:intop)
-        advance!(:intop, cst_node: cst_node, ast_node: ast_node)
-        parse_expr!(cst_node, ast_node)
-      end
-
-      if match?(:boolop)
-        advance!(:boolop, cst_node: cst_node, ast_node: ast_node)
-        parse_expr!(cst_node, ast_node)
-      end
+      # # HACK: The following two conditionals shouldn't be here. We should be
+      # # just calling #parse_int_expr! or #parse_boolean_expr! instead. But, this
+      # # may make it LL(2) (vs. LL(1)), so ¯\_(ツ)_/¯.
+      #
+      # if match?(:intop)
+      #   advance!(:intop, cst_node: cst_node, ast_node: ast_node)
+      #   parse_expr!(cst_node, ast_node)
+      # end
+      #
+      # if match?(:boolop)
+      #   binding.pry
+      #   advance!(:boolop, cst_node: cst_node, ast_node: ast_node)
+      #   parse_expr!(cst_node, ast_node)
+      # end
     end
 
     # Parses an integer expression.
