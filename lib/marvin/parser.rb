@@ -1,5 +1,3 @@
-require 'log_buddy'
-
 require 'digest/md5'
 
 module Marvin
