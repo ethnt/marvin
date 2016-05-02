@@ -1,11 +1,8 @@
 module Marvin
-  class StaticTable
+  class JumpTable
 
-    # Create a new, empty, static table.
-    #
-    # @return [Marvin::StaticTable] An empty table.
     def initialize
-      @entries = {}
+      @entries = []
     end
 
     # Add a new entry.
@@ -13,15 +10,18 @@ module Marvin
     # @param [Marvin::Identifier] identifier The identifier to add.
     # @return [Hash] The entry in the static table.
     def add_entry(name)
-      entry = { address: next_temporary_address! }
+      entry = {
+        temporary_value: next_temporary_value!,
+        distance: nil
+      }
 
-      @entries[name] = entry
+      @entries << entry
 
       entry
     end
 
-    def get_entry(name)
-      @entries[name]
+    def get_entry(value)
+      @entries.find { |e| e.temporary_value == value }
     end
 
     private
@@ -29,7 +29,7 @@ module Marvin
     def next_temporary_address!
       return 0 if @entries.empty?
 
-      @entries.map { |e| e.last[:address] }.max + 1
+      @entries.map { |e| e[:temporary_value] }.max + 1
     end
   end
 end

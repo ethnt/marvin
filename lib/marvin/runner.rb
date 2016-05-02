@@ -36,6 +36,9 @@ module Marvin
         @code = Marvin::CodeGenerator.new(@parser.ast, config: @config)
         @code.generate!
 
+        @config.logger.info("\n")
+        @config.logger.stdout.puts @code.code
+
         Marvin.logger.info("\n") unless Marvin.logger.warnings.empty?
 
         Marvin.logger.warnings.each do |warning|
