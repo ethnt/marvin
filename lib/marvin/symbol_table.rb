@@ -40,6 +40,8 @@ module Marvin
         next_scope =  case child.content.name
                       when 'Block'
                         handle_block!(child, scope)
+                      when 'Print'
+                        handle_print!(child, scope)
                       when 'VariableDeclaration'
                         handle_variable_declaration!(child, scope)
                       when 'Assignment'
@@ -65,6 +67,19 @@ module Marvin
       scope.add(nested_scope)
 
       nested_scope
+    end
+
+    # If we reach a print statement, check and make sure every identifier used
+    # actually belongs.
+    #
+    # @param [Marvin::Node] node The actual print node.
+    # @param [Marvin::Scope] scope The current scope.
+    def handle_print!(node, scope)
+      node.children.map(&:content).select { |n| n.kind == :char }.map(&:lexeme).each do |name|
+        unless scope.find_identifier(name)
+          return Marvin::Error::UndeclaredIdentifierError.new(node.children.first.content)
+        end
+      end
     end
 
     # If we reach a variable declaration, we're adding a new identifier to
