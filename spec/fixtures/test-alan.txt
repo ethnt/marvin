@@ -9,7 +9,7 @@
         b = 6
         c = "inta"
       }
-      print(c)
+      print(c == c)
     }
   }
   print(b)
