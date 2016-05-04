@@ -1,5 +1,6 @@
 module Marvin
   class JumpTable
+    attr_accessor :entries
 
     def initialize
       @entries = []
@@ -11,7 +12,7 @@ module Marvin
     # @return [Hash] The entry in the static table.
     def add_entry(name)
       entry = {
-        temporary_value: next_temporary_value!,
+        temporary_value: next_temporary_address!,
         distance: nil
       }
 

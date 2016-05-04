@@ -2,6 +2,8 @@ module Marvin
 
   # Represents a 6502a instruction set (stack and heap).
   class InstructionSet
+    attr_accessor :stack, :heap
+
     # Creates a new instruction set.
     #
     # @return [Marvin::InstructionSet] Empty instructions.

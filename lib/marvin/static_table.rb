@@ -1,6 +1,8 @@
 module Marvin
   class StaticTable
 
+    attr_accessor :entries
+
     # Create a new, empty, static table.
     #
     # @return [Marvin::StaticTable] An empty table.
