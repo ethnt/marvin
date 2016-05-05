@@ -11,6 +11,7 @@ group :test do
   gem 'rspec', '~> 3.0'
   gem 'cucumber', '~> 2.3.2'
   gem 'simplecov', '~> 0.11.1', require: false
+  gem 'codeclimate-test-reporter', '~> 0.5.0', require: false
 end
 
 gemspec
