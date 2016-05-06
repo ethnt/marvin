@@ -13,14 +13,11 @@ module Marvin
     # @return [Marvin::Runner] The resulting +Runner+.
     def self.parse!(argv)
 
+      # Set up the configuration.
+      Marvin.configure { }
+
       # A new, empty instance of a Runner.
       runner = Marvin::Runner.new
-
-      # Get the configuration from the Runner.
-      config = runner.config
-
-      # Get the logger from the configuration.
-      logger = config.logger
 
       # For each option, get a possible value.
       argv.options do |opts|
@@ -31,7 +28,7 @@ module Marvin
           begin
             runner.source = File.read(f)
           rescue Errno::ENOENT
-            logger.error('Fatal error: could not load input file.')
+            Marvin.logger.error('Fatal error: could not load input file.')
 
             exit
           end
@@ -39,13 +36,13 @@ module Marvin
 
         # Just straight string input of the source code.
         opts.on '-I', '--input input', String, 'Source code passed in' do |i|
-          logger.error('Fatal error: could not load input.') unless i
+          Marvin.logger.error('Fatal error: could not load input.') unless i
 
           runner.source = i
         end
 
-        opts.on '-v', '--verbose', 'Turns on verbose logging' do |v|
-          runner.config.verbose = v if v
+        opts.on '-v', '--verbose', 'Turns on verbose logging' do |verbose|
+          Marvin.configuration.verbose = verbose if verbose
         end
 
         # Prints the version number and exits.

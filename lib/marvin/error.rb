@@ -14,10 +14,9 @@ module Marvin
       # Creates a new lexer error.
       #
       # @param [String] str The string where we're having issues.
-      # @param [Marvin::Configuration] config A configuration instance
       # @return [Marvin::LexerError] The error.
-      def initialize(str, config: Marvin::Configuration.new)
-        config.logger.error("Fatal error: unexpected non-token character \"#{str}\".")
+      def initialize(str)
+        Marvin.logger.error("Fatal error: unexpected non-token character \"#{str}\".")
 
         exit
       end
@@ -31,12 +30,11 @@ module Marvin
       #
       # @param [Marvin::Token] token The token we're having issues with.
       # @param [Symbol, Array<Symbol>] kind The kind (or kinds) expected.
-      # @param [Marvin::Configuration] config A configuration instance
       # @return [Marvin::ParserError] The error.
-      def initialize(token, kind, config: Marvin::Configuration.new)
+      def initialize(token, kind)
         kind = kind.map(&:to_s).join(' or ') if kind.is_a?(Array)
 
-        config.logger.error("Fatal error: expected #{kind}, found #{token.kind} \"#{token.lexeme}\" on line #{token.attributes[:line]} at character #{token.attributes[:char]}.")
+        Marvin.logger.error("Fatal error: expected #{kind}, found #{token.kind} \"#{token.lexeme}\" on line #{token.attributes[:line]} at character #{token.attributes[:char]}.")
 
         exit
       end
@@ -49,10 +47,9 @@ module Marvin
       # Creates a new out-of-scope error.
       #
       # @param [String] token The char token in question.
-      # @param [Marvin::Configuration] config A configuration instance
       # @return [Marvin::ScopeError] The error.
-      def initialize(token, config: Marvin::Configuration.new)
-        config.logger.error("Fatal error: out-of-scope identifier #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+      def initialize(token)
+        Marvin.logger.error("Fatal error: out-of-scope identifier #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
 
         exit
       end
@@ -67,16 +64,15 @@ module Marvin
       # @param [String] node The node containing the type error.
       # @param [String] declared_type The type that was expected.
       # @param [String] given_type The actual type.
-      # @param [Marvin::Configuration] config A configuration instance
       # @return [Marvin::ScopeError] The error.
-      def initialize(node, declared_type, given_type, config: Marvin::Configuration.new)
+      def initialize(node, declared_type, given_type)
         token = if node.token?
                   node.content
                 else
                   node.children.reverse.find(&:token?).content
                 end
 
-        config.logger.error("Fatal error: type mismatch at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]} (expected #{declared_type}, received #{given_type})")
+        Marvin.logger.error("Fatal error: type mismatch at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]} (expected #{declared_type}, received #{given_type})")
 
         exit
       end
@@ -89,10 +85,9 @@ module Marvin
       # Creates a new undeclared identifier error.
       #
       # @param [String] token The char token in question.
-      # @param [Marvin::Configuration] config A configuration instance
       # @return [Marvin::UndeclaredIdentifierError] The error.
-      def initialize(token, config: Marvin::Configuration.new)
-        config.logger.error("Fatal error: undeclared identifier #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+      def initialize(token)
+        Marvin.logger.error("Fatal error: undeclared identifier #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
 
         exit
       end
@@ -105,10 +100,9 @@ module Marvin
       # Creates a new undeclared identifier error.
       #
       # @param [String] token The char token in question.
-      # @param [Marvin::Configuration] config A configuration instance
       # @return [Marvin::RedeclaredIdentifierError] The error.
-      def initialize(token, config: Marvin::Configuration.new)
-        config.logger.error("Fatal error: redeclared identifier at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
+      def initialize(token)
+        Marvin.logger.error("Fatal error: redeclared identifier at #{token.lexeme} on line #{token.attributes[:line]} at character #{token.attributes[:char]}")
 
         exit
       end

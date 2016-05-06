@@ -7,11 +7,8 @@ module Marvin
 
     # Create a new symbol table.
     #
-    # @param [Marvin::Configuration] config A configuration instance.
     # @return [Marvin::SymbolTable] A new symbol table.
-    def initialize(config = nil)
-      @config = config
-
+    def initialize
       super(nil)
     end
 
@@ -132,7 +129,7 @@ module Marvin
 
       # If the given type returns nil, that means it's an un-assigned identifier.
       if given_type.is_a?(Marvin::Identifier)
-        @config.logger.warning("Assigning identifier #{identifier.name} to another unassigned identifier #{given_type.name} on line #{node.children.last.content.attributes[:line]} at character #{node.children.last.content.attributes[:char]}")
+        Marvin.logger.warning("Assigning identifier #{identifier.name} to another unassigned identifier #{given_type.name} on line #{node.children.last.content.attributes[:line]} at character #{node.children.last.content.attributes[:char]}")
 
         given_type = given_type.type
       end
