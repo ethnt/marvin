@@ -1,5 +1,3 @@
-require 'log_buddy'
-
 module Marvin
   class CodeGenerator
     attr_accessor :ast, :code, :config

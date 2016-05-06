@@ -4,7 +4,7 @@ require 'spec_helper'
 describe Marvin::Runner do
   let(:runner) do
     runner = Marvin::Runner.new
-    runner.source = '{ } $'
+    runner.source = File.read('./spec/fixtures/test-code-generation.txt')
     runner
   end
 
@@ -25,6 +25,10 @@ describe Marvin::Runner do
 
     it 'creates a new Lexer' do
       expect(runner.lexer).to be_an_instance_of Marvin::Lexer
+    end
+
+    it 'outputs the correct code' do
+      expect(runner.code.code).to eql "A9 00 8D 2F 00 A9 03 8D 2F 00 A9 00 8D 30 00 A9 04 8D 30 00 AD 30 00 8D 2F 00 AC 2F 00 A2 01 FF AE 2F 00 EC 30 00 D0 07 AC 2F 00 A2 01 FF 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
     end
   end
 end

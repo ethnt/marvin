@@ -5,7 +5,7 @@ module Marvin
   # The runner class is the foundation for the actual compiler. It will take the
   # file or input stream and run it through the paces.
   class Runner
-    attr_accessor :source, :lexer, :parser
+    attr_accessor :source, :lexer, :parser, :code
 
     # Initialize the actual compiler.
     #
