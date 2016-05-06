@@ -4,7 +4,7 @@ module Marvin
 
   # Logger is responsible for outputting errors and warnings.
   class Logger
-    attr_accessor :stdout, :stderr, :verbose, :warnings, :errors
+    attr_accessor :stdout, :stderr, :warnings, :errors
 
     # Creates a new Logger.
     #
@@ -12,10 +12,9 @@ module Marvin
     # @param [File] stderr Where the STDERR will go.
     # @param [Boolean] verbose Whether or not to spew vitrol.
     # @return [Marvin::Logger] A new logger.
-    def initialize(stdout = $stdout, stderr = $stderr, verbose = false)
+    def initialize(stdout = $stdout, stderr = $stderr)
       @stdout = stdout
       @stderr = stderr
-      @verbose = verbose
       @errors = []
       @warnings = []
     end
@@ -25,7 +24,7 @@ module Marvin
     # @param [String] text The informational text.
     # @return [String] The informational text back to you.
     def info(text)
-      stdout.puts(text) if @verbose
+      stdout.puts(text) if Marvin.configuration.verbose
 
       text
     end
