@@ -33,11 +33,11 @@ module Marvin
         @parser = Marvin::Parser.new(@lexer.tokens)
         @parser.parse!
 
-        @code = Marvin::CodeGenerator.new(@parser.ast, config: @config)
+        @code = Marvin::CodeGenerator.new(@parser.ast)
         @code.generate!
 
-        @config.logger.info("\n")
-        @config.logger.stdout.puts @code.code
+        Marvin.logger.info("\n")
+        Marvin.logger.stdout.puts @code.code
 
         Marvin.logger.info("\n") unless Marvin.logger.warnings.empty?
 
