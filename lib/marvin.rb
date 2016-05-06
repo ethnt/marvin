@@ -36,4 +36,11 @@ module Marvin
 
     yield(configuration)
   end
+
+  # A helper method to get to the logger.
+  #
+  # @return [Marvin::Logger] Our sweet logger.
+  def self.logger
+    self.configuration.logger
+  end
 end

@@ -5,14 +5,13 @@ module Marvin
   # The runner class is the foundation for the actual compiler. It will take the
   # file or input stream and run it through the paces.
   class Runner
-    attr_accessor :source, :config, :lexer, :parser
+    attr_accessor :source, :lexer, :parser
 
     # Initialize the actual compiler.
     #
     # @return [Marvin::Runner] A runner object.
     def initialize
       @source ||= nil
-      @config ||= Marvin::Configuration.new
     end
 
     # Run the compiler.
@@ -24,20 +23,20 @@ module Marvin
       programs = @source.split(/(?<=[$])/).reject { |p| p == "\n" }
 
       programs.each_with_index do |program, i|
-        @config.logger.info("\n-----------------------------------\n") if i > 0
+        Marvin.logger.info("\n-----------------------------------\n") if i > 0
 
-        @config.logger.info(Pastel.new.bold("Compiling program ##{i}...\n"))
+        Marvin.logger.info(Pastel.new.bold("Compiling program ##{i}...\n"))
 
-        @lexer = Marvin::Lexer.new(program, config: @config)
+        @lexer = Marvin::Lexer.new(program)
         @lexer.lex!
 
-        @parser = Marvin::Parser.new(@lexer.tokens, config: @config)
+        @parser = Marvin::Parser.new(@lexer.tokens)
         @parser.parse!
 
-        @config.logger.info("\n") unless @config.logger.warnings.empty?
+        Marvin.logger.info("\n") unless Marvin.logger.warnings.empty?
 
-        @config.logger.warnings.each do |warning|
-          @config.logger.info(Pastel.new.yellow("warning: #{warning}"))
+        Marvin.logger.warnings.each do |warning|
+          Marvin.logger.info(Pastel.new.yellow("warning: #{warning}"))
         end
       end
 
