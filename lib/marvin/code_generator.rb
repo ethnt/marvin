@@ -108,7 +108,7 @@ module Marvin
       # static table.
       #
       # 8D T0 XX
-      store_accumulator!(entry.value)
+      store_accumulator!(entry)
     end
 
     # Handles an assignment statement.
@@ -150,7 +150,7 @@ module Marvin
         # of the assignment statement.
         #
         # 8D T0 XX
-        store_accumulator!(name_entry.value)
+        store_accumulator!(name_entry)
 
       # Now we're assinging a variable to a primitive.
       else
@@ -158,13 +158,13 @@ module Marvin
         # Load the accumulator with a hex value.
         #
         # A9 03
-        load_accumulator!(to_hex(value))
+        load_accumulator!(to_hex(value.lexeme))
 
         # Store the accumulator in the memory location for the left hand side
         # of the assignment statement.
         #
         # 8D T0 XX
-        store_accumulator!(name_entry.value)
+        store_accumulator!(name_entry)
       end
     end
 
@@ -186,17 +186,17 @@ module Marvin
       # primitive. We're assuming identifier for now.
 
       # Get the variable memory entry.
-      entry = @static_table.get_entry(node.children.first.content.lexeme)
+      entry = @static_table.get_entry(name: node.children.first.content.lexeme)
 
       # Load the value in memory to the y-register.
       #
       # AC T0 XX
-      load_y_register_from_memory!(entry.value)
+      load_y_register_from_memory!(entry)
 
       # Load the x-register with 01.
       #
       # A2 01
-      load_x_register_with_constant!('01')
+      load_x_register_with_constant!(1)
 
       # System call!
       #
@@ -237,7 +237,7 @@ module Marvin
         # Load the x-register from the memory location given.
         #
         # AE T0 XX
-        load_x_register_from_memory!(lhs_entry.value)
+        load_x_register_from_memory!(lhs_entry)
 
       # If the left-hand side of the boolean expression is anything but a
       # character, it's primitive.
@@ -249,7 +249,7 @@ module Marvin
       if rhs_token.kind == :char
 
         # Get the memory address of this specific identifier.
-        rhs_entry = @static_table.get_entry(rhs_token.lexeme)
+        rhs_entry = @static_table.get_entry(name: rhs_token.lexeme)
 
         # Compare the x-register to a location in memory.
         #
@@ -266,7 +266,7 @@ module Marvin
       jump_table_entry = @jump_table.add_entry
 
       # Now branch to that entry.
-      branch!(jump_table_entry.value)
+      branch!(jump_table_entry)
     end
 
     # Compare the x-register.
@@ -275,7 +275,7 @@ module Marvin
     #
     # @param [Marvin::StaticTable::Entry] entry The static table entry.
     # @return [nil]
-    def compare_x_register!(value)
+    def compare_x_register!(entry)
       @instructions.add_to_stack('EC')
       @instructions.add_to_stack(entry.memory_reference)
     end
@@ -299,7 +299,7 @@ module Marvin
     # @return [nil]
     def load_accumulator_from_memory!(entry)
       @instructions.add_to_stack('AD')
-      @instructions.add_to_stack(["T#{entry.value}", 'XX'])
+      @instructions.add_to_stack(entry.memory_reference)
     end
 
     # Store the accumulator in memory.
@@ -309,7 +309,8 @@ module Marvin
     # @param [Marvin::StaticTable::Entry] entry A static table entry.
     # @return [nil]
     def store_accumulator!(entry)
-      @instructions.add_to_stack(['8D', "T#{entry.value}", 'XX'])
+      @instructions.add_to_stack('8D')
+      @instructions.add_to_stack(entry.memory_reference)
     end
 
     # Load the x-register with a constant value.
@@ -330,7 +331,8 @@ module Marvin
     # @param [Marvin::StaticTable::Entry] entry A static table entry.
     # @return [nil]
     def load_x_register_from_memory!(entry)
-      @instructions.add_to_stack(['AE', "T#{entry.value}", 'XX'])
+      @instructions.add_to_stack('AE')
+      @instructions.add_to_stack(entry.memory_reference)
     end
 
     # Load the y-register with a value from memory.
@@ -340,7 +342,8 @@ module Marvin
     # @param [Marvin::StaticEntry::Entry] entry A static table entry.
     # @return [nil]
     def load_y_register_from_memory!(entry)
-      @instructions.add_to_stack(['AC', "T#{entry.value}", 'XX'])
+      @instructions.add_to_stack('AC')
+      @instructions.add_to_stack(entry.memory_reference)
     end
 
     # Branch to another area of memory.
@@ -350,7 +353,8 @@ module Marvin
     # @param [Marvin::JumpEntry::Entry] entry A jump table entry.
     # @return [nil]
     def branch!(entry)
-      @instructions.add_to_stack(['D0', "J#{entry.value}"])
+      @instructions.add_to_stack('D0')
+      @instructions.add_to_stack(entry.jump_reference)
     end
 
     # Just a no op.
@@ -386,7 +390,7 @@ module Marvin
     #
     # @return [nil]
     def backpatch_static_table!
-      memory_location_decimal = @instructions.stack.length
+      memory_location_decimal = @instructions.stack.length + 1
 
       @static_table.entries.each do |entry|
         indexes = @instructions.stack.each_index.select { |i| @instructions.stack[i] == "T#{entry.value}" }
@@ -424,34 +428,21 @@ module Marvin
     # @param [String,Integer,TrueClass,FalseClass] value The value to convert.
     # @return [Array<String>] An array of hex values.
     def to_hex(value)
-      case value.class
+      # Turn it into an integer if we can.
+      value = value.to_i if value.to_i.to_s == value
+
+      case value
       when String
-        value.each_byte.map { |b| b.to_s(16) }
-      when Integer
-        [value.to_s(16)] if value.is_a?(Integer)
+        value.each_byte.map { |b| b.to_s(16).rjust(2, '0').upcase }
+      when Fixnum
+        [value.to_s(16).rjust(2, '0').upcase]
       when TrueClass
         ['01']
       when FalseClass
         ['00']
+      else
+        # TODO: Error here, cannot convert to hex.
       end
     end
-
-    # HACK: Maybe move this to the Token class, have another method for primitives here
-    # def to_hex(value)
-    #   return value.to_i(16).to_s.rjust(2, '0') unless value.is_a?(Marvin::Token)
-    #
-    #   token = value
-    #
-    #   hex = case token.kind
-    #         when :char
-    #           location = @static_table.get_entry(token.lexeme)
-    #
-    #           ["T#{location[:address]}", 'XX']
-    #         when :digit
-    #           token.lexeme.to_i(16).to_s.rjust(2, '0')
-    #         end
-    #
-    #   hex
-    # end
   end
 end
