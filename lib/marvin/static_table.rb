@@ -13,10 +13,9 @@ module Marvin
 
     # Add a new entry.
     #
-    # @param [String] name The name of the identifier to add.
-    # @param [Fixnum] scope The scope number.
+    # @param [Marvin::Token] token The token of the identifier reference.
     # @return [Marvin::StaticTable::Entry] The entry in the static table.
-    def add_entry(name, scope = nil)
+    def add_entry(token)
       next_value = if @entries.empty?
                      0
                    else
@@ -25,8 +24,8 @@ module Marvin
 
       entry = Entry.new(
         value: next_value,
-        name: name,
-        scope: scope
+        name: token.lexeme,
+        scope: token.attributes[:scope]
       )
 
       @entries << entry

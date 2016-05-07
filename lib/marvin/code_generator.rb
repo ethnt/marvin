@@ -105,7 +105,7 @@ module Marvin
       load_accumulator!('00')
 
       # Create a new entry in the static table with the identifier name.
-      entry = @static_table.add_entry(node.children.last.content.lexeme)
+      entry = @static_table.add_entry(node.children.last.content)
 
       # Store the accumulator with the temporary memory location given by the
       # static table.
