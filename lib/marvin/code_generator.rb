@@ -1,15 +1,15 @@
 module Marvin
+
+  # Will generate an instruction set from a given abstract syntax tree.
   class CodeGenerator
-    attr_accessor :ast, :code, :config
+    attr_accessor :ast, :code
 
     # Creates a new code generator.
     #
     # @param [Marvin::AST] ast The AST to generate from.
-    # @param [Marvin::Configuration] config Configuration instance.
     # @return [Marvin::CodeGenerator] A new generator.
-    def initialize(ast, config: Marvin::Configuration.new)
+    def initialize(ast)
       @ast = ast
-      @config = config
       @code = nil
       @instructions = InstructionSet.new
       @static_table = StaticTable.new
@@ -18,175 +18,378 @@ module Marvin
 
     # Generates a set of code.
     #
-    # @param [String] A string of hexadecimal.
+    # @return [String] A string of hexadecimal.
     def generate!
+
+      # Traverse the AST, calling teh correct method for each production.
       traverse_ast!(ast.root)
 
+      # Backpatch the static table.
       backpatch_static_table!
+
+      # Backpatch the jump table.
       backpatch_jump_table!
 
+      # Add a break, just to be safe.
       break!
 
-      if @instructions.stack.length < 96
-        (96 - @instructions.stack.length).times do |n|
-          @instructions.add_to_stack('00')
+      # Fill the rest of the stack with '00' if there is space left.
+      if @instructions.code.length < 96
+        (96 - @instructions.code.length).times do |n|
+          break!
         end
       end
 
+      # Output the code in a string format.
       @code = @instructions.code.join(' ')
     end
 
     private
 
+    # Traverses the AST, calling a snake case method of the production.
+    #
+    # @param [Marvin::Node] node The node who's children we're traversing.
+    # @return [nil]
     def traverse_ast!(node)
+
+      # Go through all the children of the given node...
       node.children.each do |child|
+
+        # Skip if it isn't a production.
         next unless child.production?
 
+        # Skip if it's a boolean expression.
         next if %w(BooleanExpr).include?(child.content.name)
 
+        # Convert the production name to snake case and convert to a symbol.
         snake_case = child.content.name.gsub(/(.)([A-Z])/, '\1_\2').downcase
 
         method_name = "encode_#{snake_case}!".to_sym
 
+        # Call the method.
         self.send(method_name, child)
 
+        # Run this method for each child.
         traverse_ast!(child)
       end
     end
 
+    # We don't do anything for blocks, but we need the method anyways.
+    #
+    # @param [Marvin::Node] node The block production node.
+    # @return [nil]
     def encode_block!(node)
     end
 
+    # Handles a variable declaration.
+    #
+    #   int a
+    #
+    # This will convert to something like:
+    #
+    #   A9 00 8D T0 XX
+    #
+    # It will load the accumulator with a default value (+00+), then store the
+    # accumulator in a memory location.
+    #
+    # @param [Marvin::Node] node The variable declaration production node.
+    # @return [nil]
     def encode_variable_declaration!(node)
-      load_accumulator!('00') # A9 00
 
+      # Load the accumulator with a default value (00).
+      #
+      # A9 00
+      load_accumulator!('00')
+
+      # Create a new entry in the static table with the identifier name.
       entry = @static_table.add_entry(node.children.last.content.lexeme)
 
-      store_accumulator!(entry[:address]) # 8D T# XX
+      # Store the accumulator with the temporary memory location given by the
+      # static table.
+      #
+      # 8D T0 XX
+      store_accumulator!(entry.value)
     end
 
+    # Handles an assignment statement.
+    #
+    #   a = 3
+    #
+    # This will convert to something like:
+    #
+    #   A9 03 8D T0 XX
+    #
+    # It will load the accumulator with the value being set and save it to the
+    # memory location for that identifier.
+    #
+    # @param [Marvin::Node] node The assignment statement production node.
+    # @return [nil]
     def encode_assignment!(node)
       name = node.children.first.content
       value = node.children.last.content
 
-      # If we're setting a varialbe to a varialbe, look up the right side's memory location
-      # and use that instead
-      if value.kind == :char
-        load_accumulator_from_memory!(@static_table.get_entry(value.lexeme))
+      # Get the static table entry for the left-hand side of the assignment
+      # statement.
+      name_entry = @static_table.get_entry(name: name.lexeme)
 
-        entry = @static_table.get_entry(name.lexeme)
+      # If we're assigning a variable to a variable, look up the right side's
+      # memory location and use that instead.
+      if value.of_kind?(:char)
 
-        store_accumulator!(entry[:address])
+        # Get the static table entries for the right-hand side of the assignment
+        # statement.
+        value_entry = @static_table.get_entry(name: value.lexeme)
+
+        # Load the accumulator from memory. In this case, we're loading the
+        # value of the right hand side of the assignment statement.
+        #
+        # AD T0 XX
+        load_accumulator_from_memory!(value_entry)
+
+        # Store the accumulator in the memory location for the left hand side
+        # of the assignment statement.
+        #
+        # 8D T0 XX
+        store_accumulator!(name_entry.value)
+
+      # Now we're assinging a variable to a primitive.
       else
+
+        # Load the accumulator with a hex value.
+        #
+        # A9 03
         load_accumulator!(to_hex(value))
 
-        entry = @static_table.get_entry(name.lexeme)
-
-        store_accumulator!(entry[:address])
+        # Store the accumulator in the memory location for the left hand side
+        # of the assignment statement.
+        #
+        # 8D T0 XX
+        store_accumulator!(name_entry.value)
       end
     end
 
+    # Handles a print production.
+    #
+    #   print(a)
+    #
+    # This will convert to something like:
+    #
+    #   AC T0 XX A2 01 FF
+    #
+    # We'll load the y-register from a location in memory, load the x-register
+    # with the constant +01+, then do a system call.
+    #
+    # @param [Marvin::Node] node The print statement production node.
+    # @return [nil]
     def encode_print!(node)
-      # check if we're calling an identifier or a primitive. assume variable for now
+      # FIXME: Check if we're calling an identifier or just printing a
+      # primitive. We're assuming identifier for now.
 
-      # AC T# XX A2 01 FF
+      # Get the variable memory entry.
       entry = @static_table.get_entry(node.children.first.content.lexeme)
 
-      load_y_register_from_memory!(entry[:address])
+      # Load the value in memory to the y-register.
+      #
+      # AC T0 XX
+      load_y_register_from_memory!(entry.value)
+
+      # Load the x-register with 01.
+      #
+      # A2 01
       load_x_register_with_constant!('01')
+
+      # System call!
+      #
+      # FF
       system_call!
     end
 
+    # Handle an if statement.
+    #
+    #   if (a == b) {
+    #     print(a)
+    #   }
+    #
+    # This will encode to something like this:
+    #
+    #   AE T0 XX EC T1 XX D0 J0
+    #
+    # It will load the x-register with the contents of the left-hand side of the
+    # boolean expression, compare the x-register to the contents of the
+    # right-hand side, branch on not equals, jumping ahead a number of bytes to
+    # after the generated code for the if-true statements.
+    #
+    # @param [Marvin::Node] node The if statement production node.
+    # @return [nil]
     def encode_if_statement!(node)
+      # TODO: Separate out the boolean expression into it's own method.
       boolean_expr = node.children.first
 
-      # load x register with contents of left hand side of boolean expr
       lhs_token = boolean_expr.children.first.content
-
       rhs_token = boolean_expr.children.last.content
 
+      # If the left-hand side of the boolean expression is a character...
       if lhs_token.kind == :char
-        lhs_entry = @static_table.get_entry(lhs_token.lexeme)
 
-        load_x_register_from_memory!(lhs_entry[:address])
+        # Get the memory address of this specific identifier.
+        lhs_entry = @static_table.get_entry(name: lhs_token.lexeme)
+
+        # Load the x-register from the memory location given.
+        #
+        # AE T0 XX
+        load_x_register_from_memory!(lhs_entry.value)
+
+      # If the left-hand side of the boolean expression is anything but a
+      # character, it's primitive.
       else
-        # use a primitive
+        # TODO: Deal with primitives.
       end
 
-      # compare the x register to the contents of the right hand side of the boolean expr
+      # If the right-hand side of the boolean expression is a character...
       if rhs_token.kind == :char
+
+        # Get the memory address of this specific identifier.
         rhs_entry = @static_table.get_entry(rhs_token.lexeme)
 
+        # Compare the x-register to a location in memory.
+        #
+        # EC T0 XX
         compare_x_register!(rhs_entry)
+
+      # If the right-hand side of the boolean expression is anything but a
+      # character, it's primitive.
       else
-        # use a primitive
+        # TODO: Deal with primitives.
       end
 
-      # jump!
-      jump_table_entry = @jump_table.add_entry(0)
+      # We're going to add a new jump table entry.
+      jump_table_entry = @jump_table.add_entry
 
-      branch!(jump_table_entry[:temporary_value])
+      # Now branch to that entry.
+      branch!(jump_table_entry.value)
     end
 
-    def compare_x_register!(address)
+    # Compare the x-register.
+    #
+    #   EC T0 XX
+    #
+    # @param [Marvin::StaticTable::Entry] entry The static table entry.
+    # @return [nil]
+    def compare_x_register!(value)
       @instructions.add_to_stack('EC')
-      @instructions.add_to_stack(["T#{address[:address]}", 'XX'])
+      @instructions.add_to_stack(entry.memory_reference)
     end
 
+    # Load the accumulator.
+    #
+    #   A9 __
+    #
+    # @param [String] value The bit of hex to add to the
+    # @return [nil]
     def load_accumulator!(value)
       @instructions.add_to_stack('A9')
       @instructions.add_to_stack(value)
     end
 
-    def load_accumulator_from_memory!(address)
+    # Loads the accumulator from memory.
+    #
+    #   AD T0 XX
+    #
+    # @param [Marvin::StaticTable::Entry] entry A static table entry.
+    # @return [nil]
+    def load_accumulator_from_memory!(entry)
       @instructions.add_to_stack('AD')
-      @instructions.add_to_stack(["T#{address[:address]}", 'XX'])
+      @instructions.add_to_stack(["T#{entry.value}", 'XX'])
     end
 
-    def store_accumulator!(location)
-      @instructions.add_to_stack(['8D', "T#{location}", 'XX'])
+    # Store the accumulator in memory.
+    #
+    #   8D T0 XX
+    #
+    # @param [Marvin::StaticTable::Entry] entry A static table entry.
+    # @return [nil]
+    def store_accumulator!(entry)
+      @instructions.add_to_stack(['8D', "T#{entry.value}", 'XX'])
     end
 
-    def add_with_carry!()
-    end
-
+    # Load the x-register with a constant value.
+    #
+    #   A2 01
+    #
+    # @param [String] value One byte of hex.
+    # @return [nil]
     def load_x_register_with_constant!(value)
       @instructions.add_to_stack('A2')
       @instructions.add_to_stack(to_hex(value))
     end
 
-    def load_x_register_from_memory!(address)
-      @instructions.add_to_stack(['AE', "T#{address}", 'XX'])
+    # Load the x-register with a value from memory.
+    #
+    #   AE T0 XX
+    #
+    # @param [Marvin::StaticTable::Entry] entry A static table entry.
+    # @return [nil]
+    def load_x_register_from_memory!(entry)
+      @instructions.add_to_stack(['AE', "T#{entry.value}", 'XX'])
     end
 
-    # AC T# XX
-    def load_y_register_from_memory!(address)
-      @instructions.add_to_stack(['AC', "T#{address}", 'XX'])
+    # Load the y-register with a value from memory.
+    #
+    #   AC T0 XX
+    #
+    # @param [Marvin::StaticEntry::Entry] entry A static table entry.
+    # @return [nil]
+    def load_y_register_from_memory!(entry)
+      @instructions.add_to_stack(['AC', "T#{entry.value}", 'XX'])
     end
 
-    def branch!(jump_address)
-      @instructions.add_to_stack(['D0', "J#{jump_address}"])
+    # Branch to another area of memory.
+    #
+    #   D0 J0
+    #
+    # @param [Marvin::JumpEntry::Entry] entry A jump table entry.
+    # @return [nil]
+    def branch!(entry)
+      @instructions.add_to_stack(['D0', "J#{entry.value}"])
     end
 
+    # Just a no op.
+    #
+    #   EA
+    #
+    # @return [nil]
     def no_op!
       @instructions.add_to_stack('EA')
     end
 
+    # Add a break.
+    #
+    #  00
+    #
+    # @return [nil]
     def break!
       @instructions.add_to_stack('00')
     end
 
+    # Perform a system call based on the value of the x-accumulator.
+    #
+    #   FF
+    #
+    # @return [nil]
     def system_call!
       @instructions.add_to_stack('FF')
     end
 
+    # Backpatch the static table with real values. Go through, find the
+    # temporary values, and replace them with the next available area in
+    # memory.
+    #
+    # @return [nil]
     def backpatch_static_table!
-      memory_location_decimal = @instructions.stack.length + 1
+      memory_location_decimal = @instructions.stack.length
 
-      @static_table.entries.each do |k, v|
-        temporary_address = v
-
-        indexes = @instructions.stack.each_index.select { |i| @instructions.stack[i] == "T#{v[:address]}" }
+      @static_table.entries.each do |entry|
+        indexes = @instructions.stack.each_index.select { |i| @instructions.stack[i] == "T#{entry.value}" }
 
         memory_location_hex = memory_location_decimal.to_s(16).rjust(2, '0').upcase
 
@@ -199,9 +402,14 @@ module Marvin
       end
     end
 
+    # Backpatch the junp table with real values. Go through, find the
+    # temporary values, and replace them with the next available area in
+    # memory.
+    #
+    # @return [nil]
     def backpatch_jump_table!
       @jump_table.entries.each do |entry|
-        indexes = @instructions.stack.each_index.select { |i| @instructions.stack[i] == "J#{entry[:temporary_value]}" }
+        indexes = @instructions.stack.each_index.select { |i| @instructions.stack[i] == "J#{entry.value}" }
 
         indexes.each do |i|
           distance = (@instructions.stack.length) - i
@@ -211,22 +419,39 @@ module Marvin
       end
     end
 
-    # HACK: Maybe move this to the Token class, have another method for primitives here
+    # Converts a primitive to a hex value.
+    #
+    # @param [String,Integer,TrueClass,FalseClass] value The value to convert.
+    # @return [Array<String>] An array of hex values.
     def to_hex(value)
-      return value.to_i(16).to_s.rjust(2, '0') unless value.is_a?(Marvin::Token)
-
-      token = value
-
-      hex = case token.kind
-            when :char
-              location = @static_table.get_entry(token.lexeme)
-
-              ["T#{location[:address]}", 'XX']
-            when :digit
-              token.lexeme.to_i(16).to_s.rjust(2, '0')
-            end
-
-      hex
+      case value.class
+      when String
+        value.each_byte.map { |b| b.to_s(16) }
+      when Integer
+        [value.to_s(16)] if value.is_a?(Integer)
+      when TrueClass
+        ['01']
+      when FalseClass
+        ['00']
+      end
     end
+
+    # HACK: Maybe move this to the Token class, have another method for primitives here
+    # def to_hex(value)
+    #   return value.to_i(16).to_s.rjust(2, '0') unless value.is_a?(Marvin::Token)
+    #
+    #   token = value
+    #
+    #   hex = case token.kind
+    #         when :char
+    #           location = @static_table.get_entry(token.lexeme)
+    #
+    #           ["T#{location[:address]}", 'XX']
+    #         when :digit
+    #           token.lexeme.to_i(16).to_s.rjust(2, '0')
+    #         end
+    #
+    #   hex
+    # end
   end
 end

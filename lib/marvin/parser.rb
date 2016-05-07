@@ -9,7 +9,6 @@ module Marvin
     # Creates a new Parser with a given Lexer and configuration.
     #
     # @param [Array<Marvin::Token>] tokens A bunch of tokens.
-    # @param [Marvin::Configuration] config Configuration instance.
     # @return [Marvin::Parser] An un-run parser.
     def initialize(tokens)
       @tokens = tokens

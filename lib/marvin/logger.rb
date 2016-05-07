@@ -10,7 +10,6 @@ module Marvin
     #
     # @param [File] stdout Where the STDOUT will go.
     # @param [File] stderr Where the STDERR will go.
-    # @param [Boolean] verbose Whether or not to spew vitrol.
     # @return [Marvin::Logger] A new logger.
     def initialize(stdout = $stdout, stderr = $stderr)
       @stdout = stdout
