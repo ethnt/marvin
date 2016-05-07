@@ -4,6 +4,7 @@ module Marvin
 
   # Contains scopes and their child variable types, keys, and values.
   class SymbolTable < Tree
+    attr_accessor :ast
 
     # Create a new symbol table.
     #
@@ -19,7 +20,7 @@ module Marvin
     def from_ast(ast)
       @ast = ast.root
 
-      @root = Marvin::Scope.new('<Scope>')
+      @root = Marvin::Node.new('<Program>')
 
       traverse_ast(@ast, @root)
     end
@@ -57,7 +58,9 @@ module Marvin
     # @param [Marvin::Node] _ Ignore me.
     # @param [Marvin::Scope] scope The current scope.
     def handle_block!(_, scope)
-      nested_scope = Marvin::Scope.new('<Scope>')
+      number = root.select { |n| n.is_a?(Marvin::Scope) }.count
+
+      nested_scope = Marvin::Scope.new(number)
 
       # Add the nested scope to the current scope and set the current scope
       # to the nested scope.
@@ -91,6 +94,9 @@ module Marvin
 
       # The name is the last part of the variable declaration.
       name = node.children.last.content.lexeme
+
+      # Make sure we know which scope this is in.
+      node.children.last.content.attributes[:scope] = scope.content
 
       # Check and make sure that the we're not redeclaring the identifier in the
       # same scope.
@@ -141,6 +147,21 @@ module Marvin
       identifier.assigned = true
 
       scope
+    end
+
+    # Print out the tree.
+    #
+    # @return [nil]
+    def print_tree
+      @root.print_tree(@root.node_depth, nil, lambda { |node, prefix|
+        if node.is_a?(Marvin::Scope)
+          puts "#{prefix} #{node.to_s}"
+        else
+          puts "#{prefix} #{node.content}"
+        end
+      })
+
+      nil
     end
   end
 end

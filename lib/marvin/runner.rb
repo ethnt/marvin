@@ -33,7 +33,7 @@ module Marvin
         @parser = Marvin::Parser.new(@lexer.tokens)
         @parser.parse!
 
-        @code = Marvin::CodeGenerator.new(@parser.ast)
+        @code = Marvin::CodeGenerator.new(@parser.symbol_table.ast, @parser.symbol_table)
         @code.generate!
 
         Marvin.logger.info("\n")

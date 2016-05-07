@@ -4,7 +4,7 @@ module Marvin
 
   # The Parser will verify the syntax of the found Tokens.
   class Parser
-    attr_accessor :tokens, :cst, :ast
+    attr_accessor :tokens, :cst, :ast, :symbol_table
 
     # Creates a new Parser with a given Lexer and configuration.
     #

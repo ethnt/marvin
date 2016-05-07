@@ -2,14 +2,17 @@ module Marvin
 
   # Will generate an instruction set from a given abstract syntax tree.
   class CodeGenerator
-    attr_accessor :ast, :code
+    attr_accessor :code, :ast, :symbol_table
 
     # Creates a new code generator.
     #
     # @param [Marvin::AST] ast The AST to generate from.
+    # @param [Marvin::SymbolTable] symbol_table The symbol table for the given
+    #                                           AST.
     # @return [Marvin::CodeGenerator] A new generator.
-    def initialize(ast)
+    def initialize(ast, symbol_table)
       @ast = ast
+      @symbol_table = symbol_table
       @code = nil
       @instructions = InstructionSet.new
       @static_table = StaticTable.new

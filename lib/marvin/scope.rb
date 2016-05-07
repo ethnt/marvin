@@ -28,7 +28,7 @@ module Marvin
     #
     # @return [String] An output of a Scope.
     def to_s
-      "<#{@name}>"
+      "<Scope #{@content}>"
     end
   end
 

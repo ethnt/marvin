@@ -14,8 +14,9 @@ module Marvin
     # Add a new entry.
     #
     # @param [String] name The name of the identifier to add.
+    # @param [Fixnum] scope The scope number.
     # @return [Marvin::StaticTable::Entry] The entry in the static table.
-    def add_entry(name)
+    def add_entry(name, scope = nil)
       next_value = if @entries.empty?
                      0
                    else
@@ -24,7 +25,8 @@ module Marvin
 
       entry = Entry.new(
         value: next_value,
-        name: name
+        name: name,
+        scope: scope
       )
 
       @entries << entry
@@ -50,6 +52,12 @@ module Marvin
 
       # The name of the identifier.
       property :name
+
+      # The scope. Defaults to nil.
+      property :scope, default: nil
+
+      # The offset. Defaults to nil.
+      property :offset, default: nil
 
       # The actual address in memory. Defaults to nil.
       property :address, default: nil

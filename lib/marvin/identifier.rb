@@ -14,7 +14,7 @@ module Marvin
     property :assigned, default: false
 
     # Any other attributes, like line or character number.
-    property :attributes
+    property :attributes, default: {}
 
     # Checks to see if this variable is of the type given.
     #
