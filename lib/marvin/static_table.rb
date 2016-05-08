@@ -13,9 +13,12 @@ module Marvin
 
     # Add a new entry.
     #
-    # @param [Marvin::Token] token The token of the identifier reference.
+    # @param [Marvin::Production] production The variable declaration production.
     # @return [Marvin::StaticTable::Entry] The entry in the static table.
-    def add_entry(token)
+    def add_entry(production)
+      type = production.children.first.content
+      identifier = production.children.last.content
+
       next_value = if @entries.empty?
                      0
                    else
@@ -24,8 +27,9 @@ module Marvin
 
       entry = Entry.new(
         value: next_value,
-        name: token.lexeme,
-        scope: token.attributes[:scope]
+        name: identifier.lexeme,
+        scope: identifier.attributes[:scope],
+        type: type.lexeme
       )
 
       @entries << entry
@@ -35,11 +39,15 @@ module Marvin
 
     # Get an entry from the jump table.
     #
-    # @param [Integer] value The number in the static table (i.e., 0 from "T0").
+    # @param [Integer] name The identifier name in the static table.
+    # @param [Integer] scope The scope to filter by.
     # @return [Marvin::StaticTable::Entry] The entry in the static table.
-    def get_entry(value: nil, name: nil)
-      return @entries.find { |e| e.value == value } if value
-      return @entries.find { |e| e.name == name } if name
+    def get_entry(name, scope: nil)
+      results = @entries.select { |e| e.name == name }
+
+      return results.first unless scope
+
+      results.find { |e| e.scope == scope }
     end
 
     # A basic entry in a static table. Includes the value (i.e., 0), the
@@ -61,11 +69,14 @@ module Marvin
       # The actual address in memory. Defaults to nil.
       property :address, default: nil
 
+      # The type of the identifier. Defaults to nil.
+      property :type, default: nil
+
       # Return the jump reference.
       #
       # @return [String] For example, "J0".
       def memory_reference
-        ["T#{value}", '00']
+        ["T#{value}", 'XX']
       end
     end
   end

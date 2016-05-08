@@ -1,3 +1,5 @@
+# require 'log_buddy'
+
 module Marvin
 
   # Will generate an instruction set from a given abstract syntax tree.
@@ -45,6 +47,12 @@ module Marvin
 
       # Output the code in a string format.
       @code = @instructions.code.join(' ')
+
+      Marvin.logger.info("\n")
+
+      @code = @instructions.code.each_slice(8).each do |line|
+        Marvin.logger.info(line.join(' '))
+      end
     end
 
     private
@@ -105,7 +113,7 @@ module Marvin
       load_accumulator!('00')
 
       # Create a new entry in the static table with the identifier name.
-      entry = @static_table.add_entry(node.children.last.content)
+      entry = @static_table.add_entry(node)
 
       # Store the accumulator with the temporary memory location given by the
       # static table.
@@ -133,7 +141,7 @@ module Marvin
 
       # Get the static table entry for the left-hand side of the assignment
       # statement.
-      name_entry = @static_table.get_entry(name: name.lexeme)
+      name_entry = @static_table.get_entry(name.lexeme, scope: name.attributes[:scope])
 
       # If we're assigning a variable to a variable, look up the right side's
       # memory location and use that instead.
@@ -141,7 +149,7 @@ module Marvin
 
         # Get the static table entries for the right-hand side of the assignment
         # statement.
-        value_entry = @static_table.get_entry(name: value.lexeme)
+        value_entry = @static_table.get_entry(value.lexeme)
 
         # Load the accumulator from memory. In this case, we're loading the
         # value of the right hand side of the assignment statement.
@@ -158,10 +166,34 @@ module Marvin
       # Now we're assinging a variable to a primitive.
       else
 
-        # Load the accumulator with a hex value.
-        #
-        # A9 03
-        load_accumulator!(to_hex(value.lexeme))
+        # If it's a string, we'll add it to the heap. Otherwise, just load it
+        # directly.
+        if value.of_kind?(:string)
+
+          # Convert the string to hex and add on a break afterwards.
+          str = to_hex(value.lexeme.split('"').last) + ['00']
+
+          # Get the address of the string in the heap (96 - the heap size).
+          address = to_hex(96 - (@instructions.heap.length + str.length))
+
+          # Add the string to the heap.
+          @instructions.add_to_heap(str)
+
+          # Load the accumulator with the string address.
+          load_accumulator!(address)
+
+          # We know the address of the string in the heap at this point, so
+          # we'll set the address in the static table entry.
+          name_entry.address = address
+
+        else
+
+          # Load the accumulator with a hex value.
+          #
+          # A9 __
+          load_accumulator!(to_hex(value.lexeme))
+
+        end
 
         # Store the accumulator in the memory location for the left hand side
         # of the assignment statement.
@@ -188,18 +220,32 @@ module Marvin
       # FIXME: Check if we're calling an identifier or just printing a
       # primitive. We're assuming identifier for now.
 
+      name = node.children.first.content.lexeme
+
       # Get the variable memory entry.
-      entry = @static_table.get_entry(name: node.children.first.content.lexeme)
+      entry = @static_table.get_entry(name)
 
       # Load the value in memory to the y-register.
       #
       # AC T0 XX
       load_y_register_from_memory!(entry)
 
-      # Load the x-register with 01.
-      #
-      # A2 01
-      load_x_register_with_constant!(1)
+      # Look up the type of the value in the static table. If it's an integer,
+      # we're going to load the y-register from the memory location. If it's a
+      # string, we're going to store the memory location itself in the
+      # y-register.
+      if entry.type == 'string'
+        # Load the x-register with 02.
+        #
+        # A2 02
+        load_x_register_with_constant!(2)
+      else
+        # Load the x-register with 01.
+        #
+        # A2 01
+        load_x_register_with_constant!(1)
+      end
+
 
       # System call!
       #
@@ -228,14 +274,13 @@ module Marvin
       # TODO: Separate out the boolean expression into it's own method.
       boolean_expr = node.children.first
 
-      lhs_token = boolean_expr.children.first.content
-      rhs_token = boolean_expr.children.last.content
+      lhs_token, rhs_token = boolean_expr.children.map(&:content).reject { |t| t.of_kind?(:boolop) }
 
       # If the left-hand side of the boolean expression is a character...
-      if lhs_token.kind == :char
+      if lhs_token.of_kind?(:char)
 
         # Get the memory address of this specific identifier.
-        lhs_entry = @static_table.get_entry(name: lhs_token.lexeme)
+        lhs_entry = @static_table.get_entry(lhs_token.lexeme)
 
         # Load the x-register from the memory location given.
         #
@@ -245,14 +290,18 @@ module Marvin
       # If the left-hand side of the boolean expression is anything but a
       # character, it's primitive.
       else
-        # TODO: Deal with primitives.
+
+        # Load the x-register with a constant.
+        #
+        # A2 __
+        load_x_register_with_constant!(lhs_entry.lexeme)
       end
 
       # If the right-hand side of the boolean expression is a character...
-      if rhs_token.kind == :char
+      if rhs_token.of_kind?(:char)
 
         # Get the memory address of this specific identifier.
-        rhs_entry = @static_table.get_entry(name: rhs_token.lexeme)
+        rhs_entry = @static_table.get_entry(rhs_token.lexeme)
 
         # Compare the x-register to a location in memory.
         #
@@ -262,7 +311,8 @@ module Marvin
       # If the right-hand side of the boolean expression is anything but a
       # character, it's primitive.
       else
-        # TODO: Deal with primitives.
+        # TODO: Deal with primitives. May have to switch the order (load this
+        # value as a constant instead of the left-hand side).
       end
 
       # We're going to add a new jump table entry.
