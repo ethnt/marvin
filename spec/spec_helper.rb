@@ -15,6 +15,8 @@ RSpec.configure do |config|
 
   # Swallow all logger outputs.
   config.before(:all) do
+    Marvin.configure {}
+
     $stderr = File.open(File::NULL, 'w')
     $stdout = File.open(File::NULL, 'w')
   end

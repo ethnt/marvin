@@ -20,6 +20,10 @@ require_relative 'marvin/cst'
 require_relative 'marvin/ast'
 require_relative 'marvin/symbol_table'
 require_relative 'marvin/parser'
+require_relative 'marvin/instruction_set'
+require_relative 'marvin/static_table'
+require_relative 'marvin/jump_table'
+require_relative 'marvin/code_generator'
 
 # This module contains all of the classes belonging to Marvin.
 module Marvin

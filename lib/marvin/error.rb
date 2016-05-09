@@ -107,5 +107,13 @@ module Marvin
         exit
       end
     end
+
+    class InstructionSpaceError
+      def initialize(config: Marvin::Configuration.new)
+        config.logger.error("Fatal error: ran out of instruction set space.")
+
+        exit
+      end
+    end
   end
 end

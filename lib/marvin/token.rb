@@ -21,6 +21,14 @@ module Marvin
       (lexeme == other.lexeme) && (kind == other.kind)
     end
 
+    # Checks the kind in a clearer way.
+    #
+    # @param [Symbol] _kind A kind.
+    # @return [Boolean] Whether the token is of the given kind or not.
+    def of_kind?(_kind)
+      kind == _kind
+    end
+
     # Prints out the token in the standard way (+<Token kind : "lexeme">+).
     #
     # @return [String] An output of a Token.

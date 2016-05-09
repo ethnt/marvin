@@ -5,7 +5,7 @@ module Marvin
   # The runner class is the foundation for the actual compiler. It will take the
   # file or input stream and run it through the paces.
   class Runner
-    attr_accessor :source, :lexer, :parser
+    attr_accessor :source, :lexer, :parser, :code
 
     # Initialize the actual compiler.
     #
@@ -32,6 +32,12 @@ module Marvin
 
         @parser = Marvin::Parser.new(@lexer.tokens)
         @parser.parse!
+
+        @code = Marvin::CodeGenerator.new(@parser.symbol_table.ast, @parser.symbol_table)
+        @code.generate!
+
+        Marvin.logger.info("\n")
+        Marvin.logger.stdout.puts @code.code
 
         Marvin.logger.info("\n") unless Marvin.logger.warnings.empty?
 
