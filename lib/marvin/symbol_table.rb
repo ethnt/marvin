@@ -75,7 +75,7 @@ module Marvin
     # @param [Marvin::Node] node The actual print node.
     # @param [Marvin::Scope] scope The current scope.
     def handle_print!(node, scope)
-      node.children.map(&:content).select { |n| n.kind == :char }.map(&:lexeme).each do |name|
+      node.children.select { |n| n.token? }.map(&:content).select { |n| n.kind == :char }.map(&:lexeme).each do |name|
         unless scope.find_identifier(name)
           return Marvin::Error::UndeclaredIdentifierError.new(node.children.first.content)
         end

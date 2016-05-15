@@ -1,8 +1,13 @@
 {
-  int a
-  {
-    int b
-    b = 2
-  }
-  a = b
-} $
+   print (false)
+   print (true)
+   print ("two")
+   print (3)
+   print ("four")
+   print (5)
+   print (6)
+   print (7)
+   print (8)
+   print ("nine")
+}
+$

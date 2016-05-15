@@ -217,35 +217,68 @@ module Marvin
     # @param [Marvin::Node] node The print statement production node.
     # @return [nil]
     def encode_print!(node)
-      # FIXME: Check if we're calling an identifier or just printing a
-      # primitive. We're assuming identifier for now.
+      child = node.children.first
 
-      name = node.children.first.content.lexeme
+      return encode_print!(child) if child.production?
 
-      # Get the variable memory entry.
-      entry = @static_table.get_entry(name)
+      lexeme = child.content.lexeme
 
-      # Load the value in memory to the y-register.
-      #
-      # AC T0 XX
-      load_y_register_from_memory!(entry)
+      case child.content.kind
+      when :char
+        # Get the variable memory entry.
+        entry = @static_table.get_entry(lexeme)
 
-      # Look up the type of the value in the static table. If it's an integer,
-      # we're going to load the y-register from the memory location. If it's a
-      # string, we're going to store the memory location itself in the
-      # y-register.
-      if entry.type == 'string'
-        # Load the x-register with 02.
+        # Load the value in memory to the y-register.
         #
-        # A2 02
-        load_x_register_with_constant!(2)
-      else
+        # AC T0 XX
+        load_y_register_from_memory!(entry)
+
+        # Look up the type of the value in the static table. If it's an integer,
+        # we're going to load the y-register from the memory location. If it's a
+        # string, we're going to store the memory location itself in the
+        # y-register.
+        if entry.type == 'string'
+          # Load the x-register with 02.
+          #
+          # A2 02
+          load_x_register_with_constant!(2)
+        else
+          # Load the x-register with 01.
+          #
+          # A2 01
+          load_x_register_with_constant!(1)
+        end
+      when :digit
+        # Load the y-register with the actual value.
+        #
+        # A0 __
+        load_y_register_with_constant!(lexeme)
+
         # Load the x-register with 01.
         #
         # A2 01
         load_x_register_with_constant!(1)
-      end
+      when :boolval
+        # If the lexeme is "true", load the y-register with a 01.
+        #
+        # A0 01
+        if lexeme == 'true'
+          load_y_register_with_constant!(1)
 
+        # Otherwise load it with a 00.
+        #
+        # A0 00
+        else
+          load_y_register_with_constant!(0)
+        end
+
+        # Load the x-register with 01.
+        #
+        # A2 01
+        load_x_register_with_constant!(1)
+      when :string
+
+      end
 
       # System call!
       #
@@ -386,6 +419,17 @@ module Marvin
     def load_x_register_from_memory!(entry)
       @instructions.add_to_stack('AE')
       @instructions.add_to_stack(entry.memory_reference)
+    end
+
+    # Load the y-register with a constant.
+    #
+    #   A0 04
+    #
+    # @param [String] value One byte of hex.
+    # @return [nil]
+    def load_y_register_with_constant!(value)
+      @instructions.add_to_stack('A0')
+      @instructions.add_to_stack(to_hex(value))
     end
 
     # Load the y-register with a value from memory.
