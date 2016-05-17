@@ -4,7 +4,7 @@ module Marvin
 
   # Will generate an instruction set from a given abstract syntax tree.
   class CodeGenerator
-    attr_accessor :code, :ast, :symbol_table
+    attr_accessor :code, :ast, :symbol_table, :instructions
 
     # Creates a new code generator.
     #
@@ -51,7 +51,7 @@ module Marvin
       Marvin.logger.info("\n")
 
       @code = @instructions.code.each_slice(8).each do |line|
-        Marvin.logger.info(line.join(' '))
+        puts line.join(' ')
       end
     end
 
