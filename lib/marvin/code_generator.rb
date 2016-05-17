@@ -143,6 +143,8 @@ module Marvin
       # statement.
       name_entry = @static_table.get_entry(name.lexeme, scope: name.attributes[:scope])
 
+      return nil unless value.is_a?(Token)
+
       # If we're assigning a variable to a variable, look up the right side's
       # memory location and use that instead.
       if value.of_kind?(:char)

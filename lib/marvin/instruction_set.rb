@@ -43,7 +43,7 @@ module Marvin
     private
 
     def ensure_size!
-      return Marvin::InstructionSpaceError.new if code.length > 96
+      return Marvin::Error::InstructionSpaceError.new if code.length > 96
     end
   end
 end
