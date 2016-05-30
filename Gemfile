@@ -1,5 +1,9 @@
 source 'https://rubygems.org'
 
+gem 'rubytree', '~> 0.9.7'
+gem 'hashie', '~> 3.4.3'
+gem 'pastel', '~> 0.6.0'
+
 group :development do
   gem 'rake', '~> 10.0'
   gem 'yard', '~> 0.8.7.6'
@@ -13,5 +17,3 @@ group :test do
   gem 'simplecov', '~> 0.11.1', require: false
   gem 'codeclimate-test-reporter', '~> 0.5.0', require: false
 end
-
-gemspec
