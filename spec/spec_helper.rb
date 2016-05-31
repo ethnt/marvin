@@ -15,10 +15,12 @@ RSpec.configure do |config|
 
   # Swallow all logger outputs.
   config.before(:all) do
-    Marvin.configure {}
-
     $stderr = File.open(File::NULL, 'w')
     $stdout = File.open(File::NULL, 'w')
+
+    Marvin.configure do |c|
+      c.logger = Marvin::Logger.new($stdout, $stderr)
+    end
   end
 
   # Restore STDERR and STDOUT after the tests.

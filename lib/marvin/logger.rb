@@ -23,7 +23,7 @@ module Marvin
     # @param [String] text The informational text.
     # @return [String] The informational text back to you.
     def info(text)
-      stdout.puts(text) if Marvin.configuration.verbose
+      @stdout.puts(text) if Marvin.configuration.verbose
 
       text
     end
@@ -41,7 +41,7 @@ module Marvin
     # @param [String] text The error text.
     # @return [String] The error text back to you.
     def error(text)
-      stderr.puts Pastel.new.white.on_red(text)
+      @stderr.puts Pastel.new.white.on_red(text)
     end
   end
 end

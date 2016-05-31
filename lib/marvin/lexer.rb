@@ -16,7 +16,7 @@ module Marvin
       boolval: /(true|false)/,
       boolop: /(==|!=)/,
       intop: /\+/,
-      string: /"[a-z\s]*?"/,
+      string: /"([a-z\s]*?)"/,
       print: /(print)/,
       if_statement: /(if)/,
       while: /(while)/,
@@ -52,7 +52,7 @@ module Marvin
         # Look for any tokens at the current pointer.
         token = find_token!
 
-        # Lexer error if there isn't anythign there.
+        # Lexer error if there isn't anything there.
         return Marvin::Error::LexerError.new(@scanner.getch) unless token
 
         # If we have a token, advance by the length of the lexeme and add the
