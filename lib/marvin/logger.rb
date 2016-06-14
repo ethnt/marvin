@@ -34,6 +34,8 @@ module Marvin
     # @return [String] The warning text back to you.
     def warning(text)
       @warnings << text
+
+      text
     end
 
     # Writes out an error.
@@ -42,6 +44,8 @@ module Marvin
     # @return [String] The error text back to you.
     def error(text)
       @stderr.puts Pastel.new.white.on_red(text)
+
+      text
     end
   end
 end

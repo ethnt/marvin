@@ -19,7 +19,8 @@ RSpec.configure do |config|
     $stdout = File.open(File::NULL, 'w')
 
     Marvin.configure do |c|
-      c.logger = Marvin::Logger.new($stdout, $stderr)
+      c.logger  = Marvin::Logger.new($stdout, $stderr)
+      c.verbose = true
     end
   end
 
