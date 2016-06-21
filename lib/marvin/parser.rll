@@ -1,0 +1,46 @@
+%name Marvin::Parser;
+
+%terminals T_TYPE T_CHAR T_SPACE T_DIGIT T_BOOLOP T_BOOLVAL T_INTOP;
+%terminals T_LBRACKET T_RBRACKET T_DOLLAR T_LPAREN T_RPAREN T_QUOTE T_EQUALS;
+%terminals T_PRINT T_WHILE T_IF;
+
+%header
+{
+  require 'ast'
+}
+
+program
+  = block T_DOLLAR { s(:program, val[0]) }
+  ;
+
+block
+  = T_LBRACKET statement_list T_RBRACKET { s(:block, val[1]) }
+  ;
+
+statement_list
+  = statement statement_list { s(:statement_list, val[1]) }
+  | _
+  ;
+
+statement
+  = block
+  ;
+
+%inner
+{
+  def initialize(tokens)
+    @tokens = tokens
+  end
+
+  def each_token
+    @tokens.each do |token|
+      yield [token.first, token.last]
+    end
+
+    yield [-1, -1]
+  end
+
+  def s(*args)
+    return AST::Node.new(*args)
+  end
+}

@@ -23,6 +23,11 @@ task :benchmarks do
   exec 'ruby benchmarks/*.rb'
 end
 
+desc 'Build the parser'
+task :build do
+  exec 'ruby-ll ./lib/marvin/parser.rll -o ./lib/marvin/parser.rb'
+end
+
 YARD::Rake::YardocTask.new
 
 RuboCop::RakeTask.new
