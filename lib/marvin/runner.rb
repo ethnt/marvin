@@ -18,14 +18,15 @@ module Marvin
     #
     # @return [Marvin::Runner] This Runner with output code.
     def run!
+      logger = Marvin.logger
 
       # Split the input with +$+ so we can run multiple programs.
       programs = @source.split(/(?<=[$])/).reject { |p| p == "\n" }
 
       programs.each_with_index do |program, i|
-        Marvin.logger.info("\n-----------------------------------\n") if i > 0
+        logger.info("\n-----------------------------------\n") if i > 0
 
-        Marvin.logger.info(Pastel.new.bold("Compiling program ##{i}...\n"))
+        logger.info(Pastel.new.bold("Compiling program ##{i}...\n"))
 
         @lexer = Marvin::Lexer.new(program)
         @lexer.lex!
@@ -36,13 +37,13 @@ module Marvin
         @code = Marvin::CodeGenerator.new(@parser.symbol_table.ast, @parser.symbol_table)
         @code.generate!
 
-        Marvin.logger.info("\n")
-        Marvin.logger.stdout.puts @code.code
+        logger.info("\n")
+        logger.stdout.puts @code.code
 
-        Marvin.logger.info("\n") unless Marvin.logger.warnings.empty?
+        logger.info("\n") unless Marvin.logger.warnings.empty?
 
-        Marvin.logger.warnings.each do |warning|
-          Marvin.logger.info(Pastel.new.yellow("warning: #{warning}"))
+        logger.warnings.each do |warning|
+          logger.info(Pastel.new.yellow("warning: #{warning}"))
         end
       end
 
