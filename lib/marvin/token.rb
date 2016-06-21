@@ -35,5 +35,9 @@ module Marvin
     def to_s
       "<Token #{kind} : \"#{lexeme}\">"
     end
+
+    def to_a
+      [kind, lexeme]
+    end
   end
 end

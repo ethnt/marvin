@@ -23,8 +23,9 @@ task :benchmarks do
   exec 'ruby benchmarks/*.rb'
 end
 
-desc 'Build the parser'
+desc 'Build the lexer and parser'
 task :build do
+  exec 'ragel -R ./lib/marvin/lexer.rl'
   exec 'ruby-ll ./lib/marvin/parser.rll -o ./lib/marvin/parser.rb'
 end
 
