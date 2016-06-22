@@ -23,10 +23,22 @@ task :benchmarks do
   exec 'ruby benchmarks/*.rb'
 end
 
-desc 'Build the lexer and parser'
-task :build do
-  exec 'ragel -R ./lib/marvin/lexer.rl'
-  exec 'ruby-ll ./lib/marvin/parser.rll -o ./lib/marvin/parser.rb'
+namespace :build do
+
+  desc 'Build the lexer'
+  task :lexer do
+    exec 'ragel -R ./lib/marvin/lexer.rl'
+  end
+
+  desc 'Build the parser'
+  task :parser do
+    exec 'ruby-ll ./lib/marvin/parser.rll -o ./lib/marvin/parser.rb'
+  end
+
+  desc 'Build the lexer and parser'
+  task :all do
+    exec 'ragel -R ./lib/marvin/lexer.rl && ruby-ll ./lib/marvin/parser.rll -o ./lib/marvin/parser.rb'
+  end
 end
 
 YARD::Rake::YardocTask.new

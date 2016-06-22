@@ -1,7 +1,7 @@
 %name Marvin::Parser;
 
-%terminals T_TYPE T_CHAR T_SPACE T_DIGIT T_BOOLOP T_BOOLVAL T_INTOP;
-%terminals T_LBRACKET T_RBRACKET T_DOLLAR T_LPAREN T_RPAREN T_QUOTE T_EQUALS;
+%terminals T_TYPE T_IDENT T_INTEGER T_BOOLVAL T_STRING;
+%terminals T_LBRACKET T_RBRACKET T_EOP T_LPAREN T_RPAREN T_ASSIGN T_BOOLOP T_INTOP;
 %terminals T_PRINT T_WHILE T_IF;
 
 %header
@@ -10,37 +10,92 @@
 }
 
 program
-  = block T_DOLLAR { s(:program, val[0]) }
+  = block T_EOP { s(:program, val[0]) }
   ;
 
 block
-  = T_LBRACKET statement_list T_RBRACKET { s(:block, val[1]) }
-  ;
-
-statement_list
-  = statement statement_list { s(:statement_list, val[1]) }
-  | _
+  = T_LBRACKET statement* T_RBRACKET { s(:block, val[1]) }
   ;
 
 statement
-  = block
+  = print_statement
+  | assignment_statement
+  | variable_declaration_statement
+  | while_statement
+  | if_statement
+  | block
+  ;
+
+print_statement
+  = T_PRINT T_LPAREN expr T_RPAREN { s(:print_statement, [val[2]].flatten) }
+  ;
+
+assignment_statement
+  = id T_ASSIGN expr { s(:assignment_statement, [val[0].to_sym, val[2]]) }
+  ;
+
+variable_declaration_statement
+  = T_TYPE id { s(:var_decl, [val[0], val[1]]) }
+  ;
+
+while_statement
+  = T_WHILE boolean_expr block { s(:while_statement, [val[1], val[2].children]) }
+  ;
+
+if_statement
+  = T_IF boolean_expr block { s(:if_statement, [val[1], val[2].children]) }
+  ;
+
+expr
+  = int_expr
+  | string_expr
+  | boolean_expr
+  | id
+  ;
+
+# FIXME: In the grammar there is a first/first conflict, so we're resolving it
+# messily here.
+int_expr
+  = T_INTEGER intop_expr {
+      if val[1].nil?
+        [val[0].to_i]
+      else
+        s(:int_expr, [val[0].to_i, val[1]])
+      end
+    }
+  ;
+
+intop_expr
+  = T_INTOP expr { val[1] }
+  | _ { nil }
+  ;
+
+string_expr
+  = T_STRING { val[0] }
+  ;
+
+boolean_expr
+  = T_LPAREN expr T_BOOLOP expr T_RPAREN { s(:boolean_expr, [val[1], val[2].to_sym, val[3]]) }
+  | T_BOOLVAL { val[0] == 'true' ? true : false }
+  ;
+
+id
+  = T_IDENT { val[0].to_sym }
   ;
 
 %inner
 {
+  include AST::Sexp
+
   def initialize(tokens)
     @tokens = tokens
   end
 
   def each_token
     @tokens.each do |token|
-      yield [token.first, token.last]
+      yield token.to_a
     end
 
     yield [-1, -1]
-  end
-
-  def s(*args)
-    return AST::Node.new(*args)
   end
 }

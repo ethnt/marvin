@@ -11,46 +11,98 @@ class Parser < LL::Driver
   CONFIG.terminals = [
     :$EOF, # 0
     :T_TYPE, # 1
-    :T_CHAR, # 2
-    :T_SPACE, # 3
-    :T_DIGIT, # 4
-    :T_BOOLOP, # 5
-    :T_BOOLVAL, # 6
-    :T_INTOP, # 7
-    :T_LBRACKET, # 8
-    :T_RBRACKET, # 9
-    :T_DOLLAR, # 10
-    :T_LPAREN, # 11
-    :T_RPAREN, # 12
-    :T_QUOTE, # 13
-    :T_EQUALS, # 14
-    :T_PRINT, # 15
-    :T_WHILE, # 16
-    :T_IF, # 17
+    :T_IDENT, # 2
+    :T_INTEGER, # 3
+    :T_BOOLVAL, # 4
+    :T_STRING, # 5
+    :T_LBRACKET, # 6
+    :T_RBRACKET, # 7
+    :T_EOP, # 8
+    :T_LPAREN, # 9
+    :T_RPAREN, # 10
+    :T_ASSIGN, # 11
+    :T_BOOLOP, # 12
+    :T_INTOP, # 13
+    :T_PRINT, # 14
+    :T_WHILE, # 15
+    :T_IF, # 16
   ].freeze
 
   CONFIG.rules = [
-    [3, 0, 1, 10, 0, 1], # 0
-    [3, 1, 1, 9, 0, 2, 1, 8], # 1
-    [3, 2, 0, 2, 0, 3], # 2
-    [3, 3, 2, 0], # 3
-    [3, 4, 0, 1], # 4
+    [3, 0, 1, 8, 0, 1], # 0
+    [3, 1, 1, 7, 4, 14, 6, 0, 1, 6], # 1
+    [3, 2, 0, 3], # 2
+    [3, 3, 0, 4], # 3
+    [3, 4, 0, 5], # 4
+    [3, 5, 0, 6], # 5
+    [3, 6, 0, 7], # 6
+    [3, 7, 0, 1], # 7
+    [3, 8, 1, 10, 0, 8, 1, 9, 1, 14], # 8
+    [3, 9, 0, 8, 1, 11, 0, 13], # 9
+    [3, 10, 0, 13, 1, 1], # 10
+    [3, 11, 0, 1, 0, 12, 1, 15], # 11
+    [3, 12, 0, 1, 0, 12, 1, 16], # 12
+    [3, 13, 0, 9], # 13
+    [3, 14, 0, 11], # 14
+    [3, 15, 0, 12], # 15
+    [3, 16, 0, 13], # 16
+    [3, 17, 0, 10, 1, 3], # 17
+    [3, 18, 0, 8, 1, 13], # 18
+    [3, 19, 2, 0], # 19
+    [3, 20, 1, 5], # 20
+    [3, 21, 1, 10, 0, 8, 1, 12, 0, 8, 1, 9], # 21
+    [3, 22, 1, 4], # 22
+    [3, 23, 1, 2], # 23
+    [3, 24, 0, 2], # 24
   ].freeze
 
   CONFIG.table = [
-    [-1, -1, -1, -1, -1, -1, -1, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 0
-    [-1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 1
-    [3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3], # 2
-    [-1, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 3
+    [-1, -1, -1, -1, -1, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 0
+    [-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 1
+    [-1, 4, 3, -1, -1, -1, 7, -1, -1, -1, -1, -1, -1, -1, 2, 5, 6], # 2
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 8, -1, -1], # 3
+    [-1, -1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 4
+    [-1, 10, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 5
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 11, -1], # 6
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 12], # 7
+    [-1, -1, 16, 13, 15, 14, -1, -1, -1, 15, -1, -1, -1, -1, -1, -1, -1], # 8
+    [-1, -1, -1, 17, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 9
+    [19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 18, 19, 19, 19], # 10
+    [-1, -1, -1, -1, -1, 20, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 11
+    [-1, -1, -1, -1, 22, -1, -1, -1, -1, 21, -1, -1, -1, -1, -1, -1, -1], # 12
+    [-1, -1, 23, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], # 13
+    [-1, 24, 24, -1, -1, -1, 24, -1, -1, -1, -1, -1, -1, -1, 24, 24, 24], # 14
   ].freeze
 
   CONFIG.actions = [
     [:_rule_0, 2], # 0
     [:_rule_1, 3], # 1
-    [:_rule_2, 2], # 2
-    [:_rule_3, 0], # 3
+    [:_rule_2, 1], # 2
+    [:_rule_3, 1], # 3
     [:_rule_4, 1], # 4
+    [:_rule_5, 1], # 5
+    [:_rule_6, 1], # 6
+    [:_rule_7, 1], # 7
+    [:_rule_8, 4], # 8
+    [:_rule_9, 3], # 9
+    [:_rule_10, 2], # 10
+    [:_rule_11, 3], # 11
+    [:_rule_12, 3], # 12
+    [:_rule_13, 1], # 13
+    [:_rule_14, 1], # 14
+    [:_rule_15, 1], # 15
+    [:_rule_16, 1], # 16
+    [:_rule_17, 2], # 17
+    [:_rule_18, 2], # 18
+    [:_rule_19, 0], # 19
+    [:_rule_20, 1], # 20
+    [:_rule_21, 5], # 21
+    [:_rule_22, 1], # 22
+    [:_rule_23, 1], # 23
+    [:_rule_24, 1], # 24
   ].freeze
+
+  include AST::Sexp
 
   def initialize(tokens)
     @tokens = tokens
@@ -58,14 +110,10 @@ class Parser < LL::Driver
 
   def each_token
     @tokens.each do |token|
-      yield [token.first, token.last]
+      yield token.to_a
     end
 
     yield [-1, -1]
-  end
-
-  def s(*args)
-    return AST::Node.new(*args)
   end
 
   def _rule_0(val)
@@ -77,15 +125,101 @@ class Parser < LL::Driver
   end
 
   def _rule_2(val)
-     s(:statement_list, val[1]) 
+    val[0]
   end
 
   def _rule_3(val)
-    val
+    val[0]
   end
 
   def _rule_4(val)
-     s(:block, ['boo']) 
+    val[0]
+  end
+
+  def _rule_5(val)
+    val[0]
+  end
+
+  def _rule_6(val)
+    val[0]
+  end
+
+  def _rule_7(val)
+    val[0]
+  end
+
+  def _rule_8(val)
+     s(:print_statement, [val[2]].flatten) 
+  end
+
+  def _rule_9(val)
+     s(:assignment_statement, [val[0].to_sym, val[2]]) 
+  end
+
+  def _rule_10(val)
+     s(:var_decl, [val[0], val[1]]) 
+  end
+
+  def _rule_11(val)
+     s(:while_statement, [val[1], val[2].children]) 
+  end
+
+  def _rule_12(val)
+     s(:if_statement, [val[1], val[2].children]) 
+  end
+
+  def _rule_13(val)
+    val[0]
+  end
+
+  def _rule_14(val)
+    val[0]
+  end
+
+  def _rule_15(val)
+    val[0]
+  end
+
+  def _rule_16(val)
+    val[0]
+  end
+
+  def _rule_17(val)
+    
+      if val[1].nil?
+        [val[0].to_i]
+      else
+        s(:int_expr, [val[0].to_i, val[1]])
+      end
+    
+  end
+
+  def _rule_18(val)
+     val[1] 
+  end
+
+  def _rule_19(val)
+     nil 
+  end
+
+  def _rule_20(val)
+     val[0] 
+  end
+
+  def _rule_21(val)
+     s(:boolean_expr, [val[1], val[2].to_sym, val[3]]) 
+  end
+
+  def _rule_22(val)
+     val[0] == 'true' ? true : false 
+  end
+
+  def _rule_23(val)
+     val[0].to_sym 
+  end
+
+  def _rule_24(val)
+    val[0]
   end
 end
 end

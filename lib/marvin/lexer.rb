@@ -2,11 +2,13 @@
 # line 1 "./lib/marvin/lexer.rl"
 =begin
 
-# line 87 "./lib/marvin/lexer.rl"
+# line 92 "./lib/marvin/lexer.rl"
 
 =end
 
 module Marvin
+
+  # A Ragel-based lexer.
   class Lexer
     attr_accessor :tokens
 
@@ -15,7 +17,7 @@ module Marvin
       @tokens = []
 
       
-# line 19 "./lib/marvin/lexer.rb"
+# line 21 "./lib/marvin/lexer.rb"
 class << self
 	attr_accessor :_lexer_actions
 	private :_lexer_actions, :_lexer_actions=
@@ -26,7 +28,7 @@ self._lexer_actions = [
 	7, 1, 8, 1, 9, 1, 10, 1, 
 	11, 1, 12, 1, 13, 1, 14, 1, 
 	15, 1, 16, 1, 17, 1, 18, 1, 
-	19, 1, 20
+	19, 1, 20, 1, 21
 ]
 
 class << self
@@ -37,8 +39,8 @@ self._lexer_key_offsets = [
 	0, 0, 1, 3, 4, 5, 6, 7, 
 	8, 9, 10, 11, 12, 13, 14, 15, 
 	16, 17, 18, 19, 20, 21, 22, 23, 
-	46, 48, 49, 50, 51, 52, 53, 54, 
-	55
+	46, 48, 49, 50, 51, 53, 54, 55, 
+	56
 ]
 
 class << self
@@ -52,8 +54,8 @@ self._lexer_trans_keys = [
 	33, 34, 36, 40, 41, 43, 61, 98, 
 	102, 105, 112, 115, 116, 119, 123, 125, 
 	9, 13, 48, 57, 97, 122, 48, 57, 
-	61, 111, 97, 110, 114, 116, 114, 104, 
-	0
+	61, 111, 97, 102, 110, 114, 116, 114, 
+	104, 0
 ]
 
 class << self
@@ -64,7 +66,7 @@ self._lexer_single_lengths = [
 	0, 1, 2, 1, 1, 1, 1, 1, 
 	1, 1, 1, 1, 1, 1, 1, 1, 
 	1, 1, 1, 1, 1, 1, 1, 17, 
-	0, 1, 1, 1, 1, 1, 1, 1, 
+	0, 1, 1, 1, 2, 1, 1, 1, 
 	1
 ]
 
@@ -88,8 +90,8 @@ self._lexer_index_offsets = [
 	0, 0, 2, 5, 7, 9, 11, 13, 
 	15, 17, 19, 21, 23, 25, 27, 29, 
 	31, 33, 35, 37, 39, 41, 43, 45, 
-	66, 68, 70, 72, 74, 76, 78, 80, 
-	82
+	66, 68, 70, 72, 74, 77, 79, 81, 
+	83
 ]
 
 class << self
@@ -106,12 +108,12 @@ self._lexer_trans_targs = [
 	23, 23, 23, 23, 25, 26, 27, 28, 
 	29, 30, 31, 32, 23, 23, 23, 24, 
 	23, 0, 24, 23, 23, 23, 3, 23, 
-	8, 23, 11, 23, 12, 23, 15, 23, 
-	19, 23, 20, 23, 23, 23, 23, 23, 
+	8, 23, 23, 11, 23, 12, 23, 15, 
+	23, 19, 23, 20, 23, 23, 23, 23, 
 	23, 23, 23, 23, 23, 23, 23, 23, 
 	23, 23, 23, 23, 23, 23, 23, 23, 
 	23, 23, 23, 23, 23, 23, 23, 23, 
-	23, 0
+	23, 23, 0
 ]
 
 class << self
@@ -119,21 +121,21 @@ class << self
 	private :_lexer_trans_actions, :_lexer_trans_actions=
 end
 self._lexer_trans_actions = [
-	19, 0, 29, 0, 0, 0, 41, 0, 
-	41, 0, 41, 0, 41, 27, 41, 0, 
-	41, 0, 41, 21, 41, 27, 41, 0, 
-	41, 0, 41, 17, 41, 0, 41, 0, 
-	41, 0, 41, 27, 41, 0, 41, 0, 
-	41, 0, 41, 25, 41, 33, 0, 0, 
+	19, 0, 31, 0, 0, 0, 43, 0, 
+	43, 0, 43, 0, 43, 29, 43, 0, 
+	43, 0, 43, 21, 43, 29, 43, 0, 
+	43, 0, 43, 17, 43, 0, 43, 0, 
+	43, 0, 43, 29, 43, 0, 43, 0, 
+	43, 0, 43, 25, 43, 35, 0, 0, 
 	11, 13, 15, 23, 0, 5, 5, 5, 
-	5, 5, 5, 5, 7, 9, 33, 0, 
-	31, 0, 0, 35, 19, 37, 0, 39, 
-	0, 39, 0, 39, 0, 39, 0, 39, 
-	0, 39, 0, 39, 41, 41, 41, 41, 
-	41, 41, 41, 41, 41, 41, 41, 41, 
-	41, 41, 41, 41, 41, 41, 41, 41, 
-	35, 37, 39, 39, 39, 39, 39, 39, 
-	39, 0
+	5, 5, 5, 5, 7, 9, 35, 0, 
+	33, 0, 0, 37, 19, 39, 0, 41, 
+	0, 41, 27, 0, 41, 0, 41, 0, 
+	41, 0, 41, 0, 41, 43, 43, 43, 
+	43, 43, 43, 43, 43, 43, 43, 43, 
+	43, 43, 43, 43, 43, 43, 43, 43, 
+	43, 37, 39, 41, 41, 41, 41, 41, 
+	41, 41, 0
 ]
 
 class << self
@@ -165,11 +167,11 @@ class << self
 	private :_lexer_eof_trans, :_lexer_eof_trans=
 end
 self._lexer_eof_trans = [
-	0, 0, 0, 104, 104, 104, 104, 104, 
-	104, 104, 104, 104, 104, 104, 104, 104, 
-	104, 104, 104, 104, 104, 104, 104, 0, 
-	105, 106, 113, 113, 113, 113, 113, 113, 
-	113
+	0, 0, 0, 105, 105, 105, 105, 105, 
+	105, 105, 105, 105, 105, 105, 105, 105, 
+	105, 105, 105, 105, 105, 105, 105, 0, 
+	106, 107, 114, 114, 114, 114, 114, 114, 
+	114
 ]
 
 class << self
@@ -191,7 +193,7 @@ end
 self.lexer_en_main = 23;
 
 
-# line 99 "./lib/marvin/lexer.rl"
+# line 106 "./lib/marvin/lexer.rl"
       # % this just fixes our syntax highlighting...
     end
 
@@ -209,7 +211,7 @@ self.lexer_en_main = 23;
       eof = data.length
 
       
-# line 213 "./lib/marvin/lexer.rb"
+# line 215 "./lib/marvin/lexer.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -219,9 +221,9 @@ begin
 	act = 0
 end
 
-# line 116 "./lib/marvin/lexer.rl"
+# line 123 "./lib/marvin/lexer.rl"
       
-# line 225 "./lib/marvin/lexer.rb"
+# line 227 "./lib/marvin/lexer.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -255,7 +257,7 @@ begin
 		begin
 ts = p
 		end
-# line 259 "./lib/marvin/lexer.rb"
+# line 261 "./lib/marvin/lexer.rb"
 		end # from state action switch
 	end
 	if _trigger_goto
@@ -327,7 +329,7 @@ when 2 then
 te = p+1
 		end
 when 3 then
-# line 24 "./lib/marvin/lexer.rl"
+# line 25 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -335,7 +337,7 @@ te = p+1
      end
 		end
 when 4 then
-# line 28 "./lib/marvin/lexer.rl"
+# line 29 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -343,7 +345,7 @@ te = p+1
      end
 		end
 when 5 then
-# line 32 "./lib/marvin/lexer.rl"
+# line 33 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -351,7 +353,7 @@ te = p+1
      end
 		end
 when 6 then
-# line 36 "./lib/marvin/lexer.rl"
+# line 37 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -359,7 +361,7 @@ te = p+1
      end
 		end
 when 7 then
-# line 40 "./lib/marvin/lexer.rl"
+# line 41 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -367,7 +369,7 @@ te = p+1
      end
 		end
 when 8 then
-# line 44 "./lib/marvin/lexer.rl"
+# line 45 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -375,7 +377,7 @@ te = p+1
      end
 		end
 when 9 then
-# line 48 "./lib/marvin/lexer.rl"
+# line 49 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -383,7 +385,7 @@ te = p+1
      end
 		end
 when 10 then
-# line 52 "./lib/marvin/lexer.rl"
+# line 53 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -391,7 +393,7 @@ te = p+1
      end
 		end
 when 11 then
-# line 56 "./lib/marvin/lexer.rl"
+# line 57 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -399,7 +401,7 @@ te = p+1
      end
 		end
 when 12 then
-# line 60 "./lib/marvin/lexer.rl"
+# line 61 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -407,67 +409,75 @@ te = p+1
      end
 		end
 when 13 then
-# line 64 "./lib/marvin/lexer.rl"
+# line 65 "./lib/marvin/lexer.rl"
+		begin
+te = p+1
+ begin 
+      emit(:T_IF, data, ts, te)
+     end
+		end
+when 14 then
+# line 69 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
       emit(:T_TYPE, data, ts, te)
      end
 		end
-when 14 then
-# line 76 "./lib/marvin/lexer.rl"
+when 15 then
+# line 81 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
       emit(:T_STRING, data, ts, te)
      end
 		end
-when 15 then
-# line 80 "./lib/marvin/lexer.rl"
+when 16 then
+# line 85 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
  begin 
       emit(:T_IDENT, data, ts, te)
      end
 		end
-when 16 then
-# line 84 "./lib/marvin/lexer.rl"
+when 17 then
+# line 89 "./lib/marvin/lexer.rl"
 		begin
 te = p+1
 		end
-when 17 then
-# line 68 "./lib/marvin/lexer.rl"
+when 18 then
+# line 73 "./lib/marvin/lexer.rl"
 		begin
 te = p
 p = p - 1; begin 
       emit(:T_INTEGER, data, ts, te)
      end
 		end
-when 18 then
-# line 72 "./lib/marvin/lexer.rl"
+when 19 then
+# line 77 "./lib/marvin/lexer.rl"
 		begin
 te = p
 p = p - 1; begin 
       emit(:T_ASSIGN, data, ts, te)
      end
 		end
-when 19 then
-# line 80 "./lib/marvin/lexer.rl"
+when 20 then
+# line 85 "./lib/marvin/lexer.rl"
 		begin
 te = p
 p = p - 1; begin 
       emit(:T_IDENT, data, ts, te)
      end
 		end
-when 20 then
-# line 80 "./lib/marvin/lexer.rl"
+when 21 then
+# line 85 "./lib/marvin/lexer.rl"
 		begin
  begin p = ((te))-1; end
  begin 
       emit(:T_IDENT, data, ts, te)
      end
 		end
-# line 471 "./lib/marvin/lexer.rb"
+# line 481 "./lib/marvin/lexer.rb"
 			end # action switch
 		end
 	end
@@ -487,7 +497,7 @@ when 0 then
 # line 1 "NONE"
 		begin
 ts = nil;		end
-# line 491 "./lib/marvin/lexer.rb"
+# line 501 "./lib/marvin/lexer.rb"
 		end # to state action switch
 	end
 	if _trigger_goto
@@ -518,7 +528,7 @@ end
 	end
 	end
 
-# line 117 "./lib/marvin/lexer.rl"
+# line 124 "./lib/marvin/lexer.rl"
 
       @tokens
     end

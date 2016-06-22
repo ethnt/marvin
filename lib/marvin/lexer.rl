@@ -8,6 +8,7 @@
   open_paren  = '(';
   close_paren = ')';
   while       = 'while';
+  iff         = 'if';
   type        = 'int'|'string'|'boolean';
   quote       = '"';
   not_dquote_or_escape = [^"\\];
@@ -59,6 +60,10 @@
 
     while => {
       emit(:T_WHILE, data, ts, te)
+    };
+
+    iff => {
+      emit(:T_IF, data, ts, te)
     };
 
     type => {
