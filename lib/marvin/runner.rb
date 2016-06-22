@@ -29,16 +29,10 @@ module Marvin
         logger.info(Pastel.new.bold("Compiling program ##{i}...\n"))
 
         @lexer = Marvin::Lexer.new(program)
-        @lexer.lex!
+        @lexer.lex
 
         @parser = Marvin::Parser.new(@lexer.tokens)
-        @parser.parse!
-
-        @code = Marvin::CodeGenerator.new(@parser.symbol_table.ast, @parser.symbol_table)
-        @code.generate!
-
-        logger.info("\n")
-        logger.stdout.puts @code.code
+        @parser.parse
 
         logger.info("\n") unless Marvin.logger.warnings.empty?
 
