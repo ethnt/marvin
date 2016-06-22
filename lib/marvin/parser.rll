@@ -9,6 +9,10 @@
   require 'ast'
 }
 
+programs
+  = program+ { s(:programs, val[0]) }
+  ;
+
 program
   = block T_EOP { s(:program, val[0]) }
   ;

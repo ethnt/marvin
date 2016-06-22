@@ -206,7 +206,7 @@ self.lexer_en_main = 23;
       @tokens << Marvin::Token.new(kind: kind, lexeme: lexeme, attributes: { line: line, char: char })
     end
 
-    def lex!
+    def lex
       data = @source.unpack('c*') if(@source.is_a?(String))
       eof = data.length
 
