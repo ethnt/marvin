@@ -15,6 +15,16 @@ describe Marvin::Token do
     end
   end
 
+  describe '#of_kind?' do
+    it 'will check the equality of the kinds' do
+      expect(token.of_kind?(:T_IF)).to be_truthy
+    end
+
+    it 'will show non-equality of the kinds' do
+      expect(token.of_kind?(:T_FOO)).to be_falsey
+    end
+  end
+
   describe '#to_s' do
     it 'will output Tokens in the standard way' do
       expect(token.to_s).to eql '<Token T_IF : "if">'
