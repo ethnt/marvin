@@ -195,17 +195,11 @@ class Parser < LL::Driver
   end
 
   def _rule_18(val)
-    
-      if val[1].nil?
-        [val[0].to_i]
-      else
-        s(:int_expr, [val[0].to_i, val[1]])
-      end
-    
+     val[1].nil? ? val[0].to_i : s(:intop_statement, [val[0].to_i, val[1]].flatten) 
   end
 
   def _rule_19(val)
-     val[1] 
+     [val[0].to_sym, val[1]] 
   end
 
   def _rule_20(val)

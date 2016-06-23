@@ -16,7 +16,7 @@
   assignment  = '=';
   boolop      = '=='|'!=';
   boolval     = 'true'|'false';
-  intop       = '+';
+  intop       = '+'|'-';
   identifier  = [a-z];
   print_cmd   = 'print';
 

@@ -39,7 +39,7 @@ describe Marvin::Lexer do
     end
 
     it 'recognizes intops' do
-      kinds = get_kinds('+')
+      kinds = get_kinds('+ -')
 
       expect(kinds).to eql [:T_INTOP]
     end

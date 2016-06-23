@@ -1,18 +1,6 @@
 {
-  int x
-  x = 1
-
-  if true {
-    print("string")
-  }
-
-  while (x != 5) {
-    print(x)
-    x = 1+x
-  }
-} $
-
-{
-  int a
-  a = 1
+  print(4)
+  print(4 + a)
+  print(4 + 4)
+  print(4 - 4)
 } $
