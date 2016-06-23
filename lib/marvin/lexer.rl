@@ -112,7 +112,7 @@ module Marvin
       line = line_from_char(ts)
       char = char_on_line(ts)
 
-      @tokens << Marvin::Token.new(kind: kind, lexeme: lexeme, attributes: { line: line, char: char })
+      @tokens << Marvin::Token.new(kind, lexeme, { line: line, char: char })
     end
 
     def lex

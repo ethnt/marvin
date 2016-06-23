@@ -2,23 +2,22 @@ module Marvin
 
   # A Token is a lexeme in the source code, with attached type and other
   # information.
-  class Token < Hashie::Dash
+  class Token
 
-    # The actual source code content of the lexeme.
-    property :lexeme
+    attr_accessor :kind, :lexeme, :attributes
 
-    # The kind of token.
-    property :kind
-
-    # Any additional attributes.
-    property :attributes
+    def initialize(kind, lexeme, attributes = {})
+      @kind = kind
+      @lexeme = lexeme
+      @attributes = attributes
+    end
 
     # Checks the equality of two Tokens.
     #
     # @param [Marvin::Token] other Another token to check against.
     # @return [Boolean] Whether or not the two tokens are equal.
     def ==(other)
-      (lexeme == other.lexeme) && (kind == other.kind)
+      (@lexeme == other.lexeme) && (@kind == other.kind)
     end
 
     # Checks the kind in a clearer way.
@@ -26,18 +25,18 @@ module Marvin
     # @param [Symbol] _kind A kind.
     # @return [Boolean] Whether the token is of the given kind or not.
     def of_kind?(_kind)
-      kind == _kind
+      @kind == _kind
     end
 
     # Prints out the token in the standard way (+<Token kind : "lexeme">+).
     #
     # @return [String] An output of a Token.
     def to_s
-      "<Token #{kind} : \"#{lexeme}\">"
+      "<Token #{@kind} : \"#{@lexeme}\">"
     end
 
     def to_a
-      [kind, lexeme]
+      [@kind, @lexeme]
     end
   end
 end

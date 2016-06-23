@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rubytree', '~> 0.9.7'
-gem 'hashie', '~> 3.4.3'
 gem 'pastel', '~> 0.6.0'
 gem 'ruby-ll', '~> 2.1.2'
 
