@@ -1,8 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rubytree', '~> 0.9.7'
 gem 'pastel', '~> 0.6.0'
-gem 'ruby-ll', '~> 2.1.2'
+gem 'rltk'
 
 group :development do
   gem 'rake', '~> 10.0'

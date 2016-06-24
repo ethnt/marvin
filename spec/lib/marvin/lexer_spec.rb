@@ -3,91 +3,87 @@ require 'spec_helper'
 describe Marvin::Lexer do
   describe '#lex' do
     it 'recognizes blocks' do
-      kinds = get_kinds('{ }')
+      types = get_types('{ }')
 
-      expect(kinds).to eql [:T_LBRACKET, :T_RBRACKET]
+      expect(types).to eql [:T_LBRACKET, :T_RBRACKET]
     end
 
     it 'recognizes program ends' do
-      kinds = get_kinds('$')
+      types = get_types('$')
 
-      expect(kinds).to eql [:T_EOP]
+      expect(types).to eql [:T_EOP]
     end
 
     it 'recognizes types' do
-      kinds = get_kinds('int string boolean')
+      types = get_types('int string boolean')
 
-      expect(kinds).to eql [:T_TYPE]
+      expect(types).to eql [:T_TYPE]
     end
 
     it 'recognizes digits' do
-      kinds = get_kinds('0 1 2 3 4 5 6 7 8 9')
+      types = get_types('0 1 2 3 4 5 6 7 8 9')
 
-      expect(kinds).to eql [:T_INTEGER]
+      expect(types).to eql [:T_INTEGER]
     end
 
     it 'recognizes boolvals' do
-      kinds = get_kinds('true false')
+      types = get_types('true false')
 
-      expect(kinds).to eql [:T_BOOLVAL]
+      expect(types).to eql [:T_BOOLVAL]
     end
 
     it 'recognizes boolops' do
-      kinds = get_kinds('== !=')
+      types = get_types('== !=')
 
-      expect(kinds).to eql [:T_BOOLOP]
+      expect(types).to eql [:T_BOOLOP]
     end
 
     it 'recognizes intops' do
-      kinds = get_kinds('+ -')
+      types = get_types('+ -')
 
-      expect(kinds).to eql [:T_INTOP]
+      expect(types).to eql [:T_INTOP]
     end
 
     it 'recognizes strings' do
-      kinds = get_kinds("\"foo bar bar foo\"")
+      types = get_types("\"foo bar bar foo\"")
 
-      expect(kinds).to eql [:T_STRING]
+      expect(types).to eql [:T_STRING]
     end
 
     it 'recognizes print statements' do
-      kinds = get_kinds('print')
+      types = get_types('print')
 
-      expect(kinds).to eql [:T_PRINT]
+      expect(types).to eql [:T_PRINT]
     end
 
     it 'recognizes if statements' do
-      kinds = get_kinds('if')
+      types = get_types('if')
 
-      expect(kinds).to eql [:T_IF]
+      expect(types).to eql [:T_IF]
     end
 
     it 'recognizes while statements' do
-      kinds = get_kinds('while')
+      types = get_types('while')
 
-      expect(kinds).to eql [:T_WHILE]
+      expect(types).to eql [:T_WHILE]
     end
 
     it 'recognizes identifiers' do
-      kinds = get_kinds('a b c').uniq
+      types = get_types('a b c').uniq
 
-      expect(kinds).to eql [:T_IDENT]
+      expect(types).to eql [:T_IDENT]
     end
 
     it 'recognizes parenthesis' do
-      kinds = get_kinds('()')
+      types = get_types('()')
 
-      expect(kinds).to eql [:T_LPAREN, :T_RPAREN]
+      expect(types).to eql [:T_LPAREN, :T_RPAREN]
     end
 
     it 'throws an error for unrecognized characters'
   end
 
-  def get_kinds(str)
-    Marvin::Lexer.new(str).lex.map(&:kind).uniq
-  end
-
-  def get_lexemes(str)
-    Marvin::Lexer.new(str).lex.map(&:lexeme)
+  def get_types(str)
+    Marvin::Lexer.lex(str).map(&:type).reject { |t| t == :EOS }.uniq
   end
 end
