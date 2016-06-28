@@ -1,0 +1,9 @@
+language: ruby
+rvm:
+  - 2.3.1
+before_install: gem install bundler -v 1.11.2
+script:
+  - bundle exec rake test
+addons:
+  code_climate:
+    repo_token: 014ebcd7620996e3cd2cf0f503c42560277ba186c8373308300ac06cf4e9b22b
