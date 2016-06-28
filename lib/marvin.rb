@@ -9,7 +9,7 @@ require_relative 'marvin/command'
 require_relative 'marvin/logger'
 require_relative 'marvin/error'
 
-require_relative 'marvin/token'
+require_relative 'marvin/ast'
 require_relative 'marvin/lexer'
 require_relative 'marvin/parser'
 
