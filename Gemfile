@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rltk', '~> 3.0.1'
+gem 'pastel', '~> 0.6.1'
 
 group :development do
   gem 'rake', '~> 10.0'
