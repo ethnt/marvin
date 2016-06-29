@@ -5,6 +5,8 @@ require 'rubocop/rake_task'
 
 RSpec::Core::RakeTask.new(:spec)
 
+task default: :test
+
 desc 'Run the Marvin test suite (RSpec and Rubocop)'
 task test: [:spec, :rubocop]
 
