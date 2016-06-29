@@ -1,7 +1,6 @@
 require 'pastel'
 
 module Marvin
-
   # Logger is responsible for outputting errors and warnings.
   class Logger
     attr_accessor :stdout, :stderr, :warnings, :errors
