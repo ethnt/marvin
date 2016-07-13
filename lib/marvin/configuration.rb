@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Marvin
 
   # Provides a way to configure Marvin.

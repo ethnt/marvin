@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rltk/lexer'
 
 module Marvin

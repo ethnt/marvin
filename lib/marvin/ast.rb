@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rltk/ast'
 
 require_relative 'ast/base'

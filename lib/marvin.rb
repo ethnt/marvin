@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'marvin/version'
 require_relative 'marvin/logger'
 require_relative 'marvin/configuration'
