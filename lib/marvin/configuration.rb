@@ -1,4 +1,5 @@
 module Marvin
+
   # Provides a way to configure Marvin.
   class Configuration
     attr_accessor :logger, :verbose
