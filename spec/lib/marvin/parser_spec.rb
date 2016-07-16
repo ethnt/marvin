@@ -278,28 +278,58 @@ describe Marvin::Parser do
     end
 
     describe 'if' do
-      let(:ast) { get_ast('if (true) { 4 }') }
-      let(:iff) { ast.first }
+      context 'with test' do
+        let(:ast) { get_ast('if (4 == 4) { 4 }') }
+        let(:iff) { ast.first }
 
-      it 'creates an If node' do
-        expect(iff).to be_a Marvin::AST::If
+        it 'creates an If node' do
+          expect(iff).to be_a Marvin::AST::If
+        end
+
+        it 'has a Test as a test' do
+          expect(iff.test).to be_a Marvin::AST::Test
+        end
+
+        it 'sets the test' do
+          expect(iff.test.left.value).to eql 4
+          expect(iff.test.right.value).to eql 4
+        end
+
+        it 'has a Block as a body' do
+          expect(iff.body).to be_a Marvin::AST::Block
+        end
+
+        it 'sets the body' do
+          expect(iff.body.body.first).to be_a Marvin::AST::Integer
+          expect(iff.body.body.first.value).to eql 4
+        end
       end
 
-      it 'has a Boolean as a test' do
-        expect(iff.test).to be_a Marvin::AST::Boolean
-      end
+      context 'with boolean' do
+        let(:ast) { get_ast('if (true) { 4 }') }
+        let(:iff) { ast.first }
 
-      it 'sets the test' do
-        expect(iff.test.value).to eql true
-      end
+        it 'creates an If node' do
+          expect(iff).to be_a Marvin::AST::If
+        end
 
-      it 'has a Block as a body' do
-        expect(iff.body).to be_a Marvin::AST::Block
-      end
+        it 'has a Test as a test' do
+          expect(iff.test).to be_a Marvin::AST::Test
+        end
 
-      it 'sets the body' do
-        expect(iff.body.body.first).to be_a Marvin::AST::Integer
-        expect(iff.body.body.first.value).to eql 4
+        it 'sets the test' do
+          expect(iff.test.left.value).to eql true
+          expect(iff.test.right.value).to eql true
+        end
+
+        it 'has a Block as a body' do
+          expect(iff.body).to be_a Marvin::AST::Block
+        end
+
+        it 'sets the body' do
+          expect(iff.body.body.first).to be_a Marvin::AST::Integer
+          expect(iff.body.body.first.value).to eql 4
+        end
       end
     end
 
@@ -367,6 +397,108 @@ describe Marvin::Parser do
 
       it 'sets the value' do
         expect(string.value).to eql '"foobar"'
+      end
+    end
+
+    describe 'test' do
+      context 'equal to' do
+        let(:ast) { get_ast('4 == 4') }
+        let(:equal_to) { ast.first }
+
+        it 'creates an EqualTo node' do
+          expect(equal_to).to be_a Marvin::AST::EqualTo
+        end
+
+        it 'has an Integer node on the left side' do
+          expect(equal_to.left).to be_a Marvin::AST::Integer
+        end
+
+        it 'sets the value on the left side' do
+          expect(equal_to.left.value).to eql 4
+        end
+
+        it 'has an Integer node on the right side' do
+          expect(equal_to.right).to be_a Marvin::AST::Integer
+        end
+
+        it 'sets the value on the right side' do
+          expect(equal_to.right.value).to eql 4
+        end
+      end
+
+      context 'not equal to' do
+        let(:ast) { get_ast('4 != 4') }
+        let(:not_equal_to) { ast.first }
+
+        it 'creates an NotEqualTo node' do
+          expect(not_equal_to).to be_a Marvin::AST::NotEqualTo
+        end
+
+        it 'has an Integer node on the left side' do
+          expect(not_equal_to.left).to be_a Marvin::AST::Integer
+        end
+
+        it 'sets the value on the left side' do
+          expect(not_equal_to.left.value).to eql 4
+        end
+
+        it 'has an Integer node on the right side' do
+          expect(not_equal_to.right).to be_a Marvin::AST::Integer
+        end
+
+        it 'sets the value on the right side' do
+          expect(not_equal_to.right.value).to eql 4
+        end
+      end
+
+      context 'less than' do
+        let(:ast) { get_ast('4 < 4') }
+        let(:less_than) { ast.first }
+
+        it 'creates an LessThan node' do
+          expect(less_than).to be_a Marvin::AST::LessThan
+        end
+
+        it 'has an Integer node on the left side' do
+          expect(less_than.left).to be_a Marvin::AST::Integer
+        end
+
+        it 'sets the value on the left side' do
+          expect(less_than.left.value).to eql 4
+        end
+
+        it 'has an Integer node on the right side' do
+          expect(less_than.right).to be_a Marvin::AST::Integer
+        end
+
+        it 'sets the value on the right side' do
+          expect(less_than.right.value).to eql 4
+        end
+      end
+
+      context 'greater than' do
+        let(:ast) { get_ast('4 > 4') }
+        let(:greater_than) { ast.first }
+
+        it 'creates an LessThan node' do
+          expect(greater_than).to be_a Marvin::AST::GreaterThan
+        end
+
+        it 'has an Integer node on the left side' do
+          expect(greater_than.left).to be_a Marvin::AST::Integer
+        end
+
+        it 'sets the value on the left side' do
+          expect(greater_than.left.value).to eql 4
+        end
+
+        it 'has an Integer node on the right side' do
+          expect(greater_than.right).to be_a Marvin::AST::Integer
+        end
+
+        it 'sets the value on the right side' do
+          expect(greater_than.right.value).to eql 4
+        end
       end
     end
   end

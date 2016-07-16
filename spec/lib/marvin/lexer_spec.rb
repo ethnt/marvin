@@ -36,6 +36,18 @@ describe Marvin::Lexer do
       expect(types).to eql [:T_STRING]
     end
 
+    it 'recognizes integer operations' do
+      types = get_types('+ - * /')
+
+      expect(types).to eql [:T_INTOP]
+    end
+
+    it 'recognizes boolean operations' do
+      types = get_types('== != > <')
+
+      expect(types).to eql [:T_BOOLOP]
+    end
+
     it 'recognizes print' do
       types = get_types('print')
 

@@ -37,8 +37,12 @@ module Marvin
     end
 
     production(:if) do
-      clause('T_IF T_LPAREN boolean T_RPAREN block') do |_, _, cond, _, body|
-        If.new(cond, body)
+      clause('T_IF T_LPAREN test T_RPAREN block') do |_, _, test, _, body|
+        If.new(test, body)
+      end
+
+      clause('T_IF T_LPAREN boolean T_RPAREN block') do |_, _, bool, _, body|
+        If.new(Marvin::AST::EqualTo.new(bool, bool), body)
       end
     end
 
@@ -56,6 +60,7 @@ module Marvin
       clause('boolean') { |i| i }
       clause('string') { |i| i }
       clause('arithmetic') { |i| i }
+      clause('test') { |i| i }
       clause('call') { |i| i }
     end
 
@@ -69,6 +74,21 @@ module Marvin
 
     production(:boolean) do
       clause('T_BOOLEAN') { |i| Boolean.new(i ? 1 : 0) }
+    end
+
+    production(:test) do
+      clause('expression T_BOOLOP expression') do |left, op, right|
+        case op
+        when :==
+          EqualTo.new(left, right)
+        when :!=
+          NotEqualTo.new(left, right)
+        when :<
+          LessThan.new(left, right)
+        when :>
+          GreaterThan.new(left, right)
+        end
+      end
     end
 
     production(:string) do

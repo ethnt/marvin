@@ -14,6 +14,7 @@ module Marvin
     rule(/(,)/)           { :T_COMMA }
 
     rule(%r{(\+|-|\*|/)}) { |t| [:T_INTOP, t.to_sym] }
+    rule(/(==|!=|<|>)/)   { |t| [:T_BOOLOP, t.to_sym] }
 
     rule(/(print)/)       { :T_PRINT }
     rule(/(if)/)          { :T_IF }

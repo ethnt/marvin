@@ -3,7 +3,10 @@ require 'spec_helper'
 describe Marvin::AST::If do
   let(:node) do
     Marvin::AST::If.new(
-      Marvin::AST::Boolean.new(1),
+      Marvin::AST::EqualTo.new(
+        Marvin::AST::Integer.new(4),
+        Marvin::AST::Integer.new(4)
+      ),
       Marvin::AST::Block.new(
         Marvin::AST::Integer.new(4)
       )
@@ -14,8 +17,8 @@ describe Marvin::AST::If do
     expect(node).to be_a Marvin::AST::Statement
   end
 
-  it 'has a Boolean as a test' do
-    expect(node.test).to be_a Marvin::AST::Boolean
+  it 'has a Test as a test' do
+    expect(node.test).to be_a Marvin::AST::Test
   end
 
   it 'has a Block as a body' do
