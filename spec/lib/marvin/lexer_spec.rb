@@ -18,10 +18,28 @@ describe Marvin::Lexer do
       expect(types).to eql [:T_LBRACKET, :T_RBRACKET]
     end
 
+    it 'recognizes assignments' do
+      types = get_types('=')
+
+      expect(types).to eql [:T_ASSIGN]
+    end
+
+    it 'recognizes commas' do
+      types = get_types(',')
+
+      expect(types).to eql [:T_COMMA]
+    end
+
     it 'recognizes integers' do
       types = get_types('0 1 2 3 4 5 6 7 8 9')
 
       expect(types).to eql [:T_INTEGER]
+    end
+
+    it 'recognizes floats' do
+      types = get_types('0.0 1.1 2.2 3.3 4.4 5.5 6.6 7.7 8.8 9.9')
+
+      expect(types).to eql [:T_FLOAT]
     end
 
     it 'recognizes booleans' do
@@ -34,6 +52,12 @@ describe Marvin::Lexer do
       types = get_types('"foo"')
 
       expect(types).to eql [:T_STRING]
+    end
+
+    it 'recognizes identifiers' do
+      types = get_types('foo')
+
+      expect(types).to eql [:T_IDENT]
     end
 
     it 'recognizes integer operations' do
@@ -64,6 +88,12 @@ describe Marvin::Lexer do
       types = get_types('else')
 
       expect(types).to eql [:T_ELSE]
+    end
+
+    it 'recognizes functions' do
+      types = get_types('fun')
+
+      expect(types).to eql [:T_FUNCTION]
     end
 
     it 'does nothing with spaces and newlines' do
