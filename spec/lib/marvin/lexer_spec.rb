@@ -96,6 +96,12 @@ describe Marvin::Lexer do
       expect(types).to eql [:T_FUNCTION]
     end
 
+    it 'recognizes returns' do
+      types = get_types('return')
+
+      expect(types).to eql [:T_RETURN]
+    end
+
     it 'does nothing with spaces and newlines' do
       types = get_types(" \n")
 

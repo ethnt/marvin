@@ -20,6 +20,7 @@ module Marvin
     rule(/(if)/)          { :T_IF }
     rule(/(else)/)        { :T_ELSE }
     rule(/(fun)/)         { :T_FUNCTION }
+    rule(/(return)/)      { :T_RETURN }
 
     rule(/(\d+)/)         { |t| [:T_INTEGER, t.to_i] }
     rule(/(\d+\.\d+)/)    { |t| [:T_FLOAT,   t.to_f] }

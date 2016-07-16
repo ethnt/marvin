@@ -383,6 +383,31 @@ describe Marvin::Parser do
       end
     end
 
+    describe 'return' do
+      let(:ast) { get_ast("return 4") }
+      let(:returnn) { ast.first }
+
+      it 'creates a Call node' do
+        expect(returnn).to be_a Marvin::AST::Call
+      end
+
+      it 'has a Symbol as a name' do
+        expect(returnn.name).to be_a Symbol
+      end
+
+      it 'sets the name to `:return`' do
+        expect(returnn.name).to eql :return
+      end
+
+      it 'has an Array for the arguments' do
+        expect(returnn.arguments).to be_a Array
+      end
+
+      it 'sets the arguments to the given expression' do
+        expect(returnn.arguments.first.value).to eql 4
+      end
+    end
+
     describe 'string' do
       let(:ast) { get_ast('"foobar"') }
       let(:string) { ast.first }

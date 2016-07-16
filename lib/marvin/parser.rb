@@ -21,6 +21,7 @@ module Marvin
       clause('function')   { |s| s }
       clause('print')      { |s| s }
       clause('if')         { |s| s }
+      clause('return')     { |s| s }
       clause('expression') { |s| s }
     end
 
@@ -118,6 +119,10 @@ module Marvin
 
     production('call') do
       clause('T_IDENT arg_values?') { |name, values| Call.new(name, values.to_a) }
+    end
+
+    production('return') do
+      clause('T_RETURN expression') { |_, e| Call.new(:return, [e]) }
     end
 
     production(:block) do
