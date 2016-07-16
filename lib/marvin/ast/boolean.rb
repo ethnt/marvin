@@ -5,14 +5,14 @@ module Marvin
 
     # Represents a binary true or false.
     class Boolean < Expression
-      value :value, ::Fixnum
+      value :_value, ::Fixnum
 
       # Returns the boolean equivalent of the integer value representation
       # (+1+ is +true+, +0+ is +false+).
       #
       # @return [TrueClass,FalseClass] The boolean equivalent.
-      def to_bool
-        value == 1
+      def value
+        _value == 1
       end
     end
   end
