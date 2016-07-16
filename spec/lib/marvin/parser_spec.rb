@@ -173,18 +173,18 @@ describe Marvin::Parser do
       end
 
       it 'casts to a number for storage' do
-        expect(boolean_true.value.value).to be_a Fixnum
-        expect(boolean_true.value.value).to eql 1
-        expect(boolean_false.value.value).to eql 0
+        expect(boolean_true.value._value).to be_a Fixnum
+        expect(boolean_true.value._value).to eql 1
+        expect(boolean_false.value._value).to eql 0
       end
 
       describe '#to_bool' do
         it 'returns 1 as true' do
-          expect(boolean_true.value.to_bool).to eql true
+          expect(boolean_true.value.value).to eql true
         end
 
         it 'returns 0 as false' do
-          expect(boolean_false.value.to_bool).to eql false
+          expect(boolean_false.value.value).to eql false
         end
       end
     end
@@ -290,7 +290,7 @@ describe Marvin::Parser do
       end
 
       it 'sets the test' do
-        expect(iff.test.to_bool).to eql true
+        expect(iff.test.value).to eql true
       end
 
       it 'has a Block as a body' do
