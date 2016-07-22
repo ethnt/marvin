@@ -384,7 +384,7 @@ describe Marvin::Parser do
     end
 
     describe 'return' do
-      let(:ast) { get_ast("return 4") }
+      let(:ast) { get_ast('return 4') }
       let(:returnn) { ast.first }
 
       it 'creates a Call node' do
