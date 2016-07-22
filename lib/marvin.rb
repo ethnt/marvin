@@ -7,6 +7,7 @@ require_relative 'marvin/configuration'
 require_relative 'marvin/lexer'
 require_relative 'marvin/ast'
 require_relative 'marvin/parser'
+require_relative 'marvin/contractor'
 
 # This module contains all of the classes belonging to Marvin.
 module Marvin
