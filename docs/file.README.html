@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.README.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<h1 id="label-Marvin">Marvin</h1>
+<ul><li>
+<p><strong>Author</strong>: <a href="http://ethnt.me">Ethan Turkeltaub</a></p>
+</li><li>
+<p><strong>License</strong>: <a
+href="https://github.com/eturk/marvin/blob/master/LICENSE.md">MIT
+License</a></p>
+</li></ul>
+
+<p><a href="https://circleci.com/gh/eturk/marvin/tree/master"><img
+src="https://img.shields.io/circleci/project/eturk/marvin.svg?maxAge=2592000?style=flat-square"></a>
+<a href="https://codeclimate.com/github/eturk/marvin"><img
+src="https://img.shields.io/codeclimate/github/eturk/marvin.svg?maxAge=2592000?style=flat-square"></a>
+<a href="https://codeclimate.com/github/eturk/marvin/coverage"><img
+src="https://img.shields.io/codeclimate/coverage/github/eturk/marvin.svg?maxAge=2592000?style=flat-square"></a></p>
+
+<blockquote>
+<p><em>Here I am, brain the size of a planet, and they ask me to compile code.
+Call that job satisfaction? &#39;Cause I don&#39;t.</em></p>
+
+<p>—<a href="https://en.wikipedia.org/wiki/Marvin_(character)">Marvin</a></p>
+</blockquote>
+
+<h2 id="label-What+is+Marvin-3F">What is Marvin?</h2>
+
+<p>Marvin is a toy language written in Ruby using <a
+href="https://github.com/chriswailes/RLTK">RLTK</a>. It&#39;s not meant for
+production use, but just as a way to explore writing compilers and
+interpreters.</p>
+
+<p>Here&#39;s an quick example of a Marvin program that takes a width and a
+height, computes the area of those two measurements, and prints the result:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_fun'>fun</span> <span class='id identifier rubyid_area'>area</span><span class='lparen'>(</span><span class='id identifier rubyid_width'>width</span><span class='comma'>,</span> <span class='id identifier rubyid_height'>height</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_width'>width</span> <span class='op'>*</span> <span class='id identifier rubyid_height'>height</span>
+<span class='rbrace'>}</span>
+
+<span class='id identifier rubyid_a'>a</span> <span class='op'>=</span> <span class='id identifier rubyid_area'>area</span><span class='lparen'>(</span><span class='int'>4</span><span class='comma'>,</span> <span class='int'>8</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_print'>print</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='rparen'>)</span> <span class='comment'># =&gt; 32
+</span></code></pre>
+
+<h2 id="label-Installation">Installation</h2>
+
+<p>Marvin requires two external dependencies:</p>
+<ul><li>
+<p><a href="http://ruby-lang.org">Ruby</a> 2.3.1</p>
+</li><li>
+<p><a href="http://llvm.org/">LLVM</a> 3.5</p>
+</li></ul>
+
+<h3 id="label-Installing+Marvin+on+macOS">Installing Marvin on macOS</h3>
+
+<p>It&#39;s highly recommended that you install <a
+href="http://brew.sh/">Homebrew</a>, if you haven&#39;t already:</p>
+
+<pre class="code ruby"><code class="ruby">$ ruby -e &quot;$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)&quot;</code></pre>
+
+<p>Next, install <a href="https://github.com/rbenv/rbenv">rbenv</a> and <a
+href="https://github.com/rbenv/ruby-build">ruby-build</a> using Homebrew:</p>
+
+<pre class="code ruby"><code class="ruby">$ brew install rbenv ruby-build</code></pre>
+
+<p>You&#39;ll need to add to your <code>$PATH</code> to get rbenv to work
+globally. Head into your <code>~/.bash_profile</code> file using the text
+editor of your choice and add the following snippet:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_export'>export</span> <span class='const'>PATH</span><span class='op'>=</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>$HOME/.rbenv/bin:$PATH</span><span class='tstring_end'>&quot;</span></span>
+<span class='id identifier rubyid_eval'>eval</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>$(rbenv init -)</span><span class='tstring_end'>&quot;</span></span>
+</code></pre>
+
+<p><em>If you don&#39;t use Bash, something similar will work for ZSH and
+Fish, at least.</em></p>
+
+<p>Restart your current shell:</p>
+
+<pre class="code ruby"><code class="ruby">$ exec $SHELL -l</code></pre>
+
+<p>Finally, you can go ahead and install Ruby:</p>
+
+<pre class="code ruby"><code class="ruby">$ rbenv install 2.3.1</code></pre>
+
+<p>All you need to do is install the dependencies using <a
+href="http://bundler.io/">Bundler</a>.</p>
+
+<pre class="code ruby"><code class="ruby">$ bundle install</code></pre>
+
+<p>Then you’ll need to install LLVM. The version of LLVM that we use is a bit
+tempermental to install, so we need to install the <code>HEAD</code>
+development versions of some its dependencies as well:</p>
+
+<pre class="code ruby"><code class="ruby">$ brew install --HEAD isl
+$ brew install --HEAD cloog
+$ brew install --rtti --with-clang --with-libcxx --with-shared --HEAD llvm35</code></pre>
+
+<p>Grab a coffee, this will take a while.</p>
+
+<p>There is <a href="https://github.com/ffi/ffi/issues/461">an open issue with
+FFI</a> (a dependency of RCGTK) that prevents it from finding dylib without
+an absolute path. It also ignores the environment variables that tell it
+the paths to look in. To avoid this, manually copy the LLVM 3.5 dylib to
+the correct directory.</p>
+
+<pre class="code ruby"><code class="ruby">$ cp /usr/local/lib/llvm-3.5/lib/libLLVM-3.5.dylib /usr/local/lib/</code></pre>
+
+<p>After this, you&#39;re (finally) all set!</p>
+</div></div>
+
+    <div id="footer">
+  Generated on Thu Aug 18 10:15:53 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.3.1).
+</div>
+
+  </body>
+</html>
