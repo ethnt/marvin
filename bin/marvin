@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+$stderr.sync
+
+require_relative '../lib/marvin'
+
+Marvin::Command.parse!(ARGV)

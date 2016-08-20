@@ -80,7 +80,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">lib/marvin.rb<span class="defines">,<br />
-  lib/marvin/ast.rb,<br /> lib/marvin/lexer.rb,<br /> lib/marvin/parser.rb,<br /> lib/marvin/logger.rb,<br /> lib/marvin/ast/if.rb,<br /> lib/marvin/version.rb,<br /> lib/marvin/ast/base.rb,<br /> lib/marvin/ast/call.rb,<br /> lib/marvin/ast/test.rb,<br /> lib/marvin/ast/print.rb,<br /> lib/marvin/ast/block.rb,<br /> lib/marvin/ast/float.rb,<br /> lib/marvin/contractor.rb,<br /> lib/marvin/ast/string.rb,<br /> lib/marvin/ast/integer.rb,<br /> lib/marvin/ast/program.rb,<br /> lib/marvin/ast/boolean.rb,<br /> lib/marvin/ast/addition.rb,<br /> lib/marvin/ast/division.rb,<br /> lib/marvin/ast/equal_to.rb,<br /> lib/marvin/ast/function.rb,<br /> lib/marvin/configuration.rb,<br /> lib/marvin/ast/statement.rb,<br /> lib/marvin/ast/less_than.rb,<br /> lib/marvin/ast/arithmetic.rb,<br /> lib/marvin/ast/expression.rb,<br /> lib/marvin/ast/assignment.rb,<br /> lib/marvin/ast/subtraction.rb,<br /> lib/marvin/ast/greater_than.rb,<br /> lib/marvin/ast/not_equal_to.rb,<br /> lib/marvin/ast/multiplication.rb</span>
+  lib/marvin/ast.rb,<br /> lib/marvin/lexer.rb,<br /> lib/marvin/logger.rb,<br /> lib/marvin/runner.rb,<br /> lib/marvin/parser.rb,<br /> lib/marvin/ast/if.rb,<br /> lib/marvin/command.rb,<br /> lib/marvin/version.rb,<br /> lib/marvin/ast/base.rb,<br /> lib/marvin/ast/test.rb,<br /> lib/marvin/ast/call.rb,<br /> lib/marvin/ast/float.rb,<br /> lib/marvin/ast/block.rb,<br /> lib/marvin/ast/print.rb,<br /> lib/marvin/ast/string.rb,<br /> lib/marvin/contractor.rb,<br /> lib/marvin/ast/boolean.rb,<br /> lib/marvin/ast/program.rb,<br /> lib/marvin/ast/integer.rb,<br /> lib/marvin/ast/addition.rb,<br /> lib/marvin/ast/division.rb,<br /> lib/marvin/ast/equal_to.rb,<br /> lib/marvin/ast/function.rb,<br /> lib/marvin/ast/less_than.rb,<br /> lib/marvin/ast/statement.rb,<br /> lib/marvin/configuration.rb,<br /> lib/marvin/ast/arithmetic.rb,<br /> lib/marvin/ast/expression.rb,<br /> lib/marvin/ast/assignment.rb,<br /> lib/marvin/ast/subtraction.rb,<br /> lib/marvin/ast/greater_than.rb,<br /> lib/marvin/ast/not_equal_to.rb,<br /> lib/marvin/ast/multiplication.rb</span>
 </dd>
   
 </dl>
@@ -105,7 +105,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Marvin/Configuration.html" title="Marvin::Configuration (class)">Configuration</a></span>, <span class='object_link'><a href="Marvin/Contractor.html" title="Marvin::Contractor (class)">Contractor</a></span>, <span class='object_link'><a href="Marvin/Lexer.html" title="Marvin::Lexer (class)">Lexer</a></span>, <span class='object_link'><a href="Marvin/Logger.html" title="Marvin::Logger (class)">Logger</a></span>, <span class='object_link'><a href="Marvin/Parser.html" title="Marvin::Parser (class)">Parser</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Marvin/Command.html" title="Marvin::Command (class)">Command</a></span>, <span class='object_link'><a href="Marvin/Configuration.html" title="Marvin::Configuration (class)">Configuration</a></span>, <span class='object_link'><a href="Marvin/Contractor.html" title="Marvin::Contractor (class)">Contractor</a></span>, <span class='object_link'><a href="Marvin/Lexer.html" title="Marvin::Lexer (class)">Lexer</a></span>, <span class='object_link'><a href="Marvin/Logger.html" title="Marvin::Logger (class)">Logger</a></span>, <span class='object_link'><a href="Marvin/Parser.html" title="Marvin::Parser (class)">Parser</a></span>, <span class='object_link'><a href="Marvin/Runner.html" title="Marvin::Runner (class)">Runner</a></span>
     
   
 </p>
@@ -263,12 +263,12 @@ module.</p>
       <pre class="lines">
 
 
-15
-16
-17</pre>
+18
+19
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/marvin.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/marvin.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_configuration'>configuration</span>
   <span class='ivar'>@configuration</span>
@@ -343,14 +343,14 @@ module.</p>
       <pre class="lines">
 
 
-22
-23
-24
 25
-26</pre>
+26
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/marvin.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'lib/marvin.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_configure'>configure</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_configuration'>configuration</span> <span class='op'>||=</span> <span class='const'>Configuration</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -406,12 +406,12 @@ module.</p>
       <pre class="lines">
 
 
-31
-32
-33</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/marvin.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'lib/marvin.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_configuration'>configuration</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span>
@@ -426,7 +426,7 @@ module.</p>
 </div>
 
     <div id="footer">
-  Generated on Thu Aug 18 10:15:53 2016 by
+  Generated on Sat Aug 20 09:50:47 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.3.1).
 </div>

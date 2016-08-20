@@ -3,11 +3,14 @@
 require_relative 'marvin/version'
 require_relative 'marvin/logger'
 require_relative 'marvin/configuration'
+require_relative 'marvin/command'
 
 require_relative 'marvin/lexer'
 require_relative 'marvin/ast'
 require_relative 'marvin/parser'
 require_relative 'marvin/contractor'
+
+require_relative 'marvin/runner'
 
 # This module contains all of the classes belonging to Marvin.
 module Marvin

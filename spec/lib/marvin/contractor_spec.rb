@@ -4,7 +4,6 @@ describe Marvin::Contractor do
   let(:contractor) { Marvin::Contractor.new }
 
   describe '#initialize' do
-
     it 'returns instance of itself' do
       expect(contractor).to be_a Marvin::Contractor
     end
