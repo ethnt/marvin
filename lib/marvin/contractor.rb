@@ -31,68 +31,88 @@ module Marvin
     #
     # @param [RLTK::AST::Node] node An AST node.
     # @return [NilClass]
-    def add(node)
-      case node
-      when Marvin::AST::Program
-        visit(Marvin::AST::Function.new(:'', [], node.contents))
-      when Marvin::AST::Statement, Marvin::AST::Expression
-        visit(Marvin::AST::Function.new(:'', [], node))
-      when Marvin::AST::Function, Marvin::AST::Call
-        visit(ast)
-      else
-        fail 'Attempting to add unhandled node type to JIT.'
+    def add(ast)
+      visit(ast)
+    end
+
+    on Marvin::AST::Program do |node|
+      node.contents.each do |subnode|
+        visit(subnode)
       end
     end
 
-    # Handles functions.
     on Marvin::AST::Function do |node|
-      # Clear the symbol table
-      @st.clear
+      fun = @module.functions[node.name.to_s]
 
-      # Let's build the prototype
-      if fun = @module.functions[node.name]
-        if fun.body.body.size != 0
-          fail "Redefinition of function #{node.name}"
-        elsif fun.parameters.size != node.arguments.length
-          fail "Redefinition of function #{node.name} with different number of arguments"
-        end
+      if fun
+        fail "Redefinition of function '#{node.name}'."
+      elsif fun && fun.params.size != node.parameters.length
+        fail "Redefinition of function '#{node.name}' with a different number of parameters."
       else
-        fun = @module.functions.add(node.name, RCGTK::DoubleType, Array.new(node.arguments.length, RCGTK::DoubleType))
+        # FIXME: The `Array.new` business is just setting the return types and
+        # parameter types to DoubleTypes. Maybe don't do that.
+        fun = @module.functions.add(node.name.to_sym, RCGTK::FloatType, Array.new(node.parameters.length, RCGTK::FloatType))
       end
 
-      fun = fun.tap do
-        node.arguments.each_with_index do |name, i|
-          (@st[name] = fun.params[i]).name = name
+      # Set all of the parameters in the symbol table
+      fun.tap do
+        node.parameters.each_with_index do |name, i|
+          (@st[name.to_s] = fun.params[i]).name = name.to_s
         end
       end
 
-      ret (visit node.body, at: fun.blocks.append('entry'))
+      # Reset the symbol table
+      # @st.clear
 
+      # Create a new basic block to insert into, translate the expression, and
+      # set its value as the return value
+      ret((visit(node.body.body.first, at: fun.blocks.append('entry'))))
+
+      # Verify the function and return it
       fun.tap { fun.verify }
     end
 
-    on Marvin::AST::Call do |node|
-      if node.arguments.length > 0
-        callee = @module.functions[node.name]
-
-        if not callee
-          fail 'Unknown function referenced'
-        end
-
-        if callee.parameters.size != node.arguments.length
-          fail "Function #{node.name} expected #{callee.parameters.size} arguments but was called with #{node.arguments.length}"
-        end
-
-        args = node.args.map { |arg| visit arg }
-
-        call callee, *args.push('calltmp')
-      else
-        if @st.key?(node.name)
-          @st[node.name]
-        else
-          fail "Uninitialized variable #{node.name}"
-        end
+    on Marvin::AST::Block do |node|
+      node.body.each do |subnode|
+        visit(subnode)
       end
+    end
+
+    on Marvin::AST::Call do |node|
+      # FIXME: This shouldn't be like this. Maybe separate out variable and
+      # function calls in the AST?
+      #
+      # If there's no arguments, it's a variable call
+      if node.arguments.empty?
+        if @st.key?(node.name.to_s)
+          @str[node.name.to_s]
+        else
+          fail "Uninitialized variable '#{node.name.to_s}'."
+        end
+
+      # If there are arugments, it's a function call
+      else
+        # Get the registered function by name
+        callee = @module.functions[node.name.to_s]
+
+        # If there's no function defined by that name, fail
+        if not callee
+          fail "Unknown function '#{node.name.to_s}' referenced."
+        end
+
+        # If there's a mismatch in parameter/argument numbers, fail
+        if callee.params.size != node.arguments.length
+          fail "Function '#{node.name.to_s}' expected #{callee.params.size} argument(s) but was called with #{node.arguments.size}."
+        end
+
+        arguments = node.arguments.map { |arg| visit(arg) }
+
+        call(callee, *arguments.push('calltmp'))
+      end
+    end
+
+    on Marvin::AST::Float do |node|
+      RCGTK::Float.new(node.value)
     end
   end
 end
